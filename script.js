@@ -1,74 +1,84 @@
+let CLIENT_ID
+let CLIENT_SECRET
 
-// function loadClient(token) {
-//     gapi.client.setApiKey(token);
-//     return gapi.client.load("https://youtube.googleapis.com/$discovery/rest?version=v3")
-//             .then(function() { console.log("GAPI client loaded for API"); execute()},
-//                         function(err) { console.error("Error loading GAPI client for API", err); });
-// }
+let TOKEN_URI
+let AUTH_URI
+let REDIRECT_URI
 
-// function execute() {
-//     return gapi.client.youtube.playlist.list({
-//         "part": [
-//             "contentDetails"
-//         ],
-//         "maxResults":5,
-//         "playlistId": "PLM6cqxaNHNQ9pxBPXOwNJJdq43WeWzfmP"
-//     })
-//     .then(function(response) {
-//         // Handle the results here (response.result has the parsed body).
-//         console.log("Response", response);
-//         document.getElementById('result').innerText=JSON.stringify(response)
-//     },
-//     function(err) { console.error("Execute error", err); });
-// }
+let SCOPES
+let ACCESS_TOKEN
 
-// gapi.load("client");
+fetch('client_secret.json')
+    .then(res => res.json())
+    .then(res => {
+        
+        CLIENT_ID=res["web"]["client_id"]
+        CLIENT_SECRET=res['web']['client_secret']
+
+        TOKEN_URI=res["web"]["token_uri"]
+        AUTH_URI=res["web"]["auth_uri"]
+        REDIRECT_URI=res['web']['redirect_uris']
+
+        SCOPES = 'https://www.googleapis.com/auth/youtube.readonly';
+    }).catch(error => console.log(error))
 
 
 
 
-  /**
-   * Sample JavaScript code for youtube.playlists.list
-   * See instructions for running APIs Explorer code samples locally:
-   * https://developers.google.com/explorer-help/code-samples#javascript
-   */
+function authenticate() {
+    open(`${AUTH_URI}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code&scope=${SCOPES}&access_type=offline&prompt=consent`,"_self")
+}
 
-    const CLIENT_ID = '437287763989-02qlp26c13mfh5pkufrf5s2ic7l3b63h.apps.googleusercontent.com'; // From Google Cloud Console
-    const API_KEY = 'AIzaSyBoyo1LVl1ik-bNKqVrFx1McgVF5Fjh0MI';     // From Google Cloud Console
-
-    const DISCOVERY_DOC = 'https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest';
-    const SCOPES = 'https://www.googleapis.com/auth/youtube.readonly';
-
-    function authenticate() {
-      open("https://accounts.google.com/o/oauth2/v2/auth?client_id=437287763989-02qlp26c13mfh5pkufrf5s2ic7l3b63h.apps.googleusercontent.com&redirect_uri=https%3A%2F%2Ftenrom.github.io&response_type=code&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fyoutube.readonly&access_type=offline&prompt=consent","_self")
-    }
-
-    function loadClient() {
-      gapi.client.setApiKey(API_KEY);
-      return gapi.client.load(DISCOVERY_DOC)
-        .then(() => {
-          console.log('GAPI client loaded for API');
-        })
-        .catch(err => console.error('Error loading GAPI client', err));
-    }
-
-    function execute() {
-      return gapi.client.youtube.playlists.list({
-        part: 'snippet',
-        mine: true,
-        maxResults: 10
-      })
-      .then(response => {
-        console.log('Playlists:', response.result);
-      })
-      .catch(err => console.error('Execute error', err));
-    }
-
-    // Load the client and auth2 libraries
-    gapi.load('client:auth2', () => {
-      gapi.auth2.init({ client_id: CLIENT_ID }).then(() => {
-        console.log('gapi client initialized');
-        loadClient();
-      });
+function exchangeCodeForTokens(code) {
+    // The parameters must be sent in a URL-encoded format
+    const payload = new URLSearchParams({
+        'code': code,
+        'client_id': CLIENT_ID,
+        'client_secret': CLIENT_SECRET,
+        'redirect_uri': REDIRECT_URI,
+        'grant_type': 'authorization_code'
     });
 
+    fetch(TOKEN_URI, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: payload.toString(), // Send the URL-encoded payload as the body
+    })
+    .then(response => {
+        if (!response.ok) {
+            // If the response is not OK, we'll get the error details from the JSON body
+            return response.json().then(errorData => {
+                throw new Error(`Token exchange failed: ${response.status} - ${JSON.stringify(errorData)}`);
+            });
+        }
+        // If the response is OK, parse the JSON data
+        return response.json();
+    })
+    .then(tokenData => {
+        // This is the data you need to store and use!
+        console.log('Successfully received tokens:');
+        console.log('Access Token:', tokenData.access_token);
+        console.log('Refresh Token:', tokenData.refresh_token);
+        console.log('Expires In:', tokenData.expires_in);
+        console.log('Scope:', tokenData.scope);
+
+        ACCESS_TOKEN=tokenData.access_token
+
+        // You would typically save the access and refresh tokens to a database here
+        // and then send the access token to the client-side for API calls.
+    })
+    .catch(error => {
+        // Handle any errors that occurred during the fetch or in the .then() blocks
+        console.error('Error during token exchange:', error);
+    });
+}
+
+function getPlaylists(){
+    fetch(`https://youtube.googleapis.com/youtube/v3/playlists?part=snippet&mine=true&maxResults=50&access_token=${ACCESS_TOKEN}`).then(res => {console.log(res.json())}) 
+}
+
+function getPlaylistItems(playlistid,after){
+    fetch(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=contentDetails&maxResults=500&playlistId=${playlistid}&access_token=${ACCESS_TOKEN}`).then(res => {console.log(res.json)}) 
+}
