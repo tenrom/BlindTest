@@ -76,9 +76,9 @@ function exchangeCodeForTokens(code) {
 }
 
 function getPlaylists(){
-    fetch(`https://youtube.googleapis.com/youtube/v3/playlists?part=snippet&mine=true&maxResults=50&access_token=${ACCESS_TOKEN}`).then(res => {console.log(res.json())}) 
+    fetch(`https://youtube.googleapis.com/youtube/v3/playlists?part=snippet&mine=true&maxResults=50&access_token=${ACCESS_TOKEN}`).then(res => res.json()).then(res => console.log(res))
 }
 
-function getPlaylistItems(playlistid,after){
-    fetch(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=contentDetails&maxResults=500&playlistId=${playlistid}&access_token=${ACCESS_TOKEN}`).then(res => {console.log(res.json)}) 
+function getPlaylistItems(playlistid){
+    fetch(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=contentDetails&maxResults=500&playlistId=${playlistid}&access_token=${ACCESS_TOKEN}`).then(res => res.json()).then(res => console.log(res))
 }
