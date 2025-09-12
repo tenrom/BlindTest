@@ -2,18 +2,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TestYt</title>
-    <script src="https://apis.google.com/js/api.js"></script>
-    <script src="https://accounts.google.com/gsi/client"></script>
-    <script src="script.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>SUTOM</title>
+    <link href="./style.css" rel="stylesheet">
+    <link rel="shortcut icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSIjM2VhYTQyIiBkPSJNNSAxNS41YzEgMSAyLjUgMiA0IDIuNWMtMiAyIC01IDMgLTcgM2MyIC0yIDMgLTMuNSAzIC01LjVaIi8+PGcgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjM2VhYTQyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS13aWR0aD0iMiI+PHBhdGggZD0iTTcgMTYuODJjLTIuNDEgLTEuMjUgLTQgLTMuMzkgLTQgLTUuODJjMCAtMy44NyA0LjAzIC03IDkgLTdjNC45NyAwIDkgMy4xMyA5IDdjMCAzLjg3IC00LjAzIDcgLTkgN2MtMS44NSAwIC0zLjU3IC0wLjQzIC01IC0xLjE4WiIvPjxwYXRoIGQ9Ik04IDExaDAuMDEiLz48cGF0aCBkPSJNMTIgMTFoMC4wMSIvPjxwYXRoIGQ9Ik0xNiAxMWgwLjAxIi8+PC9nPjwvc3ZnPg==" type="image/x-icon">
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/seedrandom/3.0.5/seedrandom.min.js" defer></script>
+    <script src="main.js" defer></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&amp;display=swap" rel="stylesheet">
 </head>
 <body>
-    <button id="sign-in-button" onclick="loadClient()">Sign in</button>
-    <p id="result"></p>
-
-    <button onclick="authenticate()">Sign In</button>
-    <button onclick="execute()">Get My Playlists</button>
+    <game-grid tilenb="5" attemps="6"></game-grid>
+    <game-keyboard></game-keyboard>
 </body>
 </html>
