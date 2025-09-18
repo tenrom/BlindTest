@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iframe</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSIjZjAwIiBkPSJtMTAuMjc1IDE2bDUuNTc1LTMuNTc1cS4yMjUtLjE1LjIyNS0uNDI1dC0uMjI1LS40MjVMMTAuMjc1IDhxLS4yNS0uMTc1LS41MTMtLjAyNXQtLjI2Mi40NXY3LjE1cTAgLjMuMjYzLjQ1dC41MTItLjAyNU00IDIwcS0uODI1IDAtMS40MTItLjU4N1QyIDE4VjZxMC0uODI1LjU4OC0xLjQxMlQ0IDRoMTZxLjgyNSAwIDEuNDEzLjU4OFQyMiA2djEycTAgLjgyNS0uNTg3IDEuNDEzVDIwIDIweiIvPjwvc3ZnPg==" type="image/x-icon">
+    <link rel="stylesheet" href="style.css">
+    
+</head>
+<body style="margin: 0;width: 100%;height: 100%;">
+    <div id="nav" class="nav" style="width: 100%;height: 100%;margin: 0;">
+        <div class="nav-tab" id="ExploreTab">
+            Explorer
+        </div>
+        <div class="nav-tab" id="WelcomeTab">
+            Accueil
+        </div>
+        <div class="nav-tab" id="AccountTab">
+            Compte
+        </div>
+    </div>
+
+    <script>
+        let t1=document.getElementById('ExploreTab')
+        let t2=document.getElementById('WelcomeTab')
+        let t3=document.getElementById('AccountTab')
+
+        if (window.parent.location.search.includes('explore')){
+            t1.setAttribute('select','true')
+        }else{
+            if (window.parent.location.search.includes('welcome')){
+                t2.setAttribute('select','true')
+            }else{
+                t3.setAttribute('select','true')
+            }
+        }
+        
+
+        t1.addEventListener('click',(e)=>{
+            open(window.parent.location,'_parent')
+        })
+        t2.addEventListener('click',(e)=>{
+            open(window.parent.location,'_parent')
+        })
+        t3.addEventListener('click',(e)=>{
+            open(window.parent.location,'_parent')
+        })
+    </script>
+</body>
+</html>
+

@@ -4,16 +4,54 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TestYt</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSIjZjAwIiBkPSJtMTAuMjc1IDE2bDUuNTc1LTMuNTc1cS4yMjUtLjE1LjIyNS0uNDI1dC0uMjI1LS40MjVMMTAuMjc1IDhxLS4yNS0uMTc1LS41MTMtLjAyNXQtLjI2Mi40NXY3LjE1cTAgLjMuMjYzLjQ1dC41MTItLjAyNU00IDIwcS0uODI1IDAtMS40MTItLjU4N1QyIDE4VjZxMC0uODI1LjU4OC0xLjQxMlQ0IDRoMTZxLjgyNSAwIDEuNDEzLjU4OFQyMiA2djEycTAgLjgyNS0uNTg3IDEuNDEzVDIwIDIweiIvPjwvc3ZnPg==" type="image/x-icon">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unpkg.com/plyr@3/dist/plyr.css">
+
     <script src="https://apis.google.com/js/api.js"></script>
     <script src="https://accounts.google.com/gsi/client"></script>
-    <script src="script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/polyfill/v2/polyfill.min.js?features=es6,Array.prototype.includes,CustomEvent,Object.entries,Object.values,URL"></script>
+    <script src="https://unpkg.com/plyr@3"></script>
+    <script src="music.js" defer></script>
+    <script src="script.js" defer></script>
 
 </head>
 <body>
-    <button id="sign-in-button" onclick="loadClient()">Sign in</button>
-    <p id="result"></p>
+    <div class="container" style="display: none;">
+        <div id="player" data-plyr-provider="youtube" data-plyr-embed-id="gEmNIXjfu2E"></div>
+    </div>
+    
+    <button onclick="authenticate()" style="display: none;" id="btn-signin">Sign In</button>
+    <div class="playlist-container" id="playlist-container" style="display: none;">
+        <div class="playlist-banner" id="playlist-banner">
+            <svg onclick="Back()" id="btn-back" xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 24 24"><path fill="#fff" d="M19 13H6.75L12 18.25l-.66.75l-6.5-6.5l6.5-6.5l.66.75L6.75 12H19z"/></svg>
+            <h2 class="playlist-banner-title" id="playlist-banner-title"></h2>
+        </div>
+        <div style="display: flex;flex-direction: column;align-items: center;align-items: center;gap: 32px;">
+            <playlist-img></playlist-img>
+            <div style="display: flex;flex-direction: column;align-items: center;align-items: center;gap: 5px;">
+                <div id="playlist-title-items" class="playlist-text-title"></div>
+                <div id="playlist-author-items" class="playlist-text-author"></div>
+            </div>
+        </div>
+        <div class="btn-play" id="btn-play" style="display: none;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32px" height="32px" viewBox="0 0 512 512"><path fill="#000" d="M403.8 34.4c12-5 25.7-2.2 34.9 6.9l64 64c6 6 9.4 14.1 9.4 22.6s-3.4 16.6-9.4 22.6l-64 64c-9.2 9.2-22.9 11.9-34.9 6.9S384 204.9 384 192v-32h-32c-10.1 0-19.6 4.7-25.6 12.8L294 216l-40-53.3l21.2-28.3C293.3 110.2 321.8 96 352 96h32V64c0-12.9 7.8-24.6 19.8-29.6M154 296l40 53.3l-21.2 28.3C154.7 401.8 126.2 416 96 416H32c-17.7 0-32-14.3-32-32s14.3-32 32-32h64c10.1 0 19.6-4.7 25.6-12.8zm284.6 174.6c-9.2 9.2-22.9 11.9-34.9 6.9S384 460.9 384 448v-32h-32c-30.2 0-58.7-14.2-76.8-38.4L121.6 172.8c-6-8.1-15.5-12.8-25.6-12.8H32c-17.7 0-32-14.3-32-32s14.3-32 32-32h64c30.2 0 58.7 14.2 76.8 38.4l153.6 204.8c6 8.1 15.5 12.8 25.6 12.8h32v-32c0-12.9 7.8-24.6 19.8-29.6s25.7-2.2 34.9 6.9l64 64c6 6 9.4 14.1 9.4 22.6s-3.4 16.6-9.4 22.6l-64 64z"/></svg>
+        </div>
+        <div class="div-playlists-items" id="div-playlists-items"></div>
+    </div>
 
-    <button onclick="authenticate()">Sign In</button>
-    <button onclick="execute()">Get My Playlists</button>
+    <div class="playlists-container" id="playlists-container" style="display: none;">
+        <div style="display: flex;flex-direction: row;align-items: center;align-items: center;gap: 10px;">
+            <img id="channel-img" class="channel-img">
+            <div id="playlist-author" class="playlist-text-title"></div>
+        </div>
+        <div class="div-playlists" id="div-playlists"></div>
+    </div>
+
+    <iframe src="/nav.html" style="border: none;height: 95px;" class="nav"></iframe>
 </body>
 </html>
