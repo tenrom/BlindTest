@@ -62,9 +62,5 @@ document.getElementById('btn-play').addEventListener('click',()=>{
     document.getElementsByClassName('plyr__control')[1].click()
     player.embed.setVolume(100) 
     document.getElementsByClassName('plyr__control')[0].click()
-
-    setTimeout(()=>{
-        Load('gEmNIXjfu2E')
-    },10000)
 })
 

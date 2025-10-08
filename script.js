@@ -17,13 +17,21 @@ if (window.location.search){
     urlParams = new URLSearchParams('')
 }
 
+window.addEventListener('resize',()=>{
+    document.getElementById('playlist-container').style.width=document.body.clientWidth-16+'px'
+
+    for (let i=0;i<document.getElementsByClassName('playlist-texts-title').length;i++){
+        document.getElementsByClassName('playlist-texts-title')[i].style.width=document.body.clientWidth-16-document.getElementsByClassName('playlist-texts-title')[i].offsetLeft+'px'
+    }
+})
+
 fetch('client_secret.json')
     .then(res => res.json())
     .then(res => {
         
         CLIENT_ID=res["web"]["client_id"]
         CLIENT_SECRET=res['web']['client_secret']
-        // CLIENT_SECRET=''
+        CLIENT_SECRET='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'
 
         TOKEN_URI=res["web"]["token_uri"]
         AUTH_URI=res["web"]["auth_uri"]
@@ -162,6 +170,10 @@ class ytPlaylistItem extends HTMLElement{
         if (this.getAttribute('square')==="true"){
             this.getElementsByClassName('playlist-imgs')[0].style.backgroundSize='cover'
         }
+
+        this.addEventListener('click',()=>{
+            Load(this.getAttribute('ytid'))
+        })
     }
 }
 
@@ -175,7 +187,7 @@ function getPlaylists(channelid='',mine=false,after){
             after(res)
         })
     }else{
-        fetch(`https://youtube.googleapis.com/youtube/v3/playlists?part=snippet&channelId=${channelid}&maxResults=50&access_token=${ACCESS_TOKEN}`).then(res => res.json()).then(res => {
+        fetch(`https://youtube.googleapis.com/youtube/v3/playlists?part=snippet&channelId=${channelid}&maxResults=50&key=${ACCESS_TOKEN}`).then(res => res.json()).then(res => {
             after(res)
         })
     }
@@ -187,7 +199,7 @@ function getPlaylistItems(playlistid,mine=false,after){
             after(res)
         })
     }else{
-        fetch(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=500&playlistId=${playlistid}&access_token=${ACCESS_TOKEN}`).then(res => res.json()).then(res => {
+        fetch(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=500&playlistId=${playlistid}&key=${ACCESS_TOKEN}`).then(res => res.json()).then(res => {
             after(res)
         })
     }
@@ -209,7 +221,7 @@ function ShowPlaylist(json){
         }
 
         html+=`
-            <yt-playlist-item text-author="${j['snippet']['videoOwnerChannelTitle']}" text-title="${j['snippet']['title']}" img='${url}' id='${i}' square='${'true'}'></yt-playlist-item>
+            <yt-playlist-item text-author="${j['snippet']['videoOwnerChannelTitle']}" text-title="${j['snippet']['title']}" img='${url}' id='${i}' square='${'true'}' ytid='${j['snippet']['resourceId']['videoId']}'></yt-playlist-item>
         `
     }
 
@@ -289,7 +301,7 @@ function ShowPlaylist(json){
             p.parentNode.insertBefore(blur,p)
         })
     }else{
-        fetch(`https://youtube.googleapis.com/youtube/v3/playlists?part=snippet&maxResults=500&id=${json['items'][0]['snippet']['playlistId']}&access-token=${ACCESS_TOKEN}`).then(res => res.json()).then(res => {
+        fetch(`https://youtube.googleapis.com/youtube/v3/playlists?part=snippet&maxResults=500&id=${json['items'][0]['snippet']['playlistId']}&key=${ACCESS_TOKEN}`).then(res => res.json()).then(res => {
             document.getElementById('playlist-title-items').innerText=res['items'][0]['snippet']['title']
             document.getElementById('playlist-banner-title').innerText=res['items'][0]['snippet']['title']
             
@@ -350,7 +362,7 @@ function ShowPlaylists(json){
             
         })
     }else{
-        fetch(`https://youtube.googleapis.com/youtube/v3/channels?part=snippet&id=${json['items'][0]['snippet']['channelId']}&access-token=${ACCESS_TOKEN}`).then(res => res.json()).then(res => {
+        fetch(`https://youtube.googleapis.com/youtube/v3/channels?part=snippet&id=${json['items'][0]['snippet']['channelId']}&key=${ACCESS_TOKEN}`).then(res => res.json()).then(res => {
             console.log(res)
             document.getElementById('channel-img').src=res['items'][0]['snippet']['thumbnails']['high']['url']
             
