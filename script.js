@@ -13,17 +13,28 @@ let REFRESH_TOKEN
 let urlParams
 if (window.location.search){
     urlParams = new URLSearchParams(window.location.search);
+
+    if (location.search){
+        if (!location.search.includes('mine')){
+            open(window.location+'&mine=true','_self') 
+        }
+    }
 }else{
     urlParams = new URLSearchParams('')
 }
 
-window.addEventListener('resize',()=>{
+function resize(){
     document.getElementById('playlist-container').style.width=document.body.clientWidth-16+'px'
 
     for (let i=0;i<document.getElementsByClassName('playlist-texts-title').length;i++){
         document.getElementsByClassName('playlist-texts-title')[i].style.width=document.body.clientWidth-16-document.getElementsByClassName('playlist-texts-title')[i].offsetLeft+'px'
     }
+}
+window.addEventListener('resize',()=>{
+    resize()
 })
+
+window.addEventListener('load',resize)
 
 fetch('client_secret.json')
     .then(res => res.json())

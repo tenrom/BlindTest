@@ -1,18 +1,17 @@
 
 function Load(id){
-    player.embed.loadVideoById(id) 
-}
+    player.source = {
+        type: 'video',
+        sources: [{
+            src: id,
+            provider: 'youtube'
+        }]
+    };
 
-function checkVideoData(n) {
-    const videoData = player.embed.getVideoData()
-    if (videoData.author) {
-        document.getElementsByClassName('plyr__control')[1].click()
-    } else {
-        if (n===20){
-            return 0
-        }
-        setTimeout(()=>{checkVideoData(n+1)}, 500)
-    }
+    player.once('ready',()=>{
+        player.embed.setVolume(100) 
+        document.getElementsByClassName('plyr__control')[0].click()
+    })
 }
 
 /////////////////////////////////////////////////////////
@@ -24,23 +23,18 @@ let ytid='KGM_2z4GW-8'
 let adspassed=false
 
 document.getElementById('player').setAttribute('data-plyr-embed-id',ytid)
-const player = new Plyr('#player',{
+let player = new Plyr('#player',{
     muted:false,
     autoplay:false,
     youtube: {
             modestbranding: 1,  // Removes YouTube branding from the player
             rel: 0,              // Prevents showing related videos at the end
+            controls:1,
+            showinfo: 0
     }
 });
 
 window.player = player
-
-
-// Add events
-player.on('ready', () => {
-    player.restart()
-    checkVideoData(0)
-})
 
 player.on('statechange',(e)=>{
     if (e.detail.code===1 && !adspassed){
@@ -58,8 +52,6 @@ player.on('ended',(e)=>{
 })
 
 document.getElementById('btn-play').addEventListener('click',()=>{
-    
-    document.getElementsByClassName('plyr__control')[1].click()
     player.embed.setVolume(100) 
     document.getElementsByClassName('plyr__control')[0].click()
 })
