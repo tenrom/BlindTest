@@ -449,7 +449,8 @@ window.addEventListener('scroll',(e)=>{
 })
 
 
-window.addEventListener('beforeunload',  (e)=>{ 
+window.addEventListener('unload',  (e)=>{ 
     e.preventDefault();
     e.returnValue = ''; 
 })
+
