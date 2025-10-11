@@ -11,8 +11,12 @@ function Load(id){
     player.once('ready',()=>{
         player.embed.setVolume(100) 
         document.getElementsByClassName('plyr__control')[0].click()
+
+        indexMusic=playlistIds.indexOf(id)
     })
 }
+
+let indexMusic
 
 /////////////////////////////////////////////////////////
 // Configure video
@@ -49,6 +53,8 @@ player.on('statechange',(e)=>{
 
 player.on('ended',(e)=>{
     console.log('end')
+    indexMusic++
+    Load(playlistIds[indexMusic])
 })
 
 document.getElementById('btn-play').addEventListener('click',()=>{

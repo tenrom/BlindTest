@@ -1,3 +1,7 @@
+
+let db
+let playlistIds=[]
+
 let CLIENT_ID
 let CLIENT_SECRET
 
@@ -206,11 +210,11 @@ function getPlaylists(channelid='',mine=false,after){
 
 function getPlaylistItems(playlistid,mine=false,after){
     if (mine){
-        fetch(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=500&playlistId=${playlistid}&access_token=${ACCESS_TOKEN}`).then(res => res.json()).then(res => {
+        fetch(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet,status&maxResults=500&playlistId=${playlistid}&access_token=${ACCESS_TOKEN}`).then(res => res.json()).then(res => {
             after(res)
         })
     }else{
-        fetch(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=500&playlistId=${playlistid}&key=${ACCESS_TOKEN}`).then(res => res.json()).then(res => {
+        fetch(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet,status&maxResults=500&playlistId=${playlistid}&key=${ACCESS_TOKEN}`).then(res => res.json()).then(res => {
             after(res)
         })
     }
@@ -219,6 +223,11 @@ function getPlaylistItems(playlistid,mine=false,after){
 
 function ShowPlaylist(json){
     console.log(json)
+    db=json
+    for (let i in json['items']){
+        playlistIds.push(json['items'][i]['snippet']['resourceId']['videoId'])
+    }
+
     document.getElementById('playlist-container').style.display='flex'
 
     let html=''
@@ -449,8 +458,8 @@ window.addEventListener('scroll',(e)=>{
 })
 
 
-window.addEventListener('unload',  (e)=>{ 
+window.addEventListener('pagehide',  (e)=>{ 
+    console.log('hide')
     e.preventDefault();
-    e.returnValue = ''; 
 })
 
