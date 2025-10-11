@@ -60,6 +60,8 @@ player.on('statechange',(e)=>{
 document.getElementById('btn-play').addEventListener('click',()=>{
     player.embed.setVolume(100) 
     document.getElementsByClassName('plyr__control')[0].click()
+
+    updateMediaSessionMetadata();
 })
 
 let currentTime
@@ -102,8 +104,10 @@ if ('mediaSession' in navigator) {
 
     // Update metadata and handle actions when video is played
     player.on('play', function () {
-        updateMediaSessionMetadata();
-        navigator.mediaSession.playbackState = 'playing';    // Update playback state
+        setTimeout(()=>{
+            updateMediaSessionMetadata();
+            navigator.mediaSession.playbackState = 'playing';    // Update playback state
+        },500)
     });
 
     // Update playback state when paused
