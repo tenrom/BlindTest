@@ -55,68 +55,75 @@ player.on('statechange',(e)=>{
     }   
 }) 
 
+player.on('paused',()=>{
+    player.play()
+    navigator.mediaSession.playbackState = 'playing'; 
+})
+
 
 
 document.getElementById('btn-play').addEventListener('click',()=>{
     player.embed.setVolume(100) 
     document.getElementsByClassName('plyr__control')[0].click()
 
-    updateMediaSessionMetadata();
+    // updateMediaSessionMetadata();
 })
 
-let currentTime
-if ('mediaSession' in navigator) {
 
-    function updateMediaSessionMetadata(){
-        if ('mediaSession' in navigator) {
-            navigator.mediaSession.metadata = new MediaMetadata({
-                title: 'Sample Video',
-                artist: 'W3Schools',
-                album: 'HTML5 Media',
-                artwork: [
-                    {
-                        src: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSIjZjAwIiBkPSJtMTAuMjc1IDE2bDUuNTc1LTMuNTc1cS4yMjUtLjE1LjIyNS0uNDI1dC0uMjI1LS40MjVMMTAuMjc1IDhxLS4yNS0uMTc1LS41MTMtLjAyNXQtLjI2Mi40NXY3LjE1cTAgLjMuMjYzLjQ1dC41MTItLjAyNU00IDIwcS0uODI1IDAtMS40MTItLjU4N1QyIDE4VjZxMC0uODI1LjU4OC0xLjQxMlQ0IDRoMTZxLjgyNSAwIDEuNDEzLjU4OFQyMiA2djEycTAgLjgyNS0uNTg3IDEuNDEzVDIwIDIweiIvPjwvc3ZnPg==',
-                        sizes: '96x96',
-                        type: 'image/gif'
-                    }
-                ]
-            });
 
-            navigator.mediaSession.setActionHandler('play', function () {
-                player.play();
-                console.log('Media Play');
-            });
-            navigator.mediaSession.setActionHandler('pause', function () {
-                player.pause();
-                console.log('Media Pause');
-            });
-            navigator.mediaSession.setActionHandler('seekbackward', function () {
-                currentTime -= 10;
-                console.log('Seek Backward');
-            });
-            navigator.mediaSession.setActionHandler('seekforward', function () {
-                currentTime += 10;
-                console.log('Seek Forward');
-            });
-        }
-    }
+// let currentTime
+// if ('mediaSession' in navigator) {
+
+//     function updateMediaSessionMetadata(){
+//         if ('mediaSession' in navigator) {
+//             navigator.mediaSession.metadata = new MediaMetadata({
+//                 title: 'Sample Video',
+//                 artist: 'W3Schools',
+//                 album: 'HTML5 Media',
+//                 artwork: [
+//                     {
+//                         src: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSIjZjAwIiBkPSJtMTAuMjc1IDE2bDUuNTc1LTMuNTc1cS4yMjUtLjE1LjIyNS0uNDI1dC0uMjI1LS40MjVMMTAuMjc1IDhxLS4yNS0uMTc1LS41MTMtLjAyNXQtLjI2Mi40NXY3LjE1cTAgLjMuMjYzLjQ1dC41MTItLjAyNU00IDIwcS0uODI1IDAtMS40MTItLjU4N1QyIDE4VjZxMC0uODI1LjU4OC0xLjQxMlQ0IDRoMTZxLjgyNSAwIDEuNDEzLjU4OFQyMiA2djEycTAgLjgyNS0uNTg3IDEuNDEzVDIwIDIweiIvPjwvc3ZnPg==',
+//                         sizes: '96x96',
+//                         type: 'image/gif'
+//                     }
+//                 ]
+//             });
+
+//             navigator.mediaSession.setActionHandler('play', function () {
+//                 player.play();
+//                 console.log('Media Play');
+//             });
+//             navigator.mediaSession.setActionHandler('pause', function () {
+//                 player.pause();
+//                 console.log('Media Pause');
+//             });
+//             navigator.mediaSession.setActionHandler('seekbackward', function () {
+//                 currentTime -= 10;
+//                 console.log('Seek Backward');
+//             });
+//             navigator.mediaSession.setActionHandler('seekforward', function () {
+//                 currentTime += 10;
+//                 console.log('Seek Forward');
+//             });
+//         }
+//     }
     
 
-    // Update metadata and handle actions when video is played
-    player.on('play', function () {
-        setTimeout(()=>{
-            updateMediaSessionMetadata();
-            navigator.mediaSession.playbackState = 'playing';    // Update playback state
-        },500)
-    });
+//     // Update metadata and handle actions when video is played
+//     player.on('play', function () {
+//         setTimeout(()=>{
+//             updateMediaSessionMetadata();
+//             navigator.mediaSession.playbackState = 'playing';    // Update playback state
+//         },500)
+//     });
 
-    // Update playback state when paused
-    player.on('pause', function () {
-        navigator.mediaSession.playbackState = 'paused';    // Update playback state
-    });
+//     // Update playback state when paused
+//     player.on('pause', function () {
+//         navigator.mediaSession.playbackState = 'paused';    // Update playback state
+//     });
 
-    // Handle ended event (e.g., reset media session)
-    player.on('ended', function () {
-        navigator.mediaSession.playbackState = 'none';    // Reset playback state
-    });
-}
+//     // Handle ended event (e.g., reset media session)
+//     player.on('ended', function () {
+//         navigator.mediaSession.playbackState = 'none';    // Reset playback state
+//     });
+// }
