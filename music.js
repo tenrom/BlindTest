@@ -55,10 +55,10 @@ player.on('statechange',(e)=>{
     }   
 }) 
 
-player.on('paused',()=>{
-    player.play()
-    navigator.mediaSession.playbackState = 'playing'; 
-})
+//player.on('paused',()=>{
+//    player.play()
+//    navigator.mediaSession.playbackState = 'playing'; 
+//})
 
 
 
@@ -126,4 +126,5 @@ document.getElementById('btn-play').addEventListener('click',()=>{
 //     player.on('ended', function () {
 //         navigator.mediaSession.playbackState = 'none';    // Reset playback state
 //     });
+
 // }
