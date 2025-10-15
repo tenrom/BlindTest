@@ -19,6 +19,9 @@ function Load(id){
         console.log('end')
         indexMusic++
         Load(playlistIds[indexMusic%playlistIds.length])
+        if (document.getElementById('mp').style.display!=='none'){
+              document.getElementById('mp').show()
+        }
     })
 }
 
@@ -141,3 +144,4 @@ document.getElementById('btn-play').addEventListener('click',()=>{
 //     });
 
 // }
+
