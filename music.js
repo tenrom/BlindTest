@@ -18,7 +18,7 @@ function Load(id){
     player.once('ended',()=>{
         console.log('end')
         indexMusic++
-        Load(playlistIds[indexMusic])
+        Load(playlistIds[indexMusic%playlistIds.length])
     })
 }
 
@@ -54,6 +54,19 @@ player.on('statechange',(e)=>{
         adspassed=true
     }   
 }) 
+
+function formatTime(t){
+    t=Math.round(t)
+    let h=Math.floor(t/60/60)
+    let m=Math.floor(t/60%60)
+    let s=t%60
+    return (h===0?'':(String(h).length===1?'0'+h:h)+":")+(String(m).length===1?'0'+m:m)+":"+(String(s).length===1?'0'+s:s)
+}
+
+player.on('timeupdate', () => {
+    document.getElementById('mp-slider-bar').style.transform = 'scaleX('+(player.currentTime / player.duration) * 100+'%)'
+    document.getElementById('mp-text-ctime').innerText = formatTime(player.currentTime)
+})
 
 //player.on('paused',()=>{
 //    player.play()

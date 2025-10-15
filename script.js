@@ -187,7 +187,11 @@ class ytPlaylistItem extends HTMLElement{
         }
 
         this.addEventListener('click',()=>{
-            Load(this.getAttribute('ytid'))
+            if (playlistIds[indexMusic]==this.getAttribute('ytid')){
+                document.getElementById('mp').show()
+            }else{
+                Load(this.getAttribute('ytid'))
+            }
         })
     }
 }
@@ -463,3 +467,91 @@ window.addEventListener('pagehide',  (e)=>{
     e.preventDefault();
 })
 
+
+
+class musicPlayer extends HTMLElement{
+    constructor(){
+        super()
+    }
+    show(){
+        document.body.style.overflow='hidden'
+        this.style.display='block'
+
+        let json=db['items'][indexMusic]
+        console.log(document.getElementsByTagName('yt-playlist-item')[indexMusic])
+        document.getElementById('mp-img').style.backgroundImage=`url('${document.getElementsByTagName('yt-playlist-item')[indexMusic].getAttribute('img')}')`
+        document.getElementById('mp-text-title').innerText=document.getElementsByTagName('yt-playlist-item')[indexMusic].getAttribute('text-title')
+        document.getElementById('mp-text-author').innerText=document.getElementsByTagName('yt-playlist-item')[indexMusic].getAttribute('text-author')
+
+        document.getElementById('mp-text-time').innerText=formatTime(player.duration)
+    }
+    hide(){
+        document.body.style.overflow=''
+        this.style.display='none'
+    }
+    connectedCallback(){
+        this.style=`
+        position:fixed;
+        top:0;
+        left:0;
+        z-index:2;
+        width:100%;
+        height:100%;
+        display:none;
+        `
+        
+        
+
+        this.innerHTML=`
+        <canvas class="mp-canvas" id="mp-canvas">
+
+        </canvas>
+        <div class="mp-container">
+            <svg onclick="document.getElementById('mp').hide()" style="color:white;scale:1.3; transform:translateY(-15px);" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m7 10l5 5l5-5"/></svg>
+            <div class="mp-img" id="mp-img"></div>
+            <div class='mp-box'>
+                <h2 class='mp-text-title' id="mp-text-title"></h2>
+                <h2 class='mp-text-author' id="mp-text-author"></h2>
+            </div>
+            <div class='mp-btn-box'>
+                <div class='mp-btn'>
+                    <svg xmlns="http://www.w3.org/2000/svg" style="transform:rotate(180deg);width:40px;" color="white" viewBox="0 0 24 24"><path fill="currentColor" d="M16 18h2V6h-2M6 18l8.5-6L6 6z"/></svg>
+                </div>
+                <div class='mp-btn-center'>
+                    <svg xmlns="http://www.w3.org/2000/svg" style="width:40px;" viewBox="0 0 24 24"><path fill="currentColor" d="M8 5.14v14l11-7z"/></svg>
+                </div>
+                <div class='mp-btn'>
+                    <svg xmlns="http://www.w3.org/2000/svg" style="width:40px;" color="white" viewBox="0 0 24 24"><path fill="currentColor" d="M16 18h2V6h-2M6 18l8.5-6L6 6z"/></svg>
+                </div>
+            </div>
+            <div class="mp-slider-box">
+                <div class="mp-slider">
+                    <div class="mp-slider-bar" id="mp-slider-bar"></div>
+                </div>
+                <div style="display:flex;flex:row;width:100%;justify-content:space-between;margin-top:6px;">
+                    <h2 class="mp-text-ctime" id="mp-text-ctime">0:00</h2>
+                    <h2 class="mp-text-time" id="mp-text-time">2:52</h2>
+                </div>
+            </div>
+
+            <div>
+            </div>
+
+            <h2 class="mp-text-playlist">Test</h2>
+        </div>
+        
+        `
+
+        const canvas = document.getElementById('mp-canvas')
+        const ctx=canvas.getContext('2d')
+        canvas.width=window.innerWidth
+        canvas.height=window.innerHeight
+        
+        ctx.fillStyle = '#000000ff'; // Darker color for contrast
+        ctx.fillRect(0,0,canvas.width,canvas.height)
+    }
+}
+
+
+
+window.customElements.define('yt-music-player',musicPlayer)

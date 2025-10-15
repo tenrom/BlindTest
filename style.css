@@ -19,8 +19,8 @@ body{
     align-items: center;
     gap: 30px;
     padding-top: 40px;
-    margin: 8px;
-    margin-bottom: 78px;
+    padding-bottom: 8px;
+    margin-bottom: 70px;
 }
 
 .playlist-div{
@@ -45,8 +45,8 @@ body{
     align-items: center;
     gap: 30px;
     padding-top: 40px;
-    margin: 8px;
-    margin-bottom: 78px;
+    padding-bottom: 8px;
+    margin-bottom: 70px;
 }
 
 .playlist-img{
@@ -89,6 +89,8 @@ body{
     justify-content: center;
     align-items: center;
     width: 100%;
+    background-color: #000000;
+    padding-left: 8px;
 }
 
 .div-playlists-items{
@@ -97,6 +99,8 @@ body{
     justify-content: center;
     align-items: center;
     width: 100%;
+    background-color: #000000;
+    padding-left: 8px;
 }
 
 
@@ -110,6 +114,7 @@ body{
     border-bottom: solid 1px rgba(255,255,255,0.1);
     height: 57px;
     gap: 16px;
+
 }
 
 .playlist-imgs{
@@ -141,7 +146,7 @@ body{
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    width: calc(100% - 30px);
+    width: calc(100%);
     box-sizing: border-box;
 }
 
@@ -264,3 +269,147 @@ body{
 }
 
 
+.mp-img{
+    height: calc(100vw - 80px);
+    width: calc(100vw - 80px);
+    background-size:cover;
+    background-position: center center;
+    border-radius: 10px;
+    background-repeat: no-repeat;
+}
+
+.mp-canvas{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+.mp-container{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: calc(100% - 80px);
+    height: calc(100% - 80px);
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    /* justify-content: center; */
+    padding: 40px;
+}
+
+.mp-box{
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    gap: 5px;
+}
+
+.mp-text-title{
+    color: white;
+    margin: 0;
+    font-family: "Roboto", sans-serif;
+    font-weight: 500;
+    font-size: 27px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: calc(100%);
+    box-sizing: border-box;
+}
+
+.mp-text-author{
+    color: #aaaaaa;
+    margin: 0;
+    font-family: "Roboto", sans-serif;
+    font-weight: 400;
+    font-size: 17px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: calc(100%);
+    box-sizing: border-box;
+}
+
+.mp-btn-box{
+    margin-top:30px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.mp-btn{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.mp-btn-center{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    border-radius: 100vh;
+    height: 60px;
+    width: 60px;
+}
+
+.mp-slider-box{
+    margin-top: 30px;
+    width: 100%;
+    padding: 10px 0px;
+
+    &:active .mp-slider{
+        transform: scaleY(2);
+    }
+    &:hover .mp-slider{
+        transform: scaleY(2);
+    }
+}
+
+.mp-slider{
+    width: 100%;
+    height:3px;
+    background-color: rgba(255, 255, 255, 35%);
+    border-radius: 100vh;
+    overflow: clip;
+
+}
+
+.mp-slider-bar{
+    height: 100%;
+    background-color: white;
+    transform-origin: left center;
+    transform: scaleX(25%);
+}
+
+.mp-text-ctime{
+    margin: 0;
+    color: #aaaaaa;
+    font-family: "Roboto", sans-serif;
+    font-weight: 400;
+    font-size: 15px;
+}
+.mp-text-time{
+    margin: 0;
+    color: #aaaaaa;
+    font-family: "Roboto", sans-serif;
+    font-weight: 400;
+    font-size: 15px;
+}
+
+.mp-text-playlist{
+    margin: 0;
+    color: white;
+    font-family: "Roboto", sans-serif;
+    font-weight: 400;
+    font-size: 18px;
+    width: 100%;
+    text-align: center;
+}
