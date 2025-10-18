@@ -19,7 +19,7 @@ if (window.location.search){
     urlParams = new URLSearchParams(window.location.search);
 
     if (location.search){
-        if (!location.search.includes('mine')){
+        if (location.search.includes('token') && !location.search.includes('mine')){
             open(window.location+'&mine=true','_self') 
         }
     }
