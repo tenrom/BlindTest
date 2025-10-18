@@ -1,6 +1,6 @@
 
 function Load(id){
-      player.source = {
+    player.source = {
         type: 'video',
         sources: [{
             src: id,
@@ -13,15 +13,14 @@ function Load(id){
         document.getElementsByClassName('plyr__control')[0].click()
 
         indexMusic=playlistIds.indexOf(id)
+
+        document.getElementById('mp').show()
     })
 
     player.once('ended',()=>{
         console.log('end')
         indexMusic++
         Load(playlistIds[indexMusic%playlistIds.length])
-        if (document.getElementById('mp').style.display!=='none'){
-              document.getElementById('mp').show()
-        }
     })
 }
 
@@ -67,8 +66,10 @@ function formatTime(t){
 }
 
 player.on('timeupdate', () => {
-    document.getElementById('mp-slider-bar').style.transform = 'scaleX('+(player.currentTime / player.duration) * 100+'%)'
-    document.getElementById('mp-text-ctime').innerText = formatTime(player.currentTime)
+    if (!isSliding){
+        document.getElementById('mp-slider-bar').style.transform = 'scaleX('+(player.currentTime / player.duration) * 100+'%)'
+        document.getElementById('mp-text-ctime').innerText = formatTime(player.currentTime)
+    }
 })
 
 //player.on('paused',()=>{
@@ -144,4 +145,3 @@ document.getElementById('btn-play').addEventListener('click',()=>{
 //     });
 
 // }
-

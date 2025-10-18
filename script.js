@@ -28,10 +28,16 @@ if (window.location.search){
 }
 
 function resize(){
-    document.getElementById('playlist-container').style.width=document.body.clientWidth-16+'px'
+    document.getElementById('playlist-container').style.width=document.body.clientWidth+'px'
 
     for (let i=0;i<document.getElementsByClassName('playlist-texts-title').length;i++){
-        document.getElementsByClassName('playlist-texts-title')[i].style.width=document.body.clientWidth-16-document.getElementsByClassName('playlist-texts-title')[i].offsetLeft+'px'
+        document.getElementsByClassName('playlist-texts-title')[i].style.width=document.body.clientWidth-24-document.getElementsByClassName('playlist-texts-title')[i].offsetLeft+'px'
+    }
+
+    if (document.getElementById('mp-img').clientHeight*16/9>document.getElementById('mp-img').clientWidth){
+        document.getElementById('mp-img').style.width=document.getElementById('mp-img').clientHeight+'px'
+    }else{
+        document.getElementById('mp-img').style.width=''
     }
 }
 window.addEventListener('resize',()=>{
@@ -468,7 +474,9 @@ window.addEventListener('pagehide',  (e)=>{
 })
 
 
-
+let isclicking=false
+let isSliding=false
+let sliderValue
 class musicPlayer extends HTMLElement{
     constructor(){
         super()
@@ -480,10 +488,26 @@ class musicPlayer extends HTMLElement{
         let json=db['items'][indexMusic]
         console.log(document.getElementsByTagName('yt-playlist-item')[indexMusic])
         document.getElementById('mp-img').style.backgroundImage=`url('${document.getElementsByTagName('yt-playlist-item')[indexMusic].getAttribute('img')}')`
+        if (document.getElementById('mp-img').clientHeight*16/9>document.getElementById('mp-img').clientWidth){
+            document.getElementById('mp-img').style.width=document.getElementById('mp-img').clientWidth
+        }else{
+            document.getElementById('mp-img').style.width=''
+        }
+        
         document.getElementById('mp-text-title').innerText=document.getElementsByTagName('yt-playlist-item')[indexMusic].getAttribute('text-title')
         document.getElementById('mp-text-author').innerText=document.getElementsByTagName('yt-playlist-item')[indexMusic].getAttribute('text-author')
 
         document.getElementById('mp-text-time').innerText=formatTime(player.duration)
+
+        if (document.getElementsByClassName('plyr__control')[0].getAttribute('aria-label')==='Pause'){
+            document.getElementById('mp-btn-play').children[0].style.display='none'
+            document.getElementById('mp-btn-play').children[1].style.display='block'
+        }else{
+            document.getElementById('mp-btn-play').children[0].style.display='block'
+            document.getElementById('mp-btn-play').children[1].style.display='none'
+        }
+
+        document.getElementById('mp-text-playlist').innerText=document.getElementById('playlist-title-items').innerText
     }
     hide(){
         document.body.style.overflow=''
@@ -498,6 +522,7 @@ class musicPlayer extends HTMLElement{
         width:100%;
         height:100%;
         display:none;
+        user-select:none;
         `
         
         
@@ -507,37 +532,37 @@ class musicPlayer extends HTMLElement{
 
         </canvas>
         <div class="mp-container">
-            <svg onclick="document.getElementById('mp').hide()" style="color:white;scale:1.3; transform:translateY(-15px);" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m7 10l5 5l5-5"/></svg>
+            <svg onclick="document.getElementById('mp').hide()" style="color:white;scale:1.3; transform:translateY(-15px);flex-shrink:0;" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m7 10l5 5l5-5"/></svg>
             <div class="mp-img" id="mp-img"></div>
             <div class='mp-box'>
                 <h2 class='mp-text-title' id="mp-text-title"></h2>
                 <h2 class='mp-text-author' id="mp-text-author"></h2>
             </div>
             <div class='mp-btn-box'>
-                <div class='mp-btn'>
+                <div class='mp-btn' id="mp-btn-before">
                     <svg xmlns="http://www.w3.org/2000/svg" style="transform:rotate(180deg);width:40px;" color="white" viewBox="0 0 24 24"><path fill="currentColor" d="M16 18h2V6h-2M6 18l8.5-6L6 6z"/></svg>
                 </div>
-                <div class='mp-btn-center'>
+                <div class='mp-btn-center' id="mp-btn-play">
                     <svg xmlns="http://www.w3.org/2000/svg" style="width:40px;" viewBox="0 0 24 24"><path fill="currentColor" d="M8 5.14v14l11-7z"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" style="width:40px;display:none;" viewBox="0 0 24 24"><path fill="currentColor" d="M14 19h4V5h-4M6 19h4V5H6z"/></svg>
                 </div>
-                <div class='mp-btn'>
+                <div class='mp-btn' id="mp-btn-after"'>
                     <svg xmlns="http://www.w3.org/2000/svg" style="width:40px;" color="white" viewBox="0 0 24 24"><path fill="currentColor" d="M16 18h2V6h-2M6 18l8.5-6L6 6z"/></svg>
                 </div>
             </div>
-            <div class="mp-slider-box">
-                <div class="mp-slider">
+            <div class="mp-slider-box" id="mp-slider-box">
+                <div class="mp-slider" id='mp-slider'>
                     <div class="mp-slider-bar" id="mp-slider-bar"></div>
                 </div>
-                <div style="display:flex;flex:row;width:100%;justify-content:space-between;margin-top:6px;">
+                <div style="display:flex;flex-direction:row;width:100%;justify-content:space-between;margin-top:8px;">
                     <h2 class="mp-text-ctime" id="mp-text-ctime">0:00</h2>
                     <h2 class="mp-text-time" id="mp-text-time">2:52</h2>
                 </div>
             </div>
+            <div class="mp-playlist-bar"></div>
 
-            <div>
-            </div>
-
-            <h2 class="mp-text-playlist">Test</h2>
+            <h2 class="mp-text-playlist" id="mp-text-playlist"></h2>
+            
         </div>
         
         `
@@ -549,9 +574,98 @@ class musicPlayer extends HTMLElement{
         
         ctx.fillStyle = '#000000ff'; // Darker color for contrast
         ctx.fillRect(0,0,canvas.width,canvas.height)
+
+        document.getElementById('mp-btn-before').addEventListener('click',()=>{
+            indexMusic--
+            Load(playlistIds[indexMusic%playlistIds.length])
+        })
+
+        document.getElementById('mp-btn-play').addEventListener('click',()=>{
+            if (document.getElementsByClassName('plyr__control')[0].getAttribute('aria-label')==='Play'){
+                document.getElementById('mp-btn-play').children[0].style.display='none'
+                document.getElementById('mp-btn-play').children[1].style.display='block'
+            }else{
+                document.getElementById('mp-btn-play').children[0].style.display='block'
+                document.getElementById('mp-btn-play').children[1].style.display='none'
+            }
+
+            player.embed.setVolume(100)
+            document.getElementsByClassName('plyr__control')[0].click()
+            
+        })
+
+        document.getElementById('mp-btn-after').addEventListener('click',()=>{
+            indexMusic++
+            Load(playlistIds[indexMusic%playlistIds.length])
+        })
+        
+        
+        
+        document.getElementById('mp-slider-box').addEventListener('mousedown',(e)=>{
+            isclicking=true
+            isSliding=true
+            sliderValue=(e.clientX-document.getElementById('mp-slider').offsetLeft)/document.getElementById('mp-slider').clientWidth * player.duration
+            sliderValue=Math.max(Math.min(sliderValue,player.duration),0)
+            document.getElementById('mp-slider-bar').style.transform = 'scaleX('+(sliderValue / player.duration) * 100+'%)'
+            document.getElementById('mp-text-ctime').innerText = formatTime(sliderValue)
+        })
+        document.getElementById('mp-slider-box').addEventListener('touchstart',(e)=>{
+            isclicking=true
+            isSliding=true
+            sliderValue=(e.changedTouches[0].clientX-document.getElementById('mp-slider').offsetLeft)/document.getElementById('mp-slider').clientWidth * player.duration
+            sliderValue=Math.max(Math.min(sliderValue,player.duration),0)
+            document.getElementById('mp-slider-bar').style.transform = 'scaleX('+(sliderValue / player.duration) * 100+'%)'
+            document.getElementById('mp-text-ctime').innerText = formatTime(sliderValue)
+            document.getElementById('mp-text-time').style.color = 'white'
+            document.getElementById('mp-text-ctime').style.color = 'white'
+            document.getElementById('mp-slider').style.height = '9px'
+        })
     }
 }
 
 
-
 window.customElements.define('yt-music-player',musicPlayer)
+
+document.addEventListener('mousemove',(e)=>{
+    if (isclicking){
+        sliderValue=(e.clientX-document.getElementById('mp-slider').offsetLeft)/document.getElementById('mp-slider').clientWidth * player.duration
+        sliderValue=Math.max(Math.min(sliderValue,player.duration),0)
+        document.getElementById('mp-slider-bar').style.transform = 'scaleX('+(sliderValue / player.duration) * 100+'%)'
+        document.getElementById('mp-text-ctime').innerText = formatTime(sliderValue)
+    }
+})
+
+document.addEventListener('mouseup',(e)=>{
+    if (isclicking){
+        player.embed.seekTo(sliderValue)
+        isclicking=false
+
+        player.once('statechange',()=>{
+            isSliding=false
+        })
+    }
+})
+
+document.addEventListener('touchmove',(e)=>{
+    if (isclicking){
+        sliderValue=(e.changedTouches[0].clientX-document.getElementById('mp-slider').offsetLeft)/document.getElementById('mp-slider').clientWidth * player.duration
+        sliderValue=Math.max(Math.min(sliderValue,player.duration),0)
+        document.getElementById('mp-slider-bar').style.transform = 'scaleX('+(sliderValue / player.duration) * 100+'%)'
+        document.getElementById('mp-text-ctime').innerText = formatTime(sliderValue)
+    }
+})
+
+document.addEventListener('touchend',(e)=>{
+    if (isclicking){
+        player.embed.seekTo(sliderValue)
+        isclicking=false
+
+        document.getElementById('mp-text-time').style.color = ''
+        document.getElementById('mp-text-ctime').style.color = ''
+        document.getElementById('mp-slider').style.height = ''
+
+        player.once('statechange',()=>{
+            isSliding=false
+        })
+    }
+})

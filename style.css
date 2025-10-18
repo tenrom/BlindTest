@@ -19,7 +19,7 @@ body{
     align-items: center;
     gap: 30px;
     padding-top: 40px;
-    padding-bottom: 8px;
+    padding-bottom: 12px;
     margin-bottom: 70px;
 }
 
@@ -37,7 +37,7 @@ body{
 }
 
 .playlist-container{
-    width: calc(100% - 16px);
+    width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -45,7 +45,7 @@ body{
     align-items: center;
     gap: 30px;
     padding-top: 40px;
-    padding-bottom: 8px;
+    padding-bottom: 12px;
     margin-bottom: 70px;
 }
 
@@ -90,7 +90,7 @@ body{
     align-items: center;
     width: 100%;
     background-color: #000000;
-    padding-left: 8px;
+    padding-left: 12px;
 }
 
 .div-playlists-items{
@@ -100,7 +100,7 @@ body{
     align-items: center;
     width: 100%;
     background-color: #000000;
-    padding-left: 8px;
+    padding-left: 12px;
 }
 
 
@@ -276,6 +276,7 @@ body{
     background-position: center center;
     border-radius: 10px;
     background-repeat: no-repeat;
+    /* align-self: center; */
 }
 
 .mp-canvas{
@@ -291,12 +292,13 @@ body{
     top: 0;
     left: 0;
     width: calc(100% - 80px);
-    height: calc(100% - 80px);
+    height: calc(100% - 40px - 90px);
     z-index: 2;
     display: flex;
     flex-direction: column;
     /* justify-content: center; */
     padding: 40px;
+    padding-bottom: calc(40px + 50px);
 }
 
 .mp-box{
@@ -364,12 +366,20 @@ body{
     margin-top: 30px;
     width: 100%;
     padding: 10px 0px;
+}
 
-    &:active .mp-slider{
-        transform: scaleY(2);
+@media (pointer: fine) {
+    .mp-slider-box:active .mp-slider{
+        height: 9px;
     }
-    &:hover .mp-slider{
-        transform: scaleY(2);
+    .mp-slider-box:hover .mp-slider{
+        height: 9px;
+    }
+    &:hover .mp-text-time{
+        color: white;
+    }
+    &:hover .mp-text-ctime{
+        color: white;
     }
 }
 
@@ -377,9 +387,10 @@ body{
     width: 100%;
     height:3px;
     background-color: rgba(255, 255, 255, 35%);
-    border-radius: 100vh;
+    border-radius: 8vmin;
     overflow: clip;
-
+    transition: height 150ms;
+    transform-origin: center;
 }
 
 .mp-slider-bar{
@@ -395,6 +406,7 @@ body{
     font-family: "Roboto", sans-serif;
     font-weight: 400;
     font-size: 15px;
+    transition: color 150ms;
 }
 .mp-text-time{
     margin: 0;
@@ -402,6 +414,17 @@ body{
     font-family: "Roboto", sans-serif;
     font-weight: 400;
     font-size: 15px;
+    transition: color 150ms;
+}
+
+.mp-playlist-bar{
+    width: 40px;
+    height: 3px;
+    border-radius: 50vh;
+    background-color: #5e5e5e;
+    align-self: center;
+    position: absolute;
+    bottom: 75px;
 }
 
 .mp-text-playlist{
@@ -412,4 +435,7 @@ body{
     font-size: 18px;
     width: 100%;
     text-align: center;
+    position: absolute;
+    bottom: 40px;
+    left: 0;
 }
