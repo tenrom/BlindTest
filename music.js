@@ -20,7 +20,9 @@ function Load(id){
     player.once('ended',()=>{
         console.log('end')
         indexMusic++
-        Load(playlistIds[indexMusic%playlistIds.length])
+        setTimeout(()=>{
+            Load(playlistIds[indexMusic%playlistIds.length])
+        },100)
     })
 }
 
@@ -145,3 +147,42 @@ document.getElementById('btn-play').addEventListener('click',()=>{
 //     });
 
 // }
+
+if ('mediaSession' in navigator) {
+  // 1. Set the playback state to 'playing' or 'paused' to let the OS know
+  // it should route media control events to your page.
+  navigator.mediaSession.playbackState = 'playing';
+
+  // 2. Define the action handlers
+  try {
+    navigator.mediaSession.setActionHandler('play', () => {
+      // Logic for playing the audio/video
+      console.log('▶️ Headset Play button pressed.');
+      // Example: audioElement.play();
+      navigator.mediaSession.playbackState = 'playing';
+    });
+  } catch (error) {
+    console.log(`The play action is not supported: ${error}`);
+  }
+
+  try {
+    navigator.mediaSession.setActionHandler('pause', () => {
+      // Logic for pausing the audio/video
+      console.log('⏸️ Headset Pause button pressed.');
+      // Example: audioElement.pause();
+      navigator.mediaSession.playbackState = 'paused';
+    });
+  } catch (error) {
+    console.log(`The pause action is not supported: ${error}`);
+  }
+
+  try {
+    navigator.mediaSession.setActionHandler('nexttrack', () => {
+      // Logic for skipping to the next track/item
+      console.log('⏭️ Headset Next Track button pressed (Double-click).');
+      // Example: playNextTrack();
+    });
+  } catch (error) {
+    console.log(`The nexttrack action is not supported: ${error}`);
+  }
+}

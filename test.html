@@ -1,168 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Media Session Priority Hack Example</title>
-    <style>
-        body {
-            font-family: sans-serif;
-            padding: 20px;
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        #priority-audio {
-            /* Keep the hack element hidden */
-            display: none;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mouse-Controlled Animation</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #f0f0f0;
+      overflow: hidden;
+    }
+    
+    .animated-element {
+      width: 100px;
+      height: 100px;
+      background-color: #3498db;
+      border-radius: 10px;
+      transition: transform 0.2s ease;
+    }
+  </style>
 </head>
 <body>
+  <div class="animated-element"></div>
 
-    <h1>Your Custom Media Player</h1>
-    <button id="playPauseButton">Play Custom Audio</button>
-    <p>Status: <span id="status">Paused</span></p>
+  <script>
+    const element = document.querySelector('.animated-element');
+    let lastMouseY = 0;
 
-    <audio id="priority-audio" src="5-seconds-of-silence.mp3" preload="auto"></audio>
-
-    <hr>
-
-    <h2>YouTube Embedded Video</h2>
-    <iframe width="560" height="315" 
-        src="https://www.youtube.com/embed/Bfc3HXQqoaM?enablejsapi=1" 
-        title="YouTube video player" 
-        frameborder="0" 
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-        referrerpolicy="strict-origin-when-cross-origin" 
-        allowfullscreen>
-    </iframe>
-
-    <script>
-        // --- Custom Media Player State (Simplified) ---
-        let isCustomMediaPlaying = false;
-        const statusElement = document.getElementById('status');
-        const playPauseButton = document.getElementById('playPauseButton');
-
-        // --- The Hack Element ---
-        const dummyAudio = document.getElementById('priority-audio');
-
-        // --- Helper Functions ---
-
-        /**
-         * Updates the custom player's state.
-         * @param {boolean} isPlaying 
-         */
-        function toggleCustomMedia(isPlaying) {
-            isCustomMediaPlaying = isPlaying;
-            statusElement.textContent = isPlaying ? 'Playing Custom Audio' : 'Paused';
-            playPauseButton.textContent = isPlaying ? 'Pause Custom Audio' : 'Play Custom Audio';
-            
-            // Always call the Media Session update when state changes
-            updateMediaSession();
-        }
-
-        /**
-         * The core of the hack: call this to force priority back to the main page.
-         * It plays and immediately pauses the silent audio element.
-         */
-        function reclaimMediaSessionPriority() {
-            if (!dummyAudio.src || dummyAudio.src.includes('silent.mp3')) {
-                 console.error("Dummy audio source is not set or is still the placeholder. The hack may not work.");
-            }
-            
-            console.log("Attempting to reclaim media session priority...");
-            
-            // A. Play the silent audio (forces focus)
-            dummyAudio.play()
-                .then(() => {
-                    // B. Immediately pause it (stops the silent sound)
-                    dummyAudio.pause();
-                    console.log("Priority should be restored to main session.");
-                    
-                    // C. After reclaiming, update the media session to reflect the custom player's state
-                    updateMediaSession();
-                })
-                .catch(error => {
-                    // This often fails if the user hasn't interacted with the page yet.
-                    console.warn("Failed to play dummy audio (required for priority hack). Ensure a user gesture has occurred.", error);
-                });
-        }
-
-
-        // --- Media Session API Implementation ---
-
-        /**
-         * Sets up the Media Session handlers and metadata for your custom player.
-         */
-        function updateMediaSession() {
-            if (!('mediaSession' in navigator)) {
-                 console.warn("Media Session API not supported in this browser.");
-                 return;
-            }
-            
-            // 1. Set Metadata (what appears on the lock screen/notification)
-            navigator.mediaSession.metadata = new MediaMetadata({
-                title: 'My Awesome Track',
-                artist: 'My Web App',
-                album: 'My Playlist Name',
-                artwork: [
-                    // Note: Artwork URLs must be served over HTTPS and be accessible
-                    { src: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSIjZjAwIiBkPSJtMTAuMjc1IDE2bDUuNTc1LTMuNTc1cS4yMjUtLjE1LjIyNS0uNDI1dC0uMjI1LS40MjVMMTAuMjc1IDhxLS4yNS0uMTc1LS41MTMtLjAyNXQtLjI2Mi40NXY3LjE1cTAgLjMuMjYzLjQ1dC41MTItLjAyNU00IDIwcS0uODI1IDAtMS40MTItLjU4N1QyIDE4VjZxMC0uODI1LjU4OC0xLjQxMlQ0IDRoMTZxLjgyNSAwIDEuNDEzLjU4OFQyMiA2djEycTAgLjgyNS0uNTg3IDEuNDEzVDIwIDIweiIvPjwvc3ZnPg==',type: 'image/svg' },
-                ]
-            });
-
-            // 2. Set Play/Pause Handlers
-            
-            navigator.mediaSession.setActionHandler('play', () => {
-                console.log('Media Session: Play pressed (via system controls)');
-                // Reclaim priority and then play our media
-                reclaimMediaSessionPriority(); 
-                toggleCustomMedia(true);
-            });
-
-            navigator.mediaSession.setActionHandler('pause', () => {
-                console.log('Media Session: Pause pressed (via system controls)');
-                toggleCustomMedia(false);
-                
-                // Keep priority by forcing the session to update again
-                reclaimMediaSessionPriority(); 
-            });
-
-            // 3. Set Other Handlers (Example)
-            navigator.mediaSession.setActionHandler('nexttrack', () => {
-                console.log('Media Session: Next Track pressed');
-                // Your logic to load the next track goes here
-                reclaimMediaSessionPriority(); 
-            });
-            
-            // Clear unwanted handlers (optional but good practice)
-            navigator.mediaSession.setActionHandler('previoustrack', null);
-            navigator.mediaSession.setActionHandler('stop', null);
-            
-            // 4. Update the Playback State (The "Status" shown to the system)
-            navigator.mediaSession.playbackState = isCustomMediaPlaying ? "playing" : "paused";
-        }
-
-
-        // --- Event Listeners and Initialization ---
-
-        // 1. Initial setup of the media session
-        updateMediaSession(); 
-
-        // 2. Button click handler
-        playPauseButton.addEventListener('click', () => {
-            const newState = !isCustomMediaPlaying;
-            
-            // A user click is the best time to run the priority hack
-            reclaimMediaSessionPriority(); 
-
-            // Apply the state change
-            toggleCustomMedia(newState);
-        });
-    </script>
-
+    document.addEventListener('mousemove', (e) => {
+      const mouseY = e.clientY;
+      
+      if (mouseY > lastMouseY) {
+        // Mouse moved down: move element down
+        element.style.transform = 'translateY(200px)';
+      } else if (mouseY < lastMouseY) {
+        // Mouse moved up: move element up
+        element.style.transform = 'translateY(-200px)';
+      }
+      
+      // Update last mouse position
+      lastMouseY = mouseY;
+    });
+  </script>
 </body>
 </html>

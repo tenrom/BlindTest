@@ -36,13 +36,13 @@ function resize(){
 
     if (document.getElementById('mp-img').clientHeight*16/9>document.getElementById('mp-img').clientWidth){
         document.getElementById('mp-img').style.width=document.getElementById('mp-img').clientHeight+'px'
-    }else{
-        document.getElementById('mp-img').style.width=''
+        document.getElementById('mp-img').style.alignSelf='center'
     }
 }
 window.addEventListener('resize',()=>{
     resize()
 })
+
 
 window.addEventListener('load',resize)
 
@@ -474,25 +474,90 @@ window.addEventListener('pagehide',  (e)=>{
 })
 
 
+
 let isclicking=false
 let isSliding=false
 let sliderValue
+
+let isclickingMp=false
+let offsetXMp
+let valueXMp
+let spline=BezierEasing.css["ease-in"]
+let Inversespline=BezierEasing(0, 0.42, 1, 1)
+
+let t
+let duration=500
+let startAlpha
+let reverse
+
+function animate(){
+    let time=performance.now()
+    let ti=time-t+(Inversespline(startAlpha)*duration)
+
+    if (ti<=duration){
+        
+        let a=ti/duration
+        if (reverse){a=1-a}
+        document.getElementById('mp').animState(spline(a))
+        console.log(spline(ti/duration)*100)
+        requestAnimationFrame(animate)
+    }else{
+        let a=1
+        if (reverse){a=1-a}
+        document.getElementById('mp').animState(a)
+    }
+}
 class musicPlayer extends HTMLElement{
     constructor(){
         super()
     }
+    startAnim(dura,re,a){
+        t=performance.now()
+        duration=dura
+        startAlpha=a
+        reverse=re
+        animate(duration)
+    }
+    animState(a){
+        this.style.transform='translateY('+a*100+'%)'
+        let opa=1-(a*4)
+        for (let i=0;i< document.getElementById('mp-container').children.length;i++){
+            document.getElementById('mp-container').children[i].style.opacity=opa
+            if (i!==0){
+                document.getElementById('mp-container').children[i].style.transform='translateY(-'+a*250+'px)'
+            }
+        }
+        
+        let scale=(1-a)*(40/document.getElementById('mp-img').clientHeight+1)
+        scale=Math.max(Math.min(scale,1),0)
+        document.getElementById('mp-img').style.transform='translateY(-'+a*64+'px) scale('+scale+')'
+        document.getElementById('mp-img').style.opacity=1
+
+        if (a===1){
+            this.style.display='none'
+            document.body.style.overflow=''
+        }else{
+            this.style.display='block'
+            document.body.style.overflow='hidden'
+        }
+
+        if (a===0 && reverse){
+            document.getElementById('mp').style.pointerEvents=''
+        }
+    }
     show(){
+        
         document.body.style.overflow='hidden'
         this.style.display='block'
-
+        this.startAnim(duration,true,0)
+        this.style.pointerEvents=''
+        
         let json=db['items'][indexMusic]
         console.log(document.getElementsByTagName('yt-playlist-item')[indexMusic])
         document.getElementById('mp-img').style.backgroundImage=`url('${document.getElementsByTagName('yt-playlist-item')[indexMusic].getAttribute('img')}')`
-        if (document.getElementById('mp-img').clientHeight*16/9>document.getElementById('mp-img').clientWidth){
-            document.getElementById('mp-img').style.width=document.getElementById('mp-img').clientWidth
-        }else{
-            document.getElementById('mp-img').style.width=''
-        }
+        
+        setTimeout(()=>{document.getElementById('mp-img').style.width=document.getElementById('mp-img').clientHeight+'px'},10)
+        
         
         document.getElementById('mp-text-title').innerText=document.getElementsByTagName('yt-playlist-item')[indexMusic].getAttribute('text-title')
         document.getElementById('mp-text-author').innerText=document.getElementsByTagName('yt-playlist-item')[indexMusic].getAttribute('text-author')
@@ -511,27 +576,20 @@ class musicPlayer extends HTMLElement{
     }
     hide(){
         document.body.style.overflow=''
-        this.style.display='none'
+        this.startAnim(duration,false,0)
+        this.style.pointerEvents='none'
+        setTimeout(() => {
+            this.style.display='none'
+        }, duration);
+        
     }
     connectedCallback(){
-        this.style=`
-        position:fixed;
-        top:0;
-        left:0;
-        z-index:2;
-        width:100%;
-        height:100%;
-        display:none;
-        user-select:none;
-        `
-        
-        
+        this.classList.add('mp')
 
         this.innerHTML=`
-        <canvas class="mp-canvas" id="mp-canvas">
+        <canvas class="mp-canvas" id="mp-canvas"></canvas>
 
-        </canvas>
-        <div class="mp-container">
+        <div class="mp-container" id="mp-container">
             <svg onclick="document.getElementById('mp').hide()" style="color:white;scale:1.3; transform:translateY(-15px);flex-shrink:0;" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m7 10l5 5l5-5"/></svg>
             <div class="mp-img" id="mp-img"></div>
             <div class='mp-box'>
@@ -559,11 +617,12 @@ class musicPlayer extends HTMLElement{
                     <h2 class="mp-text-time" id="mp-text-time">2:52</h2>
                 </div>
             </div>
-            <div class="mp-playlist-bar"></div>
-
-            <h2 class="mp-text-playlist" id="mp-text-playlist"></h2>
+            
             
         </div>
+
+        <div class="mp-playlist-bar"></div>
+        <h2 class="mp-text-playlist" id="mp-text-playlist"></h2>
         
         `
 
@@ -620,6 +679,26 @@ class musicPlayer extends HTMLElement{
             document.getElementById('mp-text-ctime').style.color = 'white'
             document.getElementById('mp-slider').style.height = '9px'
         })
+
+        document.getElementById('mp').addEventListener('mousedown',(e)=>{
+            if (!isclicking){
+                isclickingMp=true
+                offsetXMp=e.clientY
+                valueXMp=(e.clientY-offsetXMp)/document.getElementById('mp').clientHeight
+                valueXMp=Math.max(Math.min(valueXMp,1),0)
+                console.log(valueXMp)
+            }
+        })
+
+        document.getElementById('mp').addEventListener('touchstart',(e)=>{
+            if (!isclicking){
+                isclickingMp=true
+                offsetXMp=e.changedTouches[0].clientY
+                valueXMp=(e.changedTouches[0].clientY-offsetXMp)/document.getElementById('mp').clientHeight
+                valueXMp=Math.max(Math.min(valueXMp,1),0)
+                console.log(valueXMp)
+            }
+        })
     }
 }
 
@@ -632,6 +711,14 @@ document.addEventListener('mousemove',(e)=>{
         sliderValue=Math.max(Math.min(sliderValue,player.duration),0)
         document.getElementById('mp-slider-bar').style.transform = 'scaleX('+(sliderValue / player.duration) * 100+'%)'
         document.getElementById('mp-text-ctime').innerText = formatTime(sliderValue)
+    }else{
+        if (isclickingMp){
+            valueXMp=(e.clientY-offsetXMp)/document.getElementById('mp').clientHeight
+            valueXMp=Math.max(Math.min(valueXMp,1),0)
+            console.log(valueXMp)
+
+            document.getElementById('mp').animState(valueXMp)
+        }
     }
 })
 
@@ -643,6 +730,19 @@ document.addEventListener('mouseup',(e)=>{
         player.once('statechange',()=>{
             isSliding=false
         })
+    }else{
+        if (isclickingMp){
+            isclickingMp=false
+            document.getElementById('mp').style.pointerEvents='none'
+            valueXMp=(e.clientY-offsetXMp)/document.getElementById('mp').clientHeight
+            valueXMp=Math.max(Math.min(valueXMp,1),0)
+
+            if (valueXMp>0.1){
+                document.getElementById('mp').startAnim(duration,false,valueXMp)
+            }else{
+                document.getElementById('mp').startAnim(duration,true,1-valueXMp)
+            }   
+        }
     }
 })
 
@@ -652,6 +752,14 @@ document.addEventListener('touchmove',(e)=>{
         sliderValue=Math.max(Math.min(sliderValue,player.duration),0)
         document.getElementById('mp-slider-bar').style.transform = 'scaleX('+(sliderValue / player.duration) * 100+'%)'
         document.getElementById('mp-text-ctime').innerText = formatTime(sliderValue)
+    }else{
+        if (isclickingMp){
+            valueXMp=(e.changedTouches[0].clientY-offsetXMp)/document.getElementById('mp').clientHeight
+            valueXMp=Math.max(Math.min(valueXMp,1),0)
+            console.log(valueXMp)
+
+            document.getElementById('mp').animState(valueXMp)
+        }
     }
 })
 
@@ -667,5 +775,18 @@ document.addEventListener('touchend',(e)=>{
         player.once('statechange',()=>{
             isSliding=false
         })
+    }else{
+        if (isclickingMp){
+            isclickingMp=false
+            document.getElementById('mp').style.pointerEvents='none'
+            valueXMp=(e.changedTouches[0].clientY-offsetXMp)/document.getElementById('mp').clientHeight
+            valueXMp=Math.max(Math.min(valueXMp,1),0)
+
+            if (valueXMp>0.1){
+                document.getElementById('mp').startAnim(duration,false,valueXMp)
+            }else{
+                document.getElementById('mp').startAnim(duration,true,1-valueXMp)
+            }   
+        }
     }
 })
