@@ -38,9 +38,21 @@ function resize(){
         document.getElementById('mp-img').style.width=document.getElementById('mp-img').clientHeight+'px'
         document.getElementById('mp-img').style.alignSelf='center'
     }
+
+    // if (issmall){
+    //     document.getElementById('mp').style.transform='translateY('+(document.getElementById('mp').clientHeight-110-(20))+'px)'
+    // }
+
 }
 window.addEventListener('resize',()=>{
     resize()
+})
+
+document.addEventListener('sco',()=>{
+    
+    if (issmall){
+        document.getElementById('mp').style.transform='translateY('+(document.getElementById('mp').clientHeight-110-(20))+'px)'
+    }
 })
 
 
@@ -484,6 +496,7 @@ let offsetXMp
 let valueXMp
 let spline=BezierEasing.css["ease-in"]
 let Inversespline=BezierEasing(0, 0.42, 1, 1)
+let issmall=false
 
 let t
 let duration=500
@@ -499,7 +512,6 @@ function animate(){
         let a=ti/duration
         if (reverse){a=1-a}
         document.getElementById('mp').animState(spline(a))
-        console.log(spline(ti/duration)*100)
         requestAnimationFrame(animate)
     }else{
         let a=1
@@ -519,7 +531,10 @@ class musicPlayer extends HTMLElement{
         animate(duration)
     }
     animState(a){
-        this.style.transform='translateY('+a*100+'%)'
+        const lerp = (x, y, a) => x * (1 - a) + y * a;
+        const clamp = (a, min = 0, max = 1) => Math.min(max, Math.max(min, a));
+
+        this.style.transform='translateY('+clamp((a*this.clientHeight),0,this.clientHeight-110-(20))+'px)'
         let opa=1-(a*4)
         for (let i=0;i< document.getElementById('mp-container').children.length;i++){
             document.getElementById('mp-container').children[i].style.opacity=opa
@@ -528,17 +543,39 @@ class musicPlayer extends HTMLElement{
             }
         }
         
-        let scale=(1-a)*(40/document.getElementById('mp-img').clientHeight+1)
-        scale=Math.max(Math.min(scale,1),0)
-        document.getElementById('mp-img').style.transform='translateY(-'+a*64+'px) scale('+scale+')'
+        let scale=(1-clamp(a*1.05))
+        scale=clamp(scale,40/document.getElementById('mp-img').clientHeight,1)
+        document.getElementById('mp-img').style.transform='translateY(-'+(clamp(a*1.5)*(64-10))+'px) scale('+scale+')'
         document.getElementById('mp-img').style.opacity=1
 
+        
+        document.getElementById('mp-img').style.borderRadius=lerp(10,document.getElementById('mp-img').clientHeight/8,a)+"px"
+
+        document.getElementById('nav').style.transform='translateY('+(clamp(1-a-0.5)*document.getElementById('nav').clientHeight*2)+'px)'
+
+
+        const canvas = document.getElementById('mp-canvas')
+        const ctx=canvas.getContext('2d')
+        
         if (a===1){
-            this.style.display='none'
+            ctx.fillStyle = '#212121ff'; // Darker color for contrast
+            // ctx.fillStyle = '#ff0000ff'; // Darker color for contrast
+            ctx.fillRect(0,0,canvas.width,canvas.height)
+
             document.body.style.overflow=''
+            this.style.pointerEvents=''
+
+            issmall=true
+
         }else{
+            ctx.fillStyle = '#000000ff'; // Darker color for contrast
+            ctx.fillRect(0,0,canvas.width,canvas.height)
+            
             this.style.display='block'
             document.body.style.overflow='hidden'
+
+            issmall=false
+            
         }
 
         if (a===0 && reverse){
@@ -553,7 +590,6 @@ class musicPlayer extends HTMLElement{
         this.style.pointerEvents=''
         
         let json=db['items'][indexMusic]
-        console.log(document.getElementsByTagName('yt-playlist-item')[indexMusic])
         document.getElementById('mp-img').style.backgroundImage=`url('${document.getElementsByTagName('yt-playlist-item')[indexMusic].getAttribute('img')}')`
         
         setTimeout(()=>{document.getElementById('mp-img').style.width=document.getElementById('mp-img').clientHeight+'px'},10)
@@ -573,15 +609,13 @@ class musicPlayer extends HTMLElement{
         }
 
         document.getElementById('mp-text-playlist').innerText=document.getElementById('playlist-title-items').innerText
+
+        document.getElementById('playlist-container').style.paddingBottom='72px'
     }
     hide(){
         document.body.style.overflow=''
         this.startAnim(duration,false,0)
         this.style.pointerEvents='none'
-        setTimeout(() => {
-            this.style.display='none'
-        }, duration);
-        
     }
     connectedCallback(){
         this.classList.add('mp')
@@ -663,7 +697,7 @@ class musicPlayer extends HTMLElement{
         document.getElementById('mp-slider-box').addEventListener('mousedown',(e)=>{
             isclicking=true
             isSliding=true
-            sliderValue=(e.clientX-document.getElementById('mp-slider').offsetLeft)/document.getElementById('mp-slider').clientWidth * player.duration
+            sliderValue=(e.clientX-document.getElementById('mp-slider').getBoundingClientRect().x)/document.getElementById('mp-slider').clientWidth * player.duration
             sliderValue=Math.max(Math.min(sliderValue,player.duration),0)
             document.getElementById('mp-slider-bar').style.transform = 'scaleX('+(sliderValue / player.duration) * 100+'%)'
             document.getElementById('mp-text-ctime').innerText = formatTime(sliderValue)
@@ -671,7 +705,7 @@ class musicPlayer extends HTMLElement{
         document.getElementById('mp-slider-box').addEventListener('touchstart',(e)=>{
             isclicking=true
             isSliding=true
-            sliderValue=(e.changedTouches[0].clientX-document.getElementById('mp-slider').offsetLeft)/document.getElementById('mp-slider').clientWidth * player.duration
+            sliderValue=(e.changedTouches[0].clientX-document.getElementById('mp-slider').getBoundingClientRect().x)/document.getElementById('mp-slider').clientWidth * player.duration
             sliderValue=Math.max(Math.min(sliderValue,player.duration),0)
             document.getElementById('mp-slider-bar').style.transform = 'scaleX('+(sliderValue / player.duration) * 100+'%)'
             document.getElementById('mp-text-ctime').innerText = formatTime(sliderValue)
@@ -681,22 +715,26 @@ class musicPlayer extends HTMLElement{
         })
 
         document.getElementById('mp').addEventListener('mousedown',(e)=>{
-            if (!isclicking){
+            if (!isclicking && !issmall){
                 isclickingMp=true
                 offsetXMp=e.clientY
                 valueXMp=(e.clientY-offsetXMp)/document.getElementById('mp').clientHeight
                 valueXMp=Math.max(Math.min(valueXMp,1),0)
-                console.log(valueXMp)
             }
         })
 
         document.getElementById('mp').addEventListener('touchstart',(e)=>{
-            if (!isclicking){
+            if (!isclicking && !issmall){
                 isclickingMp=true
                 offsetXMp=e.changedTouches[0].clientY
                 valueXMp=(e.changedTouches[0].clientY-offsetXMp)/document.getElementById('mp').clientHeight
                 valueXMp=Math.max(Math.min(valueXMp,1),0)
-                console.log(valueXMp)
+            }
+        })
+
+        document.getElementById('mp').addEventListener('click',(e)=>{
+            if (!isclicking && issmall){
+                document.getElementById('mp').show()
             }
         })
     }
@@ -707,7 +745,7 @@ window.customElements.define('yt-music-player',musicPlayer)
 
 document.addEventListener('mousemove',(e)=>{
     if (isclicking){
-        sliderValue=(e.clientX-document.getElementById('mp-slider').offsetLeft)/document.getElementById('mp-slider').clientWidth * player.duration
+        sliderValue=(e.clientX-document.getElementById('mp-slider').getBoundingClientRect().x)/document.getElementById('mp-slider').clientWidth * player.duration
         sliderValue=Math.max(Math.min(sliderValue,player.duration),0)
         document.getElementById('mp-slider-bar').style.transform = 'scaleX('+(sliderValue / player.duration) * 100+'%)'
         document.getElementById('mp-text-ctime').innerText = formatTime(sliderValue)
@@ -715,7 +753,6 @@ document.addEventListener('mousemove',(e)=>{
         if (isclickingMp){
             valueXMp=(e.clientY-offsetXMp)/document.getElementById('mp').clientHeight
             valueXMp=Math.max(Math.min(valueXMp,1),0)
-            console.log(valueXMp)
 
             document.getElementById('mp').animState(valueXMp)
         }
@@ -748,7 +785,7 @@ document.addEventListener('mouseup',(e)=>{
 
 document.addEventListener('touchmove',(e)=>{
     if (isclicking){
-        sliderValue=(e.changedTouches[0].clientX-document.getElementById('mp-slider').offsetLeft)/document.getElementById('mp-slider').clientWidth * player.duration
+        sliderValue=(e.changedTouches[0].clientX-document.getElementById('mp-slider').getBoundingClientRect().x)/document.getElementById('mp-slider').clientWidth * player.duration
         sliderValue=Math.max(Math.min(sliderValue,player.duration),0)
         document.getElementById('mp-slider-bar').style.transform = 'scaleX('+(sliderValue / player.duration) * 100+'%)'
         document.getElementById('mp-text-ctime').innerText = formatTime(sliderValue)
@@ -756,7 +793,6 @@ document.addEventListener('touchmove',(e)=>{
         if (isclickingMp){
             valueXMp=(e.changedTouches[0].clientY-offsetXMp)/document.getElementById('mp').clientHeight
             valueXMp=Math.max(Math.min(valueXMp,1),0)
-            console.log(valueXMp)
 
             document.getElementById('mp').animState(valueXMp)
         }
