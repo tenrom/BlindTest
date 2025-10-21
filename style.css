@@ -397,7 +397,7 @@ body{
     height: 100%;
     background-color: white;
     transform-origin: left center;
-    transform: scaleX(25%);
+    transform: scaleX(0%);
 }
 
 .mp-text-ctime{
@@ -454,20 +454,67 @@ body{
     user-select:none;
 }
 
-@keyframes mpGoUP {
-    from{
-        transform: translateY(100%);
-    }
-    to{
-        transform: translateY(0);
-    }
+.mp-small-box{
+    opacity: 0;
+    display: flex;
+    flex-direction: row;
+    /* width: calc(100% - 74px);  */
+    width: 100%; 
+    height: 60px;
+
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 3;
 }
 
-@keyframes mpGoDown {
-    from{
-        transform: translateY(0);
-    }
-    to{
-        transform: translateY(100%);
-    }
+.mp-song-box{
+    display: flex;
+    flex-direction: column;
+    justify-content:center;
+    align-items: start;
+    /* width: calc(100% - 74px);  */
+    width: calc(100% - 134px); 
+    height: 60px;
+    gap:4px;
+
+    position: relative;
+    left: calc(56px + 18px);
+}
+
+.mp-song-text-title{
+    color: white;
+    margin: 0;
+    font-family: "Roboto", sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: calc(100% - 12px);
+    box-sizing: border-box;
+}
+
+.mp-song-text-author{
+    color: #aaaaaa;
+    margin: 0;
+    font-family: "Roboto", sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: calc(100% - 12px);
+    box-sizing: border-box;
+}
+
+.mp-small-btn-play{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 60px;
+    width: 60px;
+
+    position: relative;
+    left: calc(56px + 18px);
 }

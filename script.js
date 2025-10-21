@@ -572,12 +572,21 @@ class musicPlayer extends HTMLElement{
         scale=clamp(scale,40/document.getElementById('mp-img').clientHeight,1)
         document.getElementById('mp-img').style.transform='translateY(-'+(clamp(a*1.5)*(64-10))+'px) scale('+scale+')'
         document.getElementById('mp-img').style.opacity=1
+        document.getElementById('mp-img').style.translate='calc(-'+50*a+'vw + '+(document.getElementById('mp-img').clientWidth + 36)/2*a+'px'
 
         
         document.getElementById('mp-img').style.borderRadius=lerp(10,document.getElementById('mp-img').clientHeight/8,a)+"px"
 
         document.getElementById('nav').style.transform='translateY('+(clamp(1-a-0.5)*document.getElementById('nav').clientHeight*2)+'px)'
-
+        
+        if (a>=0.75){
+            document.getElementById('mp-small-box').style.opacity=clamp((a-0.65)*4)
+            document.getElementById('mp-small-box').style.display=''
+        }else{
+            document.getElementById('mp-small-box').style.opacity=0
+            document.getElementById('mp-small-box').style.display='none'
+        }
+        
 
         const canvas = document.getElementById('mp-canvas')
         const ctx=canvas.getContext('2d')
@@ -619,18 +628,25 @@ class musicPlayer extends HTMLElement{
         
         setTimeout(()=>{document.getElementById('mp-img').style.width=document.getElementById('mp-img').clientHeight+'px'},10)
         
-        
-        document.getElementById('mp-text-title').innerText=document.getElementsByTagName('yt-playlist-item')[indexMusic].getAttribute('text-title')
-        document.getElementById('mp-text-author').innerText=document.getElementsByTagName('yt-playlist-item')[indexMusic].getAttribute('text-author')
+        let title=document.getElementsByTagName('yt-playlist-item')[indexMusic].getAttribute('text-title')
+        let author=document.getElementsByTagName('yt-playlist-item')[indexMusic].getAttribute('text-author')
+        document.getElementById('mp-text-title').innerText=title
+        document.getElementById('mp-text-author').innerText=author
+        document.getElementById('mp-song-text-title').innerText=title
+        document.getElementById('mp-song-text-author').innerText=author
 
         document.getElementById('mp-text-time').innerText=formatTime(player.duration)
 
         if (document.getElementsByClassName('plyr__control')[0].getAttribute('aria-label')==='Pause'){
             document.getElementById('mp-btn-play').children[0].style.display='none'
             document.getElementById('mp-btn-play').children[1].style.display='block'
+            document.getElementById('mp-small-btn-play').children[0].style.display='none'
+            document.getElementById('mp-small-btn-play').children[1].style.display='block'
         }else{
             document.getElementById('mp-btn-play').children[0].style.display='block'
             document.getElementById('mp-btn-play').children[1].style.display='none'
+            document.getElementById('mp-small-btn-play').children[0].style.display='block'
+            document.getElementById('mp-small-btn-play').children[1].style.display='none'
         }
 
         document.getElementById('mp-text-playlist').innerText=document.getElementById('playlist-title-items').innerText
@@ -647,7 +663,16 @@ class musicPlayer extends HTMLElement{
 
         this.innerHTML=`
         <canvas class="mp-canvas" id="mp-canvas"></canvas>
-
+        <div class="mp-small-box" id="mp-small-box">
+            <div class="mp-song-box" id="mp-song-box">
+                <h2 class="mp-song-text-title" id="mp-song-text-title"></h2>
+                <h2 class="mp-song-text-author" id="mp-song-text-author"></h2>
+            </div>
+            <div class="mp-small-btn-play" id="mp-small-btn-play">
+                <svg xmlns="http://www.w3.org/2000/svg" style="width: 30px; display: none;color:white;" viewBox="0 0 24 24"><path fill="currentColor" d="M8 5.14v14l11-7z"></path></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" style="width: 30px; display: block;color:white;" viewBox="0 0 24 24"><path fill="currentColor" d="M14 19h4V5h-4M6 19h4V5H6z"></path></svg>
+            </div>
+        </div>
         <div class="mp-container" id="mp-container">
             <svg onclick="document.getElementById('mp').hide()" style="color:white;scale:1.3; transform:translateY(-15px);flex-shrink:0;" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m7 10l5 5l5-5"/></svg>
             <div class="mp-img" id="mp-img"></div>
@@ -698,19 +723,26 @@ class musicPlayer extends HTMLElement{
             Load(playlistIds[indexMusic%playlistIds.length])
         })
 
-        document.getElementById('mp-btn-play').addEventListener('click',()=>{
+        let play=(e)=>{
+            e.stopPropagation()
             if (document.getElementsByClassName('plyr__control')[0].getAttribute('aria-label')==='Play'){
                 document.getElementById('mp-btn-play').children[0].style.display='none'
                 document.getElementById('mp-btn-play').children[1].style.display='block'
+                document.getElementById('mp-small-btn-play').children[0].style.display='none'
+                document.getElementById('mp-small-btn-play').children[1].style.display='block'
             }else{
                 document.getElementById('mp-btn-play').children[0].style.display='block'
                 document.getElementById('mp-btn-play').children[1].style.display='none'
+                document.getElementById('mp-small-btn-play').children[0].style.display='block'
+                document.getElementById('mp-small-btn-play').children[1].style.display='none'
             }
 
             player.embed.setVolume(100)
             document.getElementsByClassName('plyr__control')[0].click()
-            
-        })
+        }
+
+        document.getElementById('mp-btn-play').addEventListener('click',play)
+        document.getElementById('mp-small-btn-play').addEventListener('click',play)
 
         document.getElementById('mp-btn-after').addEventListener('click',()=>{
             indexMusic++
