@@ -562,7 +562,7 @@ class musicPlayer extends HTMLElement{
             // ctx.fillStyle = '#ff0000ff'; // Darker color for contrast
             ctx.fillRect(0,0,canvas.width,canvas.height)
 
-            document.getElementById("body-div").style.overflow=''
+            document.body.style.overflow=''
             this.style.pointerEvents=''
 
             issmall=true
@@ -572,7 +572,7 @@ class musicPlayer extends HTMLElement{
             ctx.fillRect(0,0,canvas.width,canvas.height)
             
             this.style.display='block'
-            document.getElementById("body-div").style.overflow='hidden'
+            document.document.body.style.overflow='hidden'
 
             issmall=false
             
@@ -584,7 +584,7 @@ class musicPlayer extends HTMLElement{
     }
     show(){
         
-        document.getElementById("body-div").style.overflow='hidden'
+        document.body.style.overflow='hidden'
         this.style.display='block'
         this.startAnim(duration,true,0)
         this.style.pointerEvents=''
@@ -613,7 +613,7 @@ class musicPlayer extends HTMLElement{
         document.getElementById('playlist-container').style.paddingBottom='72px'
     }
     hide(){
-        document.getElementById("body-div").style.overflow=''
+        document.body.style.overflow=''
         this.startAnim(duration,false,0)
         this.style.pointerEvents='none'
     }
@@ -826,6 +826,7 @@ document.addEventListener('touchend',(e)=>{
         }
     }
 })
+
 
 
 
