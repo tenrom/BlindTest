@@ -572,7 +572,7 @@ class musicPlayer extends HTMLElement{
             ctx.fillRect(0,0,canvas.width,canvas.height)
             
             this.style.display='block'
-            document.document.body.style.overflow='hidden'
+            document.body.style.overflow='hidden'
 
             issmall=false
             
@@ -826,6 +826,7 @@ document.addEventListener('touchend',(e)=>{
         }
     }
 })
+
 
 
 
