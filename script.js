@@ -39,22 +39,14 @@ function resize(){
         document.getElementById('mp-img').style.alignSelf='center'
     }
 
-    // if (issmall){
-    //     document.getElementById('mp').style.transform='translateY('+(document.getElementById('mp').clientHeight-110-(20))+'px)'
-    // }
+    if (issmall){
+        document.getElementById('mp').animState(1)
+    }
 
 }
 window.addEventListener('resize',()=>{
     resize()
 })
-
-document.addEventListener('sco',()=>{
-    
-    if (issmall){
-        document.getElementById('mp').style.transform='translateY('+(document.getElementById('mp').clientHeight-110-(20))+'px)'
-    }
-})
-
 
 window.addEventListener('load',resize)
 
@@ -64,7 +56,6 @@ fetch('client_secret.json')
         
         CLIENT_ID=res["web"]["client_id"]
         CLIENT_SECRET=res['web']['client_secret']
-        CLIENT_SECRET='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'
 
         TOKEN_URI=res["web"]["token_uri"]
         AUTH_URI=res["web"]["auth_uri"]
@@ -82,15 +73,40 @@ function authenticate() {
     open(`${AUTH_URI}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code&scope=${SCOPES}&access_type=offline&prompt=consent`,"_self")
 }
 
-function exchangeCodeForTokens(code,after) {
+function refresh(){
+    if (JSON.parse(localStorage.getItem('refresh'))['refresh_token']){
+        exchangeCodeForTokens(JSON.parse(localStorage.getItem('refresh'))['refresh_token'] ,()=>{
+            urlParams.set('token',ACCESS_TOKEN)
+            open(location.href.replace(location.search,'')+'?'+urlParams.toString(),'_self')
+        },true) 
+    }else{
+        open(location.href.replace(location.search,''),'_self')
+    }
+}
+
+function exchangeCodeForTokens(code,after,refresh) {
     // The parameters must be sent in a URL-encoded format
-    const payload = new URLSearchParams({
-        'code': code,
-        'client_id': CLIENT_ID,
-        'client_secret': CLIENT_SECRET,
-        'redirect_uri': REDIRECT_URI,
-        'grant_type': 'authorization_code'
-    });
+    let payload
+    if (!refresh){
+        payload = new URLSearchParams({
+            'code': code,
+            'client_id': CLIENT_ID,
+            'client_secret': CLIENT_SECRET,
+            'redirect_uri': REDIRECT_URI,
+            'grant_type': 'authorization_code'
+        })
+    }else{
+        CLIENT_SECRET=localStorage.getItem('client_secret')
+        payload = new URLSearchParams({
+            'refresh_token': code,
+            'client_id': CLIENT_ID,
+            'client_secret': CLIENT_SECRET,
+            'redirect_uri': REDIRECT_URI,
+            'grant_type': 'refresh_token'
+        })
+        console.log(payload)
+    }
+    
 
     fetch(TOKEN_URI, {
         method: 'POST',
@@ -118,6 +134,7 @@ function exchangeCodeForTokens(code,after) {
         console.log('Scope:', tokenData.scope);
 
         REFRESH_TOKEN=tokenData.refresh_token
+        localStorage.setItem('refresh',JSON.stringify({'refresh_token':tokenData.refresh_token,'expires_in':tokenData.expires_in})) 
         ACCESS_TOKEN=tokenData.access_token
 
         after()
@@ -127,7 +144,9 @@ function exchangeCodeForTokens(code,after) {
     .catch(error => {
         // Handle any errors that occurred during the fetch or in the .then() blocks
         console.error('Error during token exchange:', error);
+        localStorage.removeItem('client_secret')
 
+        open(location.href,'_self')
         
     });
 }
@@ -222,11 +241,11 @@ function getPlaylists(channelid='',mine=false,after){
     if (mine){
         fetch(`https://youtube.googleapis.com/youtube/v3/playlists?part=snippet&mine=true&maxResults=50&access_token=${ACCESS_TOKEN}`).then(res => res.json()).then(res => {
             after(res)
-        })
+        }).catch(refresh)
     }else{
         fetch(`https://youtube.googleapis.com/youtube/v3/playlists?part=snippet&channelId=${channelid}&maxResults=50&key=${ACCESS_TOKEN}`).then(res => res.json()).then(res => {
             after(res)
-        })
+        }).catch(refresh)
     }
 }
 
@@ -234,11 +253,11 @@ function getPlaylistItems(playlistid,mine=false,after){
     if (mine){
         fetch(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet,status&maxResults=500&playlistId=${playlistid}&access_token=${ACCESS_TOKEN}`).then(res => res.json()).then(res => {
             after(res)
-        })
+        }).catch(refresh)
     }else{
         fetch(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet,status&maxResults=500&playlistId=${playlistid}&key=${ACCESS_TOKEN}`).then(res => res.json()).then(res => {
             after(res)
-        })
+        }).catch(refresh)
     }
 }
 
@@ -415,12 +434,18 @@ function ShowPlaylists(json){
 
 function initialization(){
     if (urlParams.get('code')){
-        CLIENT_SECRET=prompt('Password')
+        if (localStorage.getItem('client_secret')){
+            CLIENT_SECRET=localStorage.getItem('client_secret')
+        }else{
+            CLIENT_SECRET=prompt('Password')
+            localStorage.setItem('client_secret',CLIENT_SECRET)
+        }
+
         exchangeCodeForTokens(urlParams.get('code'),()=>{
             urlParams.delete('code',urlParams.get('code'))
             urlParams.set('token',ACCESS_TOKEN)
             open(location.href.replace(location.search,'')+'?'+urlParams.toString(),'_self')
-        })
+        },false)
     }else{
         if (!urlParams.get('token')){
             document.getElementById('btn-signin').style.display='block'
@@ -443,7 +468,7 @@ function initialization(){
             if (urlParams.get('code')){
                 exchangeCodeForTokens(urlParams.get('code'),()=>{
                     getPlaylistItems(urlParams.get('list'),mine=true,ShowPlaylist)
-                })
+                },false)
             }else{
                 getPlaylistItems(urlParams.get('list'),false,ShowPlaylist)
             }
@@ -534,7 +559,7 @@ class musicPlayer extends HTMLElement{
         const lerp = (x, y, a) => x * (1 - a) + y * a;
         const clamp = (a, min = 0, max = 1) => Math.min(max, Math.max(min, a));
 
-        this.style.transform='translateY('+clamp((a*this.clientHeight),0,this.clientHeight-110-(20))+'px)'
+        this.style.translate='0px calc(100% - '+clamp(((1-a)*this.clientHeight),110+20,this.clientHeight)+'px)'
         let opa=1-(a*4)
         for (let i=0;i< document.getElementById('mp-container').children.length;i++){
             document.getElementById('mp-container').children[i].style.opacity=opa
@@ -826,8 +851,3 @@ document.addEventListener('touchend',(e)=>{
         }
     }
 })
-
-
-
-
-
