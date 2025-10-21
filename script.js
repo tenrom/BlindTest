@@ -615,6 +615,10 @@ class musicPlayer extends HTMLElement{
         if (a===0 && reverse){
             document.getElementById('mp').style.pointerEvents=''
         }
+
+        if (a===0){
+            this.style.translate='0px 0px'
+        }
     }
     show(){
         
@@ -883,5 +887,6 @@ document.addEventListener('touchend',(e)=>{
         }
     }
 })
+
 
 
