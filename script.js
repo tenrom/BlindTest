@@ -609,7 +609,8 @@ class musicPlayer extends HTMLElement{
             document.body.style.overflow='hidden'
 
             issmall=false
-            
+
+            this.style.translate='0px 0px'
         }
 
         if (a===0 && reverse){
@@ -883,3 +884,4 @@ document.addEventListener('touchend',(e)=>{
         }
     }
 })
+
