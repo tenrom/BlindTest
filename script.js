@@ -1,3 +1,5 @@
+const lerp = (x, y, a) => x * (1 - a) + y * a;
+const clamp = (a, min = 0, max = 1) => Math.min(max, Math.max(min, a));
 
 let db
 let playlistIds=[]
@@ -521,7 +523,12 @@ let offsetXMp
 let valueXMp
 let spline=BezierEasing.css["ease-in"]
 let Inversespline=BezierEasing(0, 0.42, 1, 1)
-let issmall=false
+let issmall=true
+let issmallclick=false
+let smalloffset
+let smalldirection
+let smallsValueH
+let justchange=false
 
 let t
 let duration=500
@@ -556,8 +563,6 @@ class musicPlayer extends HTMLElement{
         animate(duration)
     }
     animState(a){
-        const lerp = (x, y, a) => x * (1 - a) + y * a;
-        const clamp = (a, min = 0, max = 1) => Math.min(max, Math.max(min, a));
 
         this.style.translate='0px calc(100% - '+clamp(((1-a)*this.clientHeight),110+20,this.clientHeight)+'px)'
         let opa=1-(a*4)
@@ -609,7 +614,7 @@ class musicPlayer extends HTMLElement{
             document.body.style.overflow='hidden'
 
             issmall=false
-
+            
         }
 
         if (a===0 && reverse){
@@ -621,11 +626,12 @@ class musicPlayer extends HTMLElement{
         }
     }
     show(){
-        
-        document.body.style.overflow='hidden'
-        this.style.display='block'
-        this.startAnim(duration,true,0)
-        this.style.pointerEvents=''
+        if (issmall && !justchange){
+            document.body.style.overflow='hidden'
+            this.style.display='block'
+            this.startAnim(duration,true,0)
+            this.style.pointerEvents=''
+        }
         
         let json=db['items'][indexMusic]
         document.getElementById('mp-img').style.backgroundImage=`url('${document.getElementsByTagName('yt-playlist-item')[indexMusic].getAttribute('img')}')`
@@ -724,7 +730,8 @@ class musicPlayer extends HTMLElement{
 
         document.getElementById('mp-btn-before').addEventListener('click',()=>{
             indexMusic--
-            Load(playlistIds[indexMusic%playlistIds.length])
+            justchange=true
+            Load(playlistIds[indexMusic])
         })
 
         let play=(e)=>{
@@ -750,7 +757,8 @@ class musicPlayer extends HTMLElement{
 
         document.getElementById('mp-btn-after').addEventListener('click',()=>{
             indexMusic++
-            Load(playlistIds[indexMusic%playlistIds.length])
+            justchange=true
+            Load(playlistIds[indexMusic])
         })
         
         
@@ -794,9 +802,22 @@ class musicPlayer extends HTMLElement{
         })
 
         document.getElementById('mp').addEventListener('click',(e)=>{
-            if (!isclicking && issmall){
+            if (!isclicking && issmall && smalldirection!=='no'){
                 document.getElementById('mp').show()
             }
+            
+            if (issmallclick){
+                issmallclick=false
+                smalldirection=null
+            }
+        })
+
+        document.getElementById('mp-small-box').addEventListener('mousedown',(e)=>{
+            e.stopPropagation()
+            issmallclick=true
+            console.log(document.getElementById('mp-small-box').getBoundingClientRect().y)
+            smalloffset=[e.clientX,e.clientY,e.clientY-document.getElementById('mp-small-box').getBoundingClientRect().y]
+            
         })
     }
 }
@@ -805,7 +826,7 @@ class musicPlayer extends HTMLElement{
 window.customElements.define('yt-music-player',musicPlayer)
 
 document.addEventListener('mousemove',(e)=>{
-    if (isclicking){
+    if (isclicking && !issmallclick){
         sliderValue=(e.clientX-document.getElementById('mp-slider').getBoundingClientRect().x)/document.getElementById('mp-slider').clientWidth * player.duration
         sliderValue=Math.max(Math.min(sliderValue,player.duration),0)
         document.getElementById('mp-slider-bar').style.transform = 'scaleX('+(sliderValue / player.duration) * 100+'%)'
@@ -818,10 +839,43 @@ document.addEventListener('mousemove',(e)=>{
             document.getElementById('mp').animState(valueXMp)
         }
     }
+
+    if (issmallclick){
+        let value=[e.clientX-smalloffset[0],e.clientY-smalloffset[1]]   
+
+        if (!smalldirection || smalldirection==='no'){
+            if (Math.abs(value[1])>Math.abs(value[0])){
+                smalldirection='v'
+            }else{
+                smalldirection='h'
+            }
+        }
+        else{
+            if (smalldirection==='v'){
+                console.log(smalloffset[2])
+                valueXMp=(e.clientY-smalloffset[2])/document.getElementById('mp').clientHeight
+                valueXMp=Math.max(Math.min(valueXMp,1),0)
+
+                document.getElementById('mp').animState(valueXMp)
+            }else if(smalldirection==='h'){
+                
+                document.getElementById('mp-song-box').style.translate=(e.clientX-74)-(smalloffset[0]-74)+'px'
+                document.getElementById('mp-img').style.translate='calc('+((document.getElementById('mp-img').clientWidth + 36)/2+value[0])+'px - 50vw)'
+
+                smallsValueH=0
+                if (value[0]<50){
+                    smallsValueH=1
+                }
+                if (value[0]>50){
+                    smallsValueH=-1
+                }
+            }
+        }
+    }
 })
 
-document.addEventListener('mouseup',(e)=>{
-    if (isclicking){
+let mouseup=(e)=>{
+    if (isclicking && !issmallclick){
         player.embed.seekTo(sliderValue)
         isclicking=false
 
@@ -842,7 +896,42 @@ document.addEventListener('mouseup',(e)=>{
             }   
         }
     }
+
+    if (issmallclick){
+        if (smalldirection==='v'){
+            smalldirection=null
+            issmallclick=false
+            document.getElementById('mp').style.pointerEvents='none'
+            valueXMp=(e.clientY-smalloffset[2])/document.getElementById('mp').clientHeight
+            valueXMp=Math.max(Math.min(valueXMp,1),0)
+
+            if (valueXMp>0.75){
+                document.getElementById('mp').startAnim(duration,false,valueXMp)
+            }else{
+                document.getElementById('mp').startAnim(duration,true,1-valueXMp)
+            }
+        }else if (smalldirection==='h'){
+            smalldirection='no'
+            issmallclick=false
+
+            document.getElementById('mp-song-box').style.translate='0px'
+            document.getElementById('mp-img').style.translate='calc('+(document.getElementById('mp-img').clientWidth + 36)/2+'px - 50vw)'
+            
+            if (smallsValueH>0){
+                document.getElementById('mp-btn-after').click()
+            }
+            if (smallsValueH<0){
+                document.getElementById('mp-btn-before').click()
+            }
+        }
+    }
+}
+
+document.addEventListener('mouseup',mouseup)
+document.getElementById('nav').addEventListener('load',()=>{
+    document.getElementById('nav').contentDocument.body.getElementsByClassName('nav')[0].addEventListener('mouseup',mouseup)
 })
+
 
 document.addEventListener('touchmove',(e)=>{
     if (isclicking){
@@ -887,6 +976,3 @@ document.addEventListener('touchend',(e)=>{
         }
     }
 })
-
-
-

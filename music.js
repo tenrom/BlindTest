@@ -15,13 +15,19 @@ function Load(id){
         indexMusic=playlistIds.indexOf(id)
 
         document.getElementById('mp').show()
+
+        setTimeout(()=>{
+          justchange=false
+        },100)
     })
 
     player.once('ended',()=>{
         console.log('end')
         indexMusic++
+        indexMusic=clamp(indexMusic,0,playlistIds.length-1)
+        justchange=true
         setTimeout(()=>{
-            Load(playlistIds[indexMusic%playlistIds.length])
+            Load(playlistIds[indexMusic])
         },100)
     })
 }
