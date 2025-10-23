@@ -245,7 +245,7 @@ function getPlaylists(channelid='',mine=false,after){
             after(res)
         }).catch(refresh)
     }else{
-        fetch(`https://youtube.googleapis.com/youtube/v3/playlists?part=snippet&channelId=${channelid}&maxResults=50&key=${ACCESS_TOKEN}`).then(res => res.json()).then(res => {
+        fetch(`https://youtube.googleapis.com/youtube/v3/playlists?part=snippet&channelId=${channelid}&maxResults=50&access_token=${ACCESS_TOKEN}`).then(res => res.json()).then(res => {
             after(res)
         }).catch(refresh)
     }
@@ -257,7 +257,7 @@ function getPlaylistItems(playlistid,mine=false,after){
             after(res)
         }).catch(refresh)
     }else{
-        fetch(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet,status&maxResults=500&playlistId=${playlistid}&key=${ACCESS_TOKEN}`).then(res => res.json()).then(res => {
+        fetch(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet,status&maxResults=500&playlistId=${playlistid}&access_token=${ACCESS_TOKEN}`).then(res => res.json()).then(res => {
             after(res)
         }).catch(refresh)
     }
@@ -336,7 +336,7 @@ function ShowPlaylist(json){
         document.getElementById('playlist-author-items').innerText='Playlist automatique'
     }
 
-    if (urlParams.get('mine')){
+    if (urlParams.get('mine')==='true'){
         fetch(`https://youtube.googleapis.com/youtube/v3/playlists?part=snippet&maxResults=500&id=${json['items'][0]['snippet']['playlistId']}&access_token=${ACCESS_TOKEN}`).then(res => res.json()).then(res => {
             console.log(res)
             document.getElementById('playlist-title-items').innerText=res['items'][0]['snippet']['title']
@@ -364,14 +364,14 @@ function ShowPlaylist(json){
             p.parentNode.insertBefore(blur,p)
         })
     }else{
-        fetch(`https://youtube.googleapis.com/youtube/v3/playlists?part=snippet&maxResults=500&id=${json['items'][0]['snippet']['playlistId']}&key=${ACCESS_TOKEN}`).then(res => res.json()).then(res => {
+        fetch(`https://youtube.googleapis.com/youtube/v3/playlists?part=snippet&maxResults=500&id=${json['items'][0]['snippet']['playlistId']}&access_token=${ACCESS_TOKEN}`).then(res => res.json()).then(res => {
             document.getElementById('playlist-title-items').innerText=res['items'][0]['snippet']['title']
             document.getElementById('playlist-banner-title').innerText=res['items'][0]['snippet']['title']
             
         })
     }
 
-    if (!urlParams.get('mine')){
+    if (urlParams.get('mine')!=='true'){
         let p=document.getElementsByTagName('playlist-img')[0]
         let blur=p.cloneNode(true)
         blur.style.filter='blur(40px)'
@@ -389,12 +389,10 @@ function ShowPlaylists(json){
     document.getElementById('playlists-container').style.display='flex'
 
     let html=''
-    if (urlParams.get('mine')){
-        if (urlParams.get('mine')==='true'){
-            html+=`
-                <yt-playlist text-author="Playlist automatique" text-title="Liked videos" img='https://www.gstatic.com/youtube/media/ytm/images/pbg/liked-music-@1200.png' listid='LL' square='${'true'}'></yt-playlist>
-            `
-        }
+    if (urlParams.get('mine')==='true'){
+        html+=`
+            <yt-playlist text-author="Playlist automatique" text-title="Liked videos" img='https://www.gstatic.com/youtube/media/ytm/images/pbg/liked-music-@1200.png' listid='LL' square='${'true'}'></yt-playlist>
+        `
     }
     
     
@@ -418,14 +416,14 @@ function ShowPlaylists(json){
 
     document.getElementById('playlist-author').innerText=json['items'][0]['snippet']['channelTitle']
 
-    if (urlParams.get('mine')){
+    if (urlParams.get('mine')==='true'){
         fetch(`https://youtube.googleapis.com/youtube/v3/channels?part=snippet&mine=true&access_token=${ACCESS_TOKEN}`).then(res => res.json()).then(res => {
             console.log(res)
             document.getElementById('channel-img').src=res['items'][0]['snippet']['thumbnails']['high']['url']
             
         })
     }else{
-        fetch(`https://youtube.googleapis.com/youtube/v3/channels?part=snippet&id=${json['items'][0]['snippet']['channelId']}&key=${ACCESS_TOKEN}`).then(res => res.json()).then(res => {
+        fetch(`https://youtube.googleapis.com/youtube/v3/channels?part=snippet&id=${json['items'][0]['snippet']['channelId']}&access_token=${ACCESS_TOKEN}`).then(res => res.json()).then(res => {
             console.log(res)
             document.getElementById('channel-img').src=res['items'][0]['snippet']['thumbnails']['high']['url']
             
@@ -456,7 +454,7 @@ function initialization(){
     if (urlParams.get('token')){
         ACCESS_TOKEN=urlParams.get('token')
     }
-    if (urlParams.get('mine')){
+    if (urlParams.get('mine')==='true'){
         if (urlParams.get('mine')==='true'){
             console.log('Mine')
             if (urlParams.get('list')){
@@ -484,6 +482,9 @@ function initialization(){
 
 function Back(){
     urlParams.delete('list',urlParams.get('list'))
+    if (urlParams.get('mine')!=='true' && db['items']){
+        urlParams.set('channel',db['items'][0]['snippet']['channelId'])
+    }
     open(location.href.replace(location.search,'')+'?'+urlParams.toString(),'_self')
 }
 
@@ -767,7 +768,6 @@ class musicPlayer extends HTMLElement{
             justchange=true
             Load(playlistIds[indexMusic])
         })
-        
         
         
         document.getElementById('mp-slider-box').addEventListener('mousedown',(e)=>{
