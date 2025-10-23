@@ -36,7 +36,7 @@ function Load(id){
 
     player.once('ended',()=>{
         console.log('end')
-        AddindexMusic()
+        AddIndexMusic()
         justchange=true
         setTimeout(()=>{
             Load(playlistIds[indexMusic])
@@ -204,3 +204,4 @@ if ('mediaSession' in navigator) {
         console.log(`The nexttrack action is not supported: ${error}`);
     }
 }
+
