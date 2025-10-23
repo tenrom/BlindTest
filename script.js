@@ -136,9 +136,7 @@ function exchangeCodeForTokens(code,after,refresh) {
         console.log('Scope:', tokenData.scope);
 
         REFRESH_TOKEN=tokenData.refresh_token
-        if (tokenData.refresh_token){
-            localStorage.setItem('refresh',JSON.stringify({'refresh_token':tokenData.refresh_token,'expires_in':tokenData.expires_in})) 
-        }
+        localStorage.setItem('refresh',JSON.stringify({'refresh_token':tokenData.refresh_token,'expires_in':tokenData.expires_in})) 
         ACCESS_TOKEN=tokenData.access_token
 
         after()
@@ -730,10 +728,14 @@ class musicPlayer extends HTMLElement{
         ctx.fillStyle = '#000000ff'; // Darker color for contrast
         ctx.fillRect(0,0,canvas.width,canvas.height)
 
-        document.getElementById('mp-btn-before').addEventListener('click',()=>{
-            indexMusic--
-            justchange=true
-            Load(playlistIds[indexMusic])
+        document.getElementById('mp-btn-before').addEventListener('click',(e)=>{
+            if (player.currentTime<5){
+                indexMusic--
+                justchange=true
+                Load(playlistIds[indexMusic])
+            }else{
+                player.embed.seekTo(0)
+            }
         })
 
         let play=(e)=>{
@@ -821,6 +823,12 @@ class musicPlayer extends HTMLElement{
             smalloffset=[e.clientX,e.clientY,e.clientY-document.getElementById('mp-small-box').getBoundingClientRect().y]
             
         })
+
+        document.getElementById('mp-small-box').addEventListener('touchstart',(e)=>{
+            issmallclick=true
+            document.body.style.overflow='hidden'
+            smalloffset=[e.changedTouches[0].clientX,e.changedTouches[0].clientY,e.changedTouches[0].clientY-document.getElementById('mp-small-box').getBoundingClientRect().y]
+        })
     }
 }
 
@@ -844,15 +852,13 @@ document.addEventListener('mousemove',(e)=>{
 
     if (issmallclick){
         let value=[e.clientX-smalloffset[0],e.clientY-smalloffset[1]]   
-
         if (!smalldirection || smalldirection==='no'){
             if (Math.abs(value[1])>Math.abs(value[0])){
                 smalldirection='v'
             }else{
                 smalldirection='h'
             }
-        }
-        else{
+        }else{
             if (smalldirection==='v'){
                 console.log(smalloffset[2])
                 valueXMp=(e.clientY-smalloffset[2])/document.getElementById('mp').clientHeight
@@ -920,10 +926,14 @@ let mouseup=(e)=>{
             document.getElementById('mp-img').style.translate='calc('+(document.getElementById('mp-img').clientWidth + 36)/2+'px - 50vw)'
             
             if (smallsValueH>0){
-                document.getElementById('mp-btn-after').click()
+                indexMusic++
+                justchange=true
+                Load(playlistIds[indexMusic])
             }
             if (smallsValueH<0){
-                document.getElementById('mp-btn-before').click()
+                indexMusic--
+                justchange=true
+                Load(playlistIds[indexMusic])
             }
         }
     }
@@ -933,7 +943,6 @@ document.addEventListener('mouseup',mouseup)
 document.getElementById('nav').addEventListener('load',()=>{
     document.getElementById('nav').contentDocument.body.getElementsByClassName('nav')[0].addEventListener('mouseup',mouseup)
 })
-
 
 document.addEventListener('touchmove',(e)=>{
     if (isclicking){
@@ -947,6 +956,39 @@ document.addEventListener('touchmove',(e)=>{
             valueXMp=Math.max(Math.min(valueXMp,1),0)
 
             document.getElementById('mp').animState(valueXMp)
+        }
+    }
+
+    if (issmallclick){
+        let value=[e.changedTouches[0].clientX-smalloffset[0],e.changedTouches[0].clientY-smalloffset[1]]   
+
+        if (Math.abs(value[1])<20 && Math.abs(value[0])<20){
+        }else if (!smalldirection || smalldirection==='no'){
+            if (Math.abs(value[1])>Math.abs(value[0])){
+                smalldirection='v'
+            }else{
+                smalldirection='h'
+            }
+        }else{
+            if (smalldirection==='v'){
+                console.log(smalloffset[2])
+                valueXMp=(e.changedTouches[0].clientY-smalloffset[2])/document.getElementById('mp').clientHeight
+                valueXMp=Math.max(Math.min(valueXMp,1),0)
+
+                document.getElementById('mp').animState(valueXMp)
+            }else if(smalldirection==='h'){
+                
+                document.getElementById('mp-song-box').style.translate=(e.changedTouches[0].clientX-74)-(smalloffset[0]-74)+'px'
+                document.getElementById('mp-img').style.translate='calc('+((document.getElementById('mp-img').clientWidth + 36)/2+value[0])+'px - 50vw)'
+
+                smallsValueH=0
+                if (value[0]<50){
+                    smallsValueH=1
+                }
+                if (value[0]>50){
+                    smallsValueH=-1
+                }
+            }
         }
     }
 })
@@ -977,5 +1019,36 @@ document.addEventListener('touchend',(e)=>{
             }   
         }
     }
-})
 
+    if (issmallclick){
+        if (smalldirection==='v'){
+            document.getElementById('mp').style.pointerEvents='none'
+            valueXMp=(e.changedTouches[0].clientY-smalloffset[2])/document.getElementById('mp').clientHeight
+            valueXMp=Math.max(Math.min(valueXMp,1),0)
+
+            if (valueXMp>0.75){
+                document.getElementById('mp').startAnim(duration,false,valueXMp)
+            }else{
+                document.getElementById('mp').startAnim(duration,true,1-valueXMp)
+            }
+        }else if (smalldirection==='h'){
+
+            document.getElementById('mp-song-box').style.translate='0px'
+            document.getElementById('mp-img').style.translate='calc('+(document.getElementById('mp-img').clientWidth + 36)/2+'px - 50vw)'
+            
+            if (smallsValueH>0){
+                indexMusic++
+                justchange=true
+                Load(playlistIds[indexMusic])
+            }
+            if (smallsValueH<0){
+                indexMusic--
+                justchange=true
+                Load(playlistIds[indexMusic])
+            }
+        }
+        smalldirection=null
+        issmallclick=false
+        document.body.style.overflow=''
+    }
+})
