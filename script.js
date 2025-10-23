@@ -730,7 +730,7 @@ class musicPlayer extends HTMLElement{
 
         document.getElementById('mp-btn-before').addEventListener('click',(e)=>{
             if (player.currentTime<5){
-                indexMusic--
+                SubIndexMusic()
                 justchange=true
                 Load(playlistIds[indexMusic])
             }else{
@@ -760,7 +760,7 @@ class musicPlayer extends HTMLElement{
         document.getElementById('mp-small-btn-play').addEventListener('click',play)
 
         document.getElementById('mp-btn-after').addEventListener('click',()=>{
-            indexMusic++
+            AddIndexMusic()
             justchange=true
             Load(playlistIds[indexMusic])
         })
@@ -819,7 +819,6 @@ class musicPlayer extends HTMLElement{
         document.getElementById('mp-small-box').addEventListener('mousedown',(e)=>{
             e.stopPropagation()
             issmallclick=true
-            console.log(document.getElementById('mp-small-box').getBoundingClientRect().y)
             smalloffset=[e.clientX,e.clientY,e.clientY-document.getElementById('mp-small-box').getBoundingClientRect().y]
             
         })
@@ -871,7 +870,7 @@ document.addEventListener('mousemove',(e)=>{
                 document.getElementById('mp-img').style.translate='calc('+((document.getElementById('mp-img').clientWidth + 36)/2+value[0])+'px - 50vw)'
 
                 smallsValueH=0
-                if (value[0]<50){
+                if (value[0]<-50){
                     smallsValueH=1
                 }
                 if (value[0]>50){
@@ -924,17 +923,18 @@ let mouseup=(e)=>{
 
             document.getElementById('mp-song-box').style.translate='0px'
             document.getElementById('mp-img').style.translate='calc('+(document.getElementById('mp-img').clientWidth + 36)/2+'px - 50vw)'
-            
+            console.log(smallsValueH)
             if (smallsValueH>0){
-                indexMusic++
+                AddIndexMusic()
                 justchange=true
                 Load(playlistIds[indexMusic])
             }
             if (smallsValueH<0){
-                indexMusic--
+                SubIndexMusic()
                 justchange=true
                 Load(playlistIds[indexMusic])
             }
+            
         }
     }
 }
@@ -982,7 +982,7 @@ document.addEventListener('touchmove',(e)=>{
                 document.getElementById('mp-img').style.translate='calc('+((document.getElementById('mp-img').clientWidth + 36)/2+value[0])+'px - 50vw)'
 
                 smallsValueH=0
-                if (value[0]<50){
+                if (value[0]<-50){
                     smallsValueH=1
                 }
                 if (value[0]>50){
@@ -1037,15 +1037,16 @@ document.addEventListener('touchend',(e)=>{
             document.getElementById('mp-img').style.translate='calc('+(document.getElementById('mp-img').clientWidth + 36)/2+'px - 50vw)'
             
             if (smallsValueH>0){
-                indexMusic++
+                AddIndexMusic()
                 justchange=true
                 Load(playlistIds[indexMusic])
             }
             if (smallsValueH<0){
-                indexMusic--
+                SubIndexMusic()
                 justchange=true
                 Load(playlistIds[indexMusic])
             }
+            console.log(smallsValueH)
         }
         smalldirection=null
         issmallclick=false

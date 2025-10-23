@@ -1,4 +1,17 @@
-    
+
+function AddIndexMusic(){
+    console.log('Before +',indexMusic)
+    indexMusic=playlistIds.indexOf(player.embed.getVideoData()['video_id'])+1
+    indexMusic=clamp(indexMusic,0,playlistIds.length-1)
+    console.log('After +',indexMusic)
+}
+function SubIndexMusic(){
+    console.log('Before -',indexMusic)
+    indexMusic=playlistIds.indexOf(player.embed.getVideoData()['video_id'])-1
+    indexMusic=clamp(indexMusic,0,playlistIds.length-1)
+    console.log('After -',indexMusic)
+}
+
 function Load(id){
     player.source = {
         type: 'video',
@@ -23,8 +36,7 @@ function Load(id){
 
     player.once('ended',()=>{
         console.log('end')
-        indexMusic=playlistIds.indexOf(player.embed.getVideoData()['video_id'])+1
-        indexMusic=clamp(indexMusic,0,playlistIds.length-1)
+        AddindexMusic()
         justchange=true
         setTimeout(()=>{
             Load(playlistIds[indexMusic])
