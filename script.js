@@ -136,7 +136,9 @@ function exchangeCodeForTokens(code,after,refresh) {
         console.log('Scope:', tokenData.scope);
 
         REFRESH_TOKEN=tokenData.refresh_token
-        localStorage.setItem('refresh',JSON.stringify({'refresh_token':tokenData.refresh_token,'expires_in':tokenData.expires_in})) 
+        if (tokenData.refresh_token){
+            localStorage.setItem('refresh',JSON.stringify({'refresh_token':tokenData.refresh_token,'expires_in':tokenData.expires_in})) 
+        }
         ACCESS_TOKEN=tokenData.access_token
 
         after()
@@ -976,3 +978,4 @@ document.addEventListener('touchend',(e)=>{
         }
     }
 })
+
