@@ -758,6 +758,9 @@ class musicPlayer extends HTMLElement{
 
         document.getElementById('mp-btn-play').addEventListener('click',play)
         document.getElementById('mp-small-btn-play').addEventListener('click',play)
+        document.getElementById('mp-small-btn-play').addEventListener('click',()=>{
+            issmallclick=false
+        })
 
         document.getElementById('mp-btn-after').addEventListener('click',()=>{
             AddIndexMusic()
