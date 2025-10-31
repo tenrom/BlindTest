@@ -239,6 +239,7 @@ body{
     font-size: 12px;
     cursor: pointer;
     user-select:none;
+    -webkit-tap-highlight-color: transparent;
 
     &[select=true]{
         font-weight: 600;
@@ -568,3 +569,4 @@ body{
     color: white;
 
 }
+
