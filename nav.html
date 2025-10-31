@@ -30,25 +30,42 @@
         let t2=document.getElementById('WelcomeTab')
         let t3=document.getElementById('AccountTab')
 
-        if (window.parent.location.search.includes('explore')){
+        if (window.parent.location.search.includes('explore=1')){
             t1.setAttribute('select','true')
         }else{
-            if (window.parent.location.search.includes('welcome')){
+            if (window.parent.location.search.includes('welcome=1')){
                 t2.setAttribute('select','true')
             }else{
                 t3.setAttribute('select','true')
             }
         }
         
-
         t1.addEventListener('click',(e)=>{
-            open(window.parent.location,'_parent')
+            let urlParams
+            if (window.parent.location.search){
+                urlParams = new URLSearchParams(window.parent.location.search);
+                urlParams.delete('explore',urlParams.get('explore'))
+                urlParams.delete('welcome',urlParams.get('welcome'))
+            }
+            open(window.parent.location.href.replace(window.parent.location.search,'')+'?'+urlParams.toString()+'&explore=1','_parent')
         })
         t2.addEventListener('click',(e)=>{
-            open(window.parent.location,'_parent')
+            let urlParams
+            if (window.parent.location.search){
+                urlParams = new URLSearchParams(window.parent.location.search);
+                urlParams.delete('explore',urlParams.get('explore'))
+                urlParams.delete('welcome',urlParams.get('welcome'))
+            }
+            open(window.parent.location.href.replace(window.parent.location.search,'')+'?'+urlParams.toString()+'&welcome=1','_parent')
         })
         t3.addEventListener('click',(e)=>{
-            open(window.parent.location,'_parent')
+            let urlParams
+            if (window.parent.location.search){
+                urlParams = new URLSearchParams(window.parent.location.search);
+                urlParams.delete('explore',urlParams.get('explore'))
+                urlParams.delete('welcome',urlParams.get('welcome'))
+            }
+            open(window.parent.location.href.replace(window.parent.location.search,'')+'?'+urlParams.toString(),'_parent')
         })
     </script>
 </body>

@@ -518,3 +518,51 @@ body{
     position: relative;
     left: calc(56px + 18px);
 }
+
+.explore-search-container{
+    width: 100%;
+    height: calc(100% - 82px);
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 12px;
+    margin-bottom: 70px;
+}
+
+.search-bar{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(58, 58, 58);
+    height: 30px;
+    border-radius: 50vh;
+    padding: 10px;
+    padding-left: 20px;
+    gap: 5px;
+    width:70%;
+}
+
+.search-bar-input{
+    background-color: transparent;
+    width: 100%;
+    border: none;
+    color: white;
+    font-size: 16px;
+    &:focus-visible{
+        background-color: transparent;
+        border: none;
+        outline: none;
+    }
+}
+
+.btn-search-bar{
+    height: 30px;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}

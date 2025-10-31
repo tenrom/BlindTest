@@ -253,11 +253,11 @@ function getPlaylists(channelid='',mine=false,after){
 
 function getPlaylistItems(playlistid,mine=false,after){
     if (mine){
-        fetch(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet,status&maxResults=500&playlistId=${playlistid}&access_token=${ACCESS_TOKEN}`).then(res => res.json()).then(res => {
+        fetch(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet,status,contentDetails&maxResults=500&playlistId=${playlistid}&access_token=${ACCESS_TOKEN}`).then(res => res.json()).then(res => {
             after(res)
         }).catch(refresh)
     }else{
-        fetch(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet,status&maxResults=500&playlistId=${playlistid}&access_token=${ACCESS_TOKEN}`).then(res => res.json()).then(res => {
+        fetch(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet,status,contentDetails&maxResults=500&playlistId=${playlistid}&access_token=${ACCESS_TOKEN}`).then(res => res.json()).then(res => {
             after(res)
         }).catch(refresh)
     }
@@ -268,7 +268,9 @@ function ShowPlaylist(json){
     console.log(json)
     db=json
     for (let i in json['items']){
-        playlistIds.push(json['items'][i]['snippet']['resourceId']['videoId'])
+        if (json['items'][i]['status']['privacyStatus']==='public'){
+            playlistIds.push(json['items'][i]['snippet']['resourceId']['videoId'])
+        }
     }
 
     document.getElementById('playlist-container').style.display='flex'
@@ -282,10 +284,11 @@ function ShowPlaylist(json){
         }catch{
 
         }
-
-        html+=`
-            <yt-playlist-item text-author="${j['snippet']['videoOwnerChannelTitle']}" text-title="${j['snippet']['title']}" img='${url}' id='${i}' square='${'true'}' ytid='${j['snippet']['resourceId']['videoId']}'></yt-playlist-item>
-        `
+        if (j['status']['privacyStatus']==='public'){
+            html+=`
+                <yt-playlist-item text-author="${j['snippet']['videoOwnerChannelTitle']}" text-title="${j['snippet']['title']}" img='${url}' id='${i}' square='${'true'}' ytid='${j['snippet']['resourceId']['videoId']}'></yt-playlist-item>
+            `
+        }
     }
 
     document.getElementById('div-playlists-items').innerHTML+=html
@@ -321,7 +324,7 @@ function ShowPlaylist(json){
         }
 
         if (json['items'][0]['snippet']['playlistId']==='LL'){
-            url='https://www.gstatic.com/youtube/media/ytm/images/pbg/liked-music-@1200.png'
+            url='https://www.gstatic.com/youtube/media/ytm/images/pbg/liked-songs-delhi-1200.png' // 'https://www.gstatic.com/youtube/media/ytm/images/pbg/liked-music-@1200.png'
         }
 
         document.getElementsByTagName('playlist-img')[0].setAttribute('img0',url)
@@ -391,7 +394,7 @@ function ShowPlaylists(json){
     let html=''
     if (urlParams.get('mine')==='true'){
         html+=`
-            <yt-playlist text-author="Playlist automatique" text-title="Liked videos" img='https://www.gstatic.com/youtube/media/ytm/images/pbg/liked-music-@1200.png' listid='LL' square='${'true'}'></yt-playlist>
+            <yt-playlist text-author="Playlist automatique" text-title="Liked videos" img='https://www.gstatic.com/youtube/media/ytm/images/pbg/liked-songs-delhi-1200.png' listid='LL' square='${'true'}'></yt-playlist>
         `
     }
     
@@ -404,7 +407,7 @@ function ShowPlaylists(json){
         }catch{
 
         }
-
+        
         html+=`
             <yt-playlist text-author="${j['snippet']['channelTitle']}" text-title="${j['snippet']['title']}" img='${url}' listid='${j['id']}' square='${'true'}'></yt-playlist>
         `
@@ -432,6 +435,10 @@ function ShowPlaylists(json){
 
 }
 
+function ShowSearch(){
+    document.getElementById('explore-search-container').style.display='flex'
+}
+
 function initialization(){
     if (urlParams.get('code')){
         if (localStorage.getItem('client_secret')){
@@ -451,30 +458,36 @@ function initialization(){
             document.getElementById('btn-signin').style.display='block'
         }
     }
-    if (urlParams.get('token')){
-        ACCESS_TOKEN=urlParams.get('token')
-    }
-    if (urlParams.get('mine')==='true'){
-        if (urlParams.get('mine')==='true'){
-            console.log('Mine')
-            if (urlParams.get('list')){
-                getPlaylistItems(urlParams.get('list'),mine=true,ShowPlaylist)
-            }else{
-                getPlaylists(channelid='',mine=true,ShowPlaylists)
-            }
-        }
+    if (window.parent.location.search.includes('explore=1')){
+        ShowSearch()
+    }else if (window.parent.location.search.includes('welcome=1')){
+
     }else{
-        if (urlParams.get('list')){
-            if (urlParams.get('code')){
-                exchangeCodeForTokens(urlParams.get('code'),()=>{
-                    getPlaylistItems(urlParams.get('list'),mine=true,ShowPlaylist)
-                },false)
-            }else{
-                getPlaylistItems(urlParams.get('list'),false,ShowPlaylist)
-            }
+        if (urlParams.get('token')){
+            ACCESS_TOKEN=urlParams.get('token')
         }
-        if (urlParams.get('channel')){
-            getPlaylists(channelid=urlParams.get('channel'),false,ShowPlaylists)
+        if (urlParams.get('mine')==='true'){
+            if (urlParams.get('mine')==='true'){
+                console.log('Mine')
+                if (urlParams.get('list')){
+                    getPlaylistItems(urlParams.get('list'),mine=true,ShowPlaylist)
+                }else{
+                    getPlaylists(channelid='',mine=true,ShowPlaylists)
+                }
+            }
+        }else{
+            if (urlParams.get('list')){
+                if (urlParams.get('code')){
+                    exchangeCodeForTokens(urlParams.get('code'),()=>{
+                        getPlaylistItems(urlParams.get('list'),mine=true,ShowPlaylist)
+                    },false)
+                }else{
+                    getPlaylistItems(urlParams.get('list'),false,ShowPlaylist)
+                }
+            }
+            if (urlParams.get('channel')){
+                getPlaylists(channelid=urlParams.get('channel'),false,ShowPlaylists)
+            }
         }
     }
 }
@@ -1056,3 +1069,44 @@ document.addEventListener('touchend',(e)=>{
         document.body.style.overflow=''
     }
 })
+
+function isoDurationToArray(isoDuration) {
+    let hours = 0, minutes = 0, seconds = 0;
+    
+    const hoursMatch = isoDuration.match(/(\d+)H/);
+    const minutesMatch = isoDuration.match(/(\d+)M/);
+    const secondsMatch = isoDuration.match(/(\d+)S/);
+    
+    if (hoursMatch) hours = parseInt(hoursMatch[1], 10);
+    if (minutesMatch) minutes = parseInt(minutesMatch[1], 10);
+    if (secondsMatch) seconds = parseInt(secondsMatch[1], 10);
+    
+    return [hours, minutes, seconds];
+}
+
+
+function convert_time(duration) {
+    if (duration.includes('PT')){
+        let a = isoDurationToArray(duration)
+        let d = 0
+
+        if(a.length == 3) {
+            d = d + parseInt(a[0]) * 3600;
+            d = d + parseInt(a[1]) * 60;
+            d = d + parseInt(a[2]);
+        }
+        if(a.length == 2) {
+            d = d + parseInt(a[0]) * 60;
+            d = d + parseInt(a[1]);
+        }
+        if(a.length == 1) {
+            d = d + parseInt(a[0]);
+        }
+        return formatTime(d)
+    }else{
+        console.error('Invalid ISO 8601 time.')
+    }
+}
+
+
+
