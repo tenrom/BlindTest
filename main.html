@@ -51,11 +51,34 @@
                 <img id="channel-img" class="channel-img">
                 <div id="playlist-author" class="playlist-text-title"></div>
             </div>
-            <div class="div-playlists" id="div-playlists"></div>
+            
+            <div style="display: flex;flex-direction: column;width: 100%;">
+                <div class="channel-nav" id="channel-nav">
+                    <div class="channel-nav-tab" id="btn-channel-l" select="true">
+                        Playlists
+                    </div>
+                    <div class="channel-nav-tab" id="btn-channel-v">
+                        Videos
+                    </div>
+                    <div class="channel-nav-tab" id="btn-channel-s">
+                        Shorts
+                    </div>
+                </div>
+                <div class="div-videos" id="div-videos">
+                    Aucune video n'est disponible.
+                </div>
+                <div class="div-shorts" id="div-shorts">
+                    Aucun short n'est disponible.
+                </div>
+                <div class="div-playlists" id="div-playlists">
+                    Aucune playlist n'est disponible.&nbsp;&nbsp;&nbsp;&nbsp;
+                </div>
+            </div>
+            
         </div>
 
         <div class="explore-search-container" id="explore-search-container" style="display: none;">
-            <div class="search-bar">
+            <div class="search-bar" id="search-bar">
                 <input type="search" class="search-bar-input" id="search-bar-input" placeholder="Recherche une video, une playlist ou une chaîne">
                 <div class="btn-search-bar" id="btn-search-bar">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M9.5 16q-2.725 0-4.612-1.888T3 9.5t1.888-4.612T9.5 3t4.613 1.888T16 9.5q0 1.1-.35 2.075T14.7 13.3l5.6 5.6q.275.275.275.7t-.275.7t-.7.275t-.7-.275l-5.6-5.6q-.75.6-1.725.95T9.5 16m0-2q1.875 0 3.188-1.312T14 9.5t-1.312-3.187T9.5 5T6.313 6.313T5 9.5t1.313 3.188T9.5 14"/></svg>
