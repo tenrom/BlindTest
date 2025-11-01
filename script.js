@@ -352,52 +352,33 @@ function ShowPlaylist(json){
         document.getElementById('playlist-author-items').innerText='Playlist automatique'
     }
 
-    if (urlParams.get('mine')==='true'){
-        fetch(`https://youtube.googleapis.com/youtube/v3/playlists?part=snippet&maxResults=500&id=${json['items'][0]['snippet']['playlistId']}&access_token=${ACCESS_TOKEN}`).then(res => res.json()).then(res => {
-            console.log(res)
-            document.getElementById('playlist-title-items').innerText=res['items'][0]['snippet']['title']
-            document.getElementById('playlist-banner-title').innerText=res['items'][0]['snippet']['title']
+    
+    fetch(`https://youtube.googleapis.com/youtube/v3/playlists?part=snippet&maxResults=500&id=${json['items'][0]['snippet']['playlistId']}&access_token=${ACCESS_TOKEN}`).then(res => res.json()).then(res => {
+        console.log(res)
+        document.getElementById('playlist-title-items').innerText=res['items'][0]['snippet']['title']
+        document.getElementById('playlist-banner-title').innerText=res['items'][0]['snippet']['title']
+        
+        let url=res['items'][0]['snippet']['thumbnails']['medium']['url']
+        try{
+             url=res['items'][0]['snippet']['thumbnails']['maxres']['url']
+        }catch{}
 
-            let url=res['items'][0]['snippet']['thumbnails']['medium']['url']
-            try{
-                url=res['items'][0]['snippet']['thumbnails']['maxres']['url']
-            }catch{}
-
-            if (new URL(url).hostname!=='i.ytimg.com'){
-                document.getElementsByTagName('playlist-img')[0].innerHTML=''
-                document.getElementsByTagName('playlist-img')[0].setAttribute('img0',url)
-                document.getElementsByTagName('playlist-img')[0].Create1Img()
-            }
+        if (new URL(url).hostname!=='i.ytimg.com'){
+            document.getElementsByTagName('playlist-img')[0].innerHTML=''
+            document.getElementsByTagName('playlist-img')[0].setAttribute('img0',url)
+            document.getElementsByTagName('playlist-img')[0].Create1Img()
+        }
             
-            let p=document.getElementsByTagName('playlist-img')[0]
-            let blur=p.cloneNode(true)
-            blur.style.filter='blur(60px)'
-            blur.style.transform='scale(2,2) translate(0,-33px)'
-            blur.style.opacity='0.9'
-            blur.style.position='absolute'
-            blur.style.zIndex='-1'
-
-            p.parentNode.insertBefore(blur,p)
-        })
-    }else{
-        fetch(`https://youtube.googleapis.com/youtube/v3/playlists?part=snippet&maxResults=500&id=${json['items'][0]['snippet']['playlistId']}&access_token=${ACCESS_TOKEN}`).then(res => res.json()).then(res => {
-            document.getElementById('playlist-title-items').innerText=res['items'][0]['snippet']['title']
-            document.getElementById('playlist-banner-title').innerText=res['items'][0]['snippet']['title']
-            
-        })
-    }
-
-    if (urlParams.get('mine')!=='true'){
         let p=document.getElementsByTagName('playlist-img')[0]
         let blur=p.cloneNode(true)
-        blur.style.filter='blur(40px)'
+        blur.style.filter='blur(60px)'
         blur.style.transform='scale(2,2) translate(0,-33px)'
         blur.style.opacity='0.9'
         blur.style.position='absolute'
         blur.style.zIndex='-1'
 
         p.parentNode.insertBefore(blur,p)
-    }
+    })
 }
 
 function ShowPlaylists(json){
@@ -1236,5 +1217,6 @@ function search(){
     else if (t==='v'){
         console.log(value)
     }
+
 
 }
