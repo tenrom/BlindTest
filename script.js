@@ -1202,6 +1202,7 @@ function search(){
                 urlParams.set('channel',res['items'][0]['id'])
                 urlParams.set('mine','false')
                 urlParams.delete('explore',urlParams.get('explore'))
+                urlParams.delete('list',urlParams.get('list'))
                 open(location.href.replace(location.search,'')+'?'+urlParams.toString(),'_self')
             }
         }).catch(refresh)
@@ -1220,3 +1221,4 @@ function search(){
 
 
 }
+
