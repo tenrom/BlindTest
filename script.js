@@ -2,6 +2,7 @@ const lerp = (x, y, a) => x * (1 - a) + y * a;
 const clamp = (a, min = 0, max = 1) => Math.min(max, Math.max(min, a));
 
 let db
+let channelId
 let playlistIds=[]
 
 let CLIENT_ID
@@ -352,15 +353,14 @@ function ShowPlaylist(json){
         document.getElementById('playlist-author-items').innerText='Playlist automatique'
     }
 
-    
     fetch(`https://youtube.googleapis.com/youtube/v3/playlists?part=snippet&maxResults=500&id=${json['items'][0]['snippet']['playlistId']}&access_token=${ACCESS_TOKEN}`).then(res => res.json()).then(res => {
         console.log(res)
         document.getElementById('playlist-title-items').innerText=res['items'][0]['snippet']['title']
         document.getElementById('playlist-banner-title').innerText=res['items'][0]['snippet']['title']
-        
+
         let url=res['items'][0]['snippet']['thumbnails']['medium']['url']
         try{
-             url=res['items'][0]['snippet']['thumbnails']['maxres']['url']
+            url=res['items'][0]['snippet']['thumbnails']['maxres']['url']
         }catch{}
 
         if (new URL(url).hostname!=='i.ytimg.com'){
@@ -368,7 +368,7 @@ function ShowPlaylist(json){
             document.getElementsByTagName('playlist-img')[0].setAttribute('img0',url)
             document.getElementsByTagName('playlist-img')[0].Create1Img()
         }
-            
+        
         let p=document.getElementsByTagName('playlist-img')[0]
         let blur=p.cloneNode(true)
         blur.style.filter='blur(60px)'
@@ -421,6 +421,7 @@ function ShowPlaylists(json){
             console.log(res)
             document.getElementById('channel-img').src=res['items'][0]['snippet']['thumbnails']['high']['url']
             document.getElementById('playlist-author').innerText=res['items'][0]['snippet']['title']
+            channelId=res['items'][0]['id']
         })  
     }else{
         fetch(`https://youtube.googleapis.com/youtube/v3/channels?part=snippet&id=${urlParams.get('channel')}&access_token=${ACCESS_TOKEN}`).then(res => res.json()).then(res => {
@@ -673,6 +674,8 @@ class musicPlayer extends HTMLElement{
         document.getElementById('mp-text-playlist').innerText=document.getElementById('playlist-title-items').innerText
 
         document.getElementById('playlist-container').style.paddingBottom='72px'
+        document.getElementById('div-videos').style.paddingBottom='52px'
+        document.getElementById('div-shorts').style.paddingBottom='52px'
     }
     hide(){
         document.body.style.overflow=''
@@ -1219,7 +1222,89 @@ function search(){
         console.log(value)
     }
 
-
 }
 
+function ResetChannelNav(){
+    document.getElementById('div-playlists').style.display='none'
+    document.getElementById('div-videos').style.display='none'
+    document.getElementById('div-shorts').style.display='none'
+    document.getElementById('btn-channel-l').setAttribute('select','false')
+    document.getElementById('btn-channel-v').setAttribute('select','false')
+    document.getElementById('btn-channel-s').setAttribute('select','false')
+}
 
+document.getElementById('btn-channel-l').addEventListener('click',()=>{
+    ResetChannelNav()
+    document.getElementById('div-playlists').style.display='flex'
+    document.getElementById('btn-channel-l').setAttribute('select','true')
+})
+
+document.getElementById('btn-channel-v').addEventListener('click',()=>{
+    ResetChannelNav()
+    document.getElementById('div-videos').style.display='flex'
+    document.getElementById('btn-channel-v').setAttribute('select','true')
+    
+    let playlistid
+    if (!urlParams.get('mine')){
+        playlistid='UULF'+urlParams.get('channel').slice(2)
+    }else{
+        playlistid='UULF'+channelId
+    }
+    fetch(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet,status,contentDetails&maxResults=500&playlistId=${playlistid}&access_token=${ACCESS_TOKEN}`).then(res => res.json()).then(res => {
+        ShowChannelUploads(res,'Videos')
+    }).catch(refresh)
+})
+
+document.getElementById('btn-channel-s').addEventListener('click',()=>{
+    ResetChannelNav()
+    document.getElementById('div-shorts').style.display='flex'
+    document.getElementById('btn-channel-s').setAttribute('select','true')
+
+    let playlistid
+    if (!urlParams.get('mine')){
+        playlistid='UUSH'+urlParams.get('channel').slice(2)
+    }else{
+        playlistid='UUSH'+channelId
+    }
+    
+
+    fetch(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet,status,contentDetails&maxResults=500&playlistId=${playlistid}&access_token=${ACCESS_TOKEN}`).then(res => res.json()).then(res => {
+        ShowChannelUploads(res,'Shorts')
+    }).catch(refresh)
+})
+
+
+
+function ShowChannelUploads(json,type){
+    if (json['items']){
+        console.log(json)
+        db=json
+        for (let i in json['items']){
+            if (json['items'][i]['status']['privacyStatus']==='public'){
+                playlistIds.push(json['items'][i]['snippet']['resourceId']['videoId'])
+            }
+        }
+
+        let html=''
+
+        document.getElementById('playlist-title-items').innerText=type
+
+        for (let i in json['items']){
+            let j=json['items'][i]
+            if (j['status']['privacyStatus']==='public'){
+                let url=j['snippet']['thumbnails']['medium']['url']
+                try{
+                    url=j['snippet']['thumbnails']['maxres']['url']
+                }catch{
+
+                }
+            
+                html+=`
+                    <yt-playlist-item text-author="${j['snippet']['videoOwnerChannelTitle']}" text-title="${j['snippet']['title']}" img='${url}' id='${i}' square='${'true'}' ytid='${j['snippet']['resourceId']['videoId']}'></yt-playlist-item>
+                `
+            }
+        }
+
+        document.getElementById('div-'+type.toLowerCase()).innerHTML=html
+    }
+}

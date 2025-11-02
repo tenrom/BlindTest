@@ -90,7 +90,7 @@ body{
     align-items: center;
     width: 100%;
     background-color: #000000;
-    padding-left: 6px;
+    padding-left: 12px;
     color: white;
     font-family: 'Roboto', sans-serif;
 }
@@ -102,7 +102,7 @@ body{
     align-items: center;
     width: 100%;
     background-color: #000000;
-    padding-left: 12px;
+    padding-left: 24px;
 }
 
 
@@ -590,6 +590,7 @@ body{
     height: 50px;
     gap: 15px;
     padding-left: 20px;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .channel-nav-tab{
@@ -616,6 +617,7 @@ body{
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    padding-left: 12px;
 }
 
 .div-shorts{
@@ -625,4 +627,13 @@ body{
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    padding-left: 12px;
+}
+
+.channel-nav-text-error{
+    width: 100%;
+    position: relative;
+    left: 0;
+    font-size: 16px;
+    text-align: center;
 }

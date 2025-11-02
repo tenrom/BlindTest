@@ -61,6 +61,9 @@
                 urlParams = new URLSearchParams(window.parent.location.search);
                 urlParams.delete('explore',urlParams.get('explore'))
                 urlParams.delete('welcome',urlParams.get('welcome'))
+                urlParams.delete('list',urlParams.get('list'))
+                urlParams.delete('channel',urlParams.get('channel'))
+                urlParams.set('mine','true')
             }
             open(window.parent.location.href.replace(window.parent.location.search,'')+'?'+urlParams.toString(),'_parent')
         })
