@@ -1245,7 +1245,7 @@ document.getElementById('btn-channel-v').addEventListener('click',()=>{
     document.getElementById('btn-channel-v').setAttribute('select','true')
     
     let playlistid
-    if (!urlParams.get('mine')){
+    if (urlParams.get('mine')!==true){
         playlistid='UULF'+urlParams.get('channel').slice(2)
     }else{
         playlistid='UULF'+channelId
@@ -1261,7 +1261,7 @@ document.getElementById('btn-channel-s').addEventListener('click',()=>{
     document.getElementById('btn-channel-s').setAttribute('select','true')
 
     let playlistid
-    if (!urlParams.get('mine')){
+    if (urlParams.get('mine')!==true){
         playlistid='UUSH'+urlParams.get('channel').slice(2)
     }else{
         playlistid='UUSH'+channelId
@@ -1307,4 +1307,5 @@ function ShowChannelUploads(json,type){
 
         document.getElementById('div-'+type.toLowerCase()).innerHTML=html
     }
+
 }
