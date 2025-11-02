@@ -76,18 +76,18 @@ function authenticate() {
 }
 
 function refresh(){
-    // try {
-    //     if ((JSON.parse(localStorage.getItem('refresh'))['refresh_token'])){
-    //         exchangeCodeForTokens(JSON.parse(localStorage.getItem('refresh'))['refresh_token'] ,()=>{
-    //             urlParams.set('token',ACCESS_TOKEN)
-    //             open(location.href.replace(location.search,'')+'?'+urlParams.toString(),'_self')
-    //         },true) 
-    //     }else{
-    //         open(location.href.replace(location.search,''),'_self')
-    //     }
-    // }catch{
-    //     open(location.href.replace(location.search,''),'_self')
-    // }
+    try {
+        if ((JSON.parse(localStorage.getItem('refresh'))['refresh_token'])){
+            exchangeCodeForTokens(JSON.parse(localStorage.getItem('refresh'))['refresh_token'] ,()=>{
+                urlParams.set('token',ACCESS_TOKEN)
+                open(location.href.replace(location.search,'')+'?'+urlParams.toString(),'_self')
+            },true) 
+        }else{
+            open(location.href.replace(location.search,''),'_self')
+        }
+    }catch{
+        open(location.href.replace(location.search,''),'_self')
+    }
 }
 
 function exchangeCodeForTokens(code,after,refresh) {
@@ -1221,4 +1221,5 @@ function search(){
 
 
 }
+
 
