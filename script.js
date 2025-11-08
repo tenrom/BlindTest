@@ -42,10 +42,18 @@ function resize(){
         document.getElementById('mp-img').style.alignSelf='center'
     }
 
+    if (document.getElementById('bt-img').clientHeight*16/9>document.getElementById('mp-img').clientWidth){
+        document.getElementById('bt-img').style.width=document.getElementById('bt-img').clientHeight+'px'
+        document.getElementById('bt-img').style.alignSelf='center'
+    }
+
     if (issmall){
         document.getElementById('mp').animState(1)
     }
 
+    if (bt_visible){
+        document.getElementById('bt').animState(0)
+    }
 }
 window.addEventListener('resize',()=>{
     resize()
