@@ -183,7 +183,7 @@ class BlindTest extends HTMLElement{
             document.getElementById('countdownCircle').style.transition='stroke-dashoffset '+bt_duration_song+'s linear'
             document.getElementById('countdownCircle').style.strokeDashoffset='282.7px'
             
-            let seed='hello'
+            let seed=CryptoJS.SHA3(String(Date.now())).toString().slice(0,15)
             bt_rng = new Math.seedrandom(seed)
             
             bt_playlist=[]
