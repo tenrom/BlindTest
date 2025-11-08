@@ -4,6 +4,8 @@ const clamp = (a, min = 0, max = 1) => Math.min(max, Math.max(min, a));
 let db
 let channelId
 let playlistIds=[]
+let playlistSongs=[]
+let playlistSongsInfo={}
 
 let CLIENT_ID
 let CLIENT_SECRET
@@ -283,6 +285,8 @@ function ShowPlaylist(json){
     for (let i in json['items']){
         if (json['items'][i]['status']['privacyStatus']==='public'){
             playlistIds.push(json['items'][i]['snippet']['resourceId']['videoId'])
+            playlistSongs.push([json['items'][i]['snippet']['resourceId']['videoId'],json['items'][i]['snippet']['title'],json['items'][i]['snippet']['videoOwnerChannelTitle']])
+            playlistSongsInfo[json['items'][i]['snippet']['resourceId']['videoId']]=[json['items'][i]['snippet']['title'],json['items'][i]['snippet']['videoOwnerChannelTitle']]
         }
     }
 
@@ -1290,6 +1294,7 @@ function ShowChannelUploads(json,type){
         for (let i in json['items']){
             if (json['items'][i]['status']['privacyStatus']==='public'){
                 playlistIds.push(json['items'][i]['snippet']['resourceId']['videoId'])
+                playlistSongs.push([json['items'][i]['snippet']['resourceId']['videoId'],json['items'][i]['snippet']['title'],json['items'][i]['snippet']['videoOwnerChannelTitle']])
             }
         }
 

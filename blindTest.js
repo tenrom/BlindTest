@@ -2,13 +2,15 @@ class BlindTestButton extends HTMLElement{
     constructor(){
         super()
     }
+    setAnswer(text){
+        this.children[0].innerText=text
+        this.children[0].style.backgroundColor=''
+    }
     connectedCallback(){
         this.classList.add('bt-btn')
 
         this.innerHTML=`
-        <div class="bt-btn-div" id="bt-btn-div">
-            Test
-        </div>
+        <div class="bt-btn-div" id="bt-btn-div"></div>
         `
 
         this.addEventListener('click',()=>{
@@ -29,6 +31,13 @@ let bt_reverse
 let bt_visible=false
 let bt_player
 let bt_playlist=[]
+let bt_number_song=10
+let bt_duration_song=10
+let bt_title_song
+let bt_author_song
+let getRandomInt=(rng,min, max)=>{
+    return Math.floor(rng() * (max - min + 1)) + min;
+}
 
 function bt_animate(){
     let time=performance.now()
@@ -93,7 +102,37 @@ class BlindTest extends HTMLElement{
             this.style.translate='0px 0px'
         }
     }
-    LoadSong(id){
+    SetAnswerAuthor(id,rng){
+        let playlist=playlistSongs.map(e => e[2]);
+        playlist=playlist.filter((value, index, self) => self.indexOf(value) === index);
+        
+        let answers=[playlistSongsInfo[id][1]]
+        playlist.splice(playlist.indexOf(playlistSongsInfo[id][1]),1)
+        for (let i=0;i<3;i++){
+            answers.push(playlist.splice(getRandomInt(rng,0,playlist.length-1),1)[0])
+        }
+
+        document.getElementById('bt-answer1').setAnswer(answers.splice(getRandomInt(rng,0,answers.length-1),1)[0])
+        document.getElementById('bt-answer2').setAnswer(answers.splice(getRandomInt(rng,0,answers.length-1),1)[0])
+        document.getElementById('bt-answer3').setAnswer(answers.splice(getRandomInt(rng,0,answers.length-1),1)[0])
+        document.getElementById('bt-answer4').setAnswer(answers.splice(getRandomInt(rng,0,answers.length-1),1)[0])
+    }
+    SetAnswerTitle(id,rng){
+        let playlist=playlistSongs.map(e => e[1]);
+        playlist=playlist.filter((value, index, self) => self.indexOf(value) === index);
+        
+        let answers=[playlistSongsInfo[id][0]]
+        playlist.splice(playlist.indexOf(playlistSongsInfo[id][0]),1)
+        for (let i=0;i<3;i++){
+            answers.push(playlist.splice(getRandomInt(rng,0,playlist.length-1),1)[0])
+        }
+
+        document.getElementById('bt-answer1').setAnswer(answers.splice(getRandomInt(rng,0,answers.length-1),1)[0])
+        document.getElementById('bt-answer2').setAnswer(answers.splice(getRandomInt(rng,0,answers.length-1),1)[0])
+        document.getElementById('bt-answer3').setAnswer(answers.splice(getRandomInt(rng,0,answers.length-1),1)[0])
+        document.getElementById('bt-answer4').setAnswer(answers.splice(getRandomInt(rng,0,answers.length-1),1)[0])
+    }
+    LoadSong(id,rng){
         bt_player.source = {
             type: 'video',
             sources: [{
@@ -104,19 +143,23 @@ class BlindTest extends HTMLElement{
 
         document.getElementById('countdownCircle').style.transition='none'
         document.getElementById('countdownCircle').style.strokeDashoffset='282.7px'
+        document.getElementById('bt-question-counter').innerText='Question '+(bt_number_song-bt_playlist.length+1)+' of '+bt_number_song
+
         bt_player.once('ready',()=>{
             bt_player.embed.setVolume(100) 
             document.getElementsByClassName('plyr__control')[19].click()
-            document.getElementById('countdownCircle').style.transition='stroke-dashoffset '+5000+'ms linear'
-            document.getElementById('countdownCircle').style.strokeDashoffset='0px'
-            
 
-            indexMusic=playlistIds.indexOf(id)
+            this.SetAnswerTitle(id,rng)
+        })
+
+        bt_player.once('play',()=>{
+            document.getElementById('countdownCircle').style.transition='stroke-dashoffset '+bt_duration_song+'s linear'
+            document.getElementById('countdownCircle').style.strokeDashoffset='0px'
 
             setTimeout(()=>{
                 bt_playlist.splice(0,1)
-                this.LoadSong(bt_playlist[0])
-            },5000)
+                this.LoadSong(bt_playlist[0],rng)
+            },bt_duration_song*1000)
         })
     }
     show(){
@@ -133,7 +176,26 @@ class BlindTest extends HTMLElement{
         let author=document.getElementsByTagName('yt-playlist-item')[0].getAttribute('text-author')
         document.getElementById('bt-text-title').innerText=title
         document.getElementById('bt-text-author').innerText=author
+        document.getElementById('bt-title').innerText='Blind Test: '+document.getElementById('playlist-title-items').innerText
 
+        let next=()=>{
+            document.getElementById('countdownCircle').style.transition='stroke-dashoffset '+bt_duration_song+'s linear'
+            document.getElementById('countdownCircle').style.strokeDashoffset='282.7px'
+            
+            let seed='hello'
+            let rng = new Math.seedrandom(seed)
+            
+
+            bt_playlist=[]
+            let playlist=playlistIds
+            for (let i=0;i<bt_number_song;i++){
+                let index=getRandomInt(rng,0,playlist.length-1)
+                bt_playlist.push(playlist.splice(index,1)[0])
+            }
+            console.log(bt_playlist)
+            document.getElementsByClassName('plyr__control')[19].click()
+            document.getElementById('bt').LoadSong(bt_playlist[0],rng) 
+        }
         if (document.getElementById('bt-player')){
             document.getElementById('bt-player').setAttribute('data-plyr-embed-id','KGM_2z4GW-8')
             bt_player = new Plyr('#bt-player',{
@@ -150,25 +212,20 @@ class BlindTest extends HTMLElement{
             });
 
             window.bt_player = bt_player
+
+            bt_player.once('ready',()=>{
+                console.log('Yes')
+                next()
+            })
+
+            bt_player.on('timeupdate',()=>{
+                document.getElementById('timerDisplay').innerHTML=Math.round(bt_duration_song-bt_player.currentTime)
+            })
+        }else{
+            next()
         }
 
-        document.getElementById('countdownCircle').style.transition='stroke-dashoffset '+5000+'ms linear'
-        document.getElementById('countdownCircle').style.strokeDashoffset='282.7px'
         
-        let rng = new Math.seedrandom('hello')
-        let getRandomInt=(rng,min, max)=>{
-            return Math.floor(rng() * (max - min + 1)) + min;
-        }
-
-        let playlist=playlistIds
-        for (let i=0;i<10;i++){
-            let index=getRandomInt(rng,0,playlist.length-1)
-            bt_playlist.push(playlist.splice(index,1)[0])
-            
-        }
-        console.log(bt_playlist)
-        document.getElementsByClassName('plyr__control')[19].click()
-        this.LoadSong(bt_playlist[0]) 
     }
     hide(){
         document.body.style.overflow=''
@@ -191,8 +248,8 @@ class BlindTest extends HTMLElement{
                 <svg onclick="document.getElementById('bt').hide()" style="color:white;scale:1.3;padding:2px;z-index:3;width:24px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m11.25 4.75-6.5 6.5m0-6.5 6.5 6.5"/></svg>
                 <div class="bt-info-text">CHOOSE THE ARTIST</div>
             </div>
-            <div class='bt-title'>Blind Test: French Rap Hits</div>
-            <div class='bt-question-counter'>Question 1 of 5</div>
+            <div class='bt-title' id='bt-title'>Blind Test: French Rap Hits</div>
+            <div class='bt-question-counter' id="bt-question-counter">Question 1 of 5</div>
 
             <svg id="countdownSVG" class='countdownSVG' class="w-60 h-60" viewBox="0 0 100 100">
                 <defs>
@@ -235,6 +292,8 @@ class BlindTest extends HTMLElement{
         
         ctx.fillStyle = '#000000ff'; // Darker color for contrast
         ctx.fillRect(0,0,canvas.width,canvas.height)
+
+        
     }
 }
 
