@@ -35,6 +35,7 @@ let bt_number_song=10
 let bt_duration_song=10
 let bt_title_song
 let bt_author_song
+let bt_rng
 let getRandomInt=(rng,min, max)=>{
     return Math.floor(rng() * (max - min + 1)) + min;
 }
@@ -102,37 +103,37 @@ class BlindTest extends HTMLElement{
             this.style.translate='0px 0px'
         }
     }
-    SetAnswerAuthor(id,rng){
+    SetAnswerAuthor(id){
         let playlist=playlistSongs.map(e => e[2]);
         playlist=playlist.filter((value, index, self) => self.indexOf(value) === index);
         
         let answers=[playlistSongsInfo[id][1]]
         playlist.splice(playlist.indexOf(playlistSongsInfo[id][1]),1)
         for (let i=0;i<3;i++){
-            answers.push(playlist.splice(getRandomInt(rng,0,playlist.length-1),1)[0])
+            answers.push(playlist.splice(getRandomInt(bt_rng,0,playlist.length-1),1)[0])
         }
 
-        document.getElementById('bt-answer1').setAnswer(answers.splice(getRandomInt(rng,0,answers.length-1),1)[0])
-        document.getElementById('bt-answer2').setAnswer(answers.splice(getRandomInt(rng,0,answers.length-1),1)[0])
-        document.getElementById('bt-answer3').setAnswer(answers.splice(getRandomInt(rng,0,answers.length-1),1)[0])
-        document.getElementById('bt-answer4').setAnswer(answers.splice(getRandomInt(rng,0,answers.length-1),1)[0])
+        document.getElementById('bt-answer1').setAnswer(answers.splice(getRandomInt(bt_rng,0,answers.length-1),1)[0])
+        document.getElementById('bt-answer2').setAnswer(answers.splice(getRandomInt(bt_rng,0,answers.length-1),1)[0])
+        document.getElementById('bt-answer3').setAnswer(answers.splice(getRandomInt(bt_rng,0,answers.length-1),1)[0])
+        document.getElementById('bt-answer4').setAnswer(answers.splice(getRandomInt(bt_rng,0,answers.length-1),1)[0])
     }
-    SetAnswerTitle(id,rng){
+    SetAnswerTitle(id){
         let playlist=playlistSongs.map(e => e[1]);
         playlist=playlist.filter((value, index, self) => self.indexOf(value) === index);
         
         let answers=[playlistSongsInfo[id][0]]
         playlist.splice(playlist.indexOf(playlistSongsInfo[id][0]),1)
         for (let i=0;i<3;i++){
-            answers.push(playlist.splice(getRandomInt(rng,0,playlist.length-1),1)[0])
+            answers.push(playlist.splice(getRandomInt(bt_rng,0,playlist.length-1),1)[0])
         }
 
-        document.getElementById('bt-answer1').setAnswer(answers.splice(getRandomInt(rng,0,answers.length-1),1)[0])
-        document.getElementById('bt-answer2').setAnswer(answers.splice(getRandomInt(rng,0,answers.length-1),1)[0])
-        document.getElementById('bt-answer3').setAnswer(answers.splice(getRandomInt(rng,0,answers.length-1),1)[0])
-        document.getElementById('bt-answer4').setAnswer(answers.splice(getRandomInt(rng,0,answers.length-1),1)[0])
+        document.getElementById('bt-answer1').setAnswer(answers.splice(getRandomInt(bt_rng,0,answers.length-1),1)[0])
+        document.getElementById('bt-answer2').setAnswer(answers.splice(getRandomInt(bt_rng,0,answers.length-1),1)[0])
+        document.getElementById('bt-answer3').setAnswer(answers.splice(getRandomInt(bt_rng,0,answers.length-1),1)[0])
+        document.getElementById('bt-answer4').setAnswer(answers.splice(getRandomInt(bt_rng,0,answers.length-1),1)[0])
     }
-    LoadSong(id,rng){
+    LoadSong(id){
         bt_player.source = {
             type: 'video',
             sources: [{
@@ -149,18 +150,18 @@ class BlindTest extends HTMLElement{
             bt_player.embed.setVolume(100) 
             document.getElementsByClassName('plyr__control')[19].click()
 
-            this.SetAnswerTitle(id,rng)
+            this.SetAnswerTitle(id)
         })
 
-        bt_player.once('play',()=>{
-            document.getElementById('countdownCircle').style.transition='stroke-dashoffset '+bt_duration_song+'s linear'
-            document.getElementById('countdownCircle').style.strokeDashoffset='0px'
+        // bt_player.once('play',()=>{
+        //     document.getElementById('countdownCircle').style.transition='stroke-dashoffset '+bt_duration_song+'s linear'
+        //     document.getElementById('countdownCircle').style.strokeDashoffset='0px'
 
-            setTimeout(()=>{
-                bt_playlist.splice(0,1)
-                this.LoadSong(bt_playlist[0],rng)
-            },bt_duration_song*1000)
-        })
+        //     setTimeout(()=>{
+        //         bt_playlist.splice(0,1)
+        //         document.getElementById('bt').LoadSong(bt_playlist[0])
+        //     },bt_duration_song*1000)
+        // })
     }
     show(){
         document.body.style.overflow='hidden'
@@ -183,18 +184,18 @@ class BlindTest extends HTMLElement{
             document.getElementById('countdownCircle').style.strokeDashoffset='282.7px'
             
             let seed='hello'
-            let rng = new Math.seedrandom(seed)
+            bt_rng = new Math.seedrandom(seed)
             
 
             bt_playlist=[]
             let playlist=playlistIds
             for (let i=0;i<bt_number_song;i++){
-                let index=getRandomInt(rng,0,playlist.length-1)
+                let index=getRandomInt(bt_rng,0,playlist.length-1)
                 bt_playlist.push(playlist.splice(index,1)[0])
             }
             console.log(bt_playlist)
             document.getElementsByClassName('plyr__control')[19].click()
-            document.getElementById('bt').LoadSong(bt_playlist[0],rng) 
+            document.getElementById('bt').LoadSong(bt_playlist[0],bt_rng) 
         }
         if (document.getElementById('bt-player')){
             document.getElementById('bt-player').setAttribute('data-plyr-embed-id','KGM_2z4GW-8')
@@ -220,6 +221,16 @@ class BlindTest extends HTMLElement{
 
             bt_player.on('timeupdate',()=>{
                 document.getElementById('timerDisplay').innerHTML=Math.round(bt_duration_song-bt_player.currentTime)
+            })
+
+            bt_player.on('play',()=>{
+                document.getElementById('countdownCircle').style.transition='stroke-dashoffset '+bt_duration_song+'s linear'
+                document.getElementById('countdownCircle').style.strokeDashoffset='0px'
+
+                setTimeout(()=>{
+                    bt_playlist.splice(0,1)
+                    document.getElementById('bt').LoadSong(bt_playlist[0])
+                },bt_duration_song*1000)
             })
         }else{
             next()
@@ -292,8 +303,6 @@ class BlindTest extends HTMLElement{
         
         ctx.fillStyle = '#000000ff'; // Darker color for contrast
         ctx.fillRect(0,0,canvas.width,canvas.height)
-
-        
     }
 }
 
@@ -301,5 +310,11 @@ window.customElements.define('yt-blind-test',BlindTest)
 
 
 function Test(){
-    document.getElementsByClassName('plyr__control')[19].click()
+    document.getElementById('countdownCircle').style.transition='stroke-dashoffset '+bt_duration_song+'s linear'
+    document.getElementById('countdownCircle').style.strokeDashoffset='0px'
+
+    setTimeout(()=>{
+        bt_playlist.splice(0,1)
+        document.getElementById('bt').LoadSong(bt_playlist[0])
+    },bt_duration_song*1000)
 }

@@ -102,7 +102,6 @@ player.on('timeupdate', () => {
 
 document.getElementById('btn-play').addEventListener('click',()=>{
     document.getElementById('bt').show()
-
 })
 
 
