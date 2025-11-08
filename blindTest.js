@@ -146,22 +146,23 @@ class BlindTest extends HTMLElement{
         document.getElementById('countdownCircle').style.strokeDashoffset='282.7px'
         document.getElementById('bt-question-counter').innerText='Question '+(bt_number_song-bt_playlist.length+1)+' of '+bt_number_song
 
-        bt_player.once('ready',()=>{
-            bt_player.embed.setVolume(100) 
-            document.getElementsByClassName('plyr__control')[19].click()
+        bt_player.once('play',()=>{
+            document.getElementById('countdownCircle').style.transition='stroke-dashoffset '+bt_duration_song+'s linear'
+            document.getElementById('countdownCircle').style.strokeDashoffset='0px'
 
-            this.SetAnswerTitle(id)
+            setTimeout(()=>{
+                bt_playlist.splice(0,1)
+                document.getElementById('bt').LoadSong(bt_playlist[0])
+            },bt_duration_song*1000)
         })
 
-        // bt_player.once('play',()=>{
-        //     document.getElementById('countdownCircle').style.transition='stroke-dashoffset '+bt_duration_song+'s linear'
-        //     document.getElementById('countdownCircle').style.strokeDashoffset='0px'
+        bt_player.once('ready',()=>{
+            bt_player.embed.setVolume(100) 
+            document.getElementsByClassName('plyr__control')[18].click()
 
-        //     setTimeout(()=>{
-        //         bt_playlist.splice(0,1)
-        //         document.getElementById('bt').LoadSong(bt_playlist[0])
-        //     },bt_duration_song*1000)
-        // })
+            document.getElementById('bt').SetAnswerTitle(id)
+        })
+        
     }
     show(){
         document.body.style.overflow='hidden'
@@ -188,13 +189,13 @@ class BlindTest extends HTMLElement{
             
 
             bt_playlist=[]
-            let playlist=playlistIds
+            let playlist=playlistSongs.map(e => e[0]);
             for (let i=0;i<bt_number_song;i++){
                 let index=getRandomInt(bt_rng,0,playlist.length-1)
                 bt_playlist.push(playlist.splice(index,1)[0])
             }
             console.log(bt_playlist)
-            document.getElementsByClassName('plyr__control')[19].click()
+            document.getElementsByClassName('plyr__control')[18].click()
             document.getElementById('bt').LoadSong(bt_playlist[0],bt_rng) 
         }
         if (document.getElementById('bt-player')){
@@ -223,15 +224,7 @@ class BlindTest extends HTMLElement{
                 document.getElementById('timerDisplay').innerHTML=Math.round(bt_duration_song-bt_player.currentTime)
             })
 
-            bt_player.on('play',()=>{
-                document.getElementById('countdownCircle').style.transition='stroke-dashoffset '+bt_duration_song+'s linear'
-                document.getElementById('countdownCircle').style.strokeDashoffset='0px'
-
-                setTimeout(()=>{
-                    bt_playlist.splice(0,1)
-                    document.getElementById('bt').LoadSong(bt_playlist[0])
-                },bt_duration_song*1000)
-            })
+            
         }else{
             next()
         }
