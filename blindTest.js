@@ -157,8 +157,7 @@ class BlindTest extends HTMLElement{
         })
 
         bt_player.once('ready',()=>{
-            bt_player.embed.setVolume(100) 
-            document.getElementsByClassName('plyr__control')[18].click()
+            bt_player.play()
 
             document.getElementById('bt').SetAnswerTitle(id)
         })
@@ -187,15 +186,13 @@ class BlindTest extends HTMLElement{
             let seed='hello'
             bt_rng = new Math.seedrandom(seed)
             
-
             bt_playlist=[]
             let playlist=playlistSongs.map(e => e[0]);
             for (let i=0;i<bt_number_song;i++){
                 let index=getRandomInt(bt_rng,0,playlist.length-1)
                 bt_playlist.push(playlist.splice(index,1)[0])
             }
-            console.log(bt_playlist)
-            document.getElementsByClassName('plyr__control')[18].click()
+            bt_player.play()
             document.getElementById('bt').LoadSong(bt_playlist[0],bt_rng) 
         }
         if (document.getElementById('bt-player')){
