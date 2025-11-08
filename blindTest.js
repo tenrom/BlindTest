@@ -251,7 +251,7 @@ class BlindTest extends HTMLElement{
             <div class='bt-title' id='bt-title'>Blind Test: French Rap Hits</div>
             <div class='bt-question-counter' id="bt-question-counter">Question 1 of 5</div>
 
-            <svg id="countdownSVG" class='countdownSVG' class="w-60 h-60" viewBox="0 0 100 100">
+            <svg onclick="Test()" id="countdownSVG" class='countdownSVG' class="w-60 h-60" viewBox="0 0 100 100">
                 <defs>
                     <linearGradient id="countdownGradient" x1="100%" y1="0%" x2="0%" y2="100%">
                         <stop offset="0%" style="stop-color: #FFA500; stop-opacity: 1"></stop> 
@@ -264,7 +264,7 @@ class BlindTest extends HTMLElement{
                 <text x="50" y="50" id="timerDisplay" text-anchor="middle" dominant-baseline="middle" fill="#FFFFFF" style="font-family:'Inter',sans-serif;font-size:30px;font-weight:800;">0</text>
             </svg>
 
-            <div class='bt-question'>WHO IS THE AUTHOR?</div>
+            <div class='bt-question'>WHAT IS THE TITLE?</div>
 
             <div style='display:flex;flex-direction:column;gap:0.75rem;justify-content:center;align-items:center;width:100%;'>
                 <yt-bt-button id="bt-answer1"></yt-bt-button>
@@ -298,3 +298,8 @@ class BlindTest extends HTMLElement{
 }
 
 window.customElements.define('yt-blind-test',BlindTest)
+
+
+function Test(){
+    document.getElementsByClassName('plyr__control')[19].click()
+}
