@@ -130,7 +130,7 @@ class BlindTest extends HTMLElement{
     setUpNext(){
         // Show Timer and last Solution
         document.getElementById('bt-question').style.display='flex'
-        document.getElementById('countdownSVG').style.display='block'
+        document.getElementById('countdownSVG-div').style.display='block'
         document.getElementById('bt-song').style.display='none'
 
         // Set Solution in Background
@@ -201,7 +201,7 @@ class BlindTest extends HTMLElement{
         // Set up text about Blind Test
         document.getElementById('bt-title').innerText='Blind Test: '+document.getElementById('playlist-title-items').innerText
         document.getElementById('bt-question-counter').innerText='Question 1 of '+bt_number_song
-
+        
         let runBlindTest=()=>{
             
             // Create Playlist Code
@@ -261,9 +261,13 @@ class BlindTest extends HTMLElement{
                     setTimeout(()=>{
                         // Hide Timer and Show Solution
                         document.getElementById('bt-question').style.display='none'
-                        document.getElementById('countdownSVG').style.display='none'
+                        document.getElementById('countdownSVG-div').style.display='none'
                         document.getElementById('bt-song').style.display='flex'
-                        document.getElementById('bt-img').style.width=document.getElementById('bt-img').clientHeight+'px'
+                        document.getElementById('bt-text-author').style.width='0px'
+                        document.getElementById('bt-text-title').style.width='0px'
+                        document.getElementById('bt-text-author').style.width=document.getElementById('bt-img').clientWidth-1+'px'
+                        document.getElementById('bt-text-title').style.width=document.getElementById('bt-img').clientWidth-1+'px'
+
                     },bt_duration_song*1000)
 
                     // Timer End
@@ -297,48 +301,53 @@ class BlindTest extends HTMLElement{
         <canvas class="bt-canvas" id="bt-canvas"></canvas>
         
         <div class="bt-container" id="bt-container">
-            <div class="bt-player-container" style="display: none;">
-                <div id="bt-player" data-plyr-provider="youtube" data-plyr-embed-id=""></div>
-            </div>
-            <div class="bt-separator"></div>
-            <div style="display:flex;width:100%;margin-top:16px;">
-                <svg onclick="document.getElementById('bt').hide()" style="color:white;scale:1.3;padding:2px;z-index:3;width:24px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m11.25 4.75-6.5 6.5m0-6.5 6.5 6.5"/></svg>
-                <div class="bt-info-text">CHOOSE THE ARTIST</div>
-            </div>
-            <div class='bt-title' id='bt-title'>Blind Test: French Rap Hits</div>
-            <div class='bt-question-counter' id="bt-question-counter">Question 1 of 5</div>
+            <div class='bt-container-part1'>
+                <div class="bt-player-container" style="display: none;">
+                    <div id="bt-player" data-plyr-provider="youtube" data-plyr-embed-id=""></div>
+                </div>
+                <div class="bt-separator"></div>
+                <div style="display:flex;width:100%;margin-top:16px;position:relative;">
+                    <svg onclick="document.getElementById('bt').hide()" style="color:white;scale:1.3;padding:2px;z-index:3;width:24px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m11.25 4.75-6.5 6.5m0-6.5 6.5 6.5"/></svg>
+                    <div class="bt-info-text">CHOOSE THE ARTIST</div>
+                </div>
+                <div class='bt-title' id='bt-title'>Blind Test: French Rap Hits</div>
+                <div class='bt-question-counter' id="bt-question-counter">Question 1 of 5</div>
 
-            <svg id="countdownSVG" class='countdownSVG' class="w-60 h-60" viewBox="0 0 100 100">
-                <defs>
-                    <linearGradient id="countdownGradient" x1="100%" y1="0%" x2="0%" y2="100%">
-                        <stop offset="0%" style="stop-color: #FFA500; stop-opacity: 1"></stop> 
-                        <stop offset="30%" style="stop-color: #FFA500; stop-opacity: 1"></stop> 
-                        <stop offset="100%" style="stop-color: #FF0000; stop-opacity: 1"></stop> 
-                    </linearGradient>
-                </defs>
-                <circle cx="50" cy="50" r="45" fill="none" stroke="#333333" stroke-width="8"></circle>
-                <circle id="countdownCircle" cx="50" cy="50" r="45" fill="none" stroke="url(#countdownGradient)" stroke-width="8" stroke-dashoffset="282.7px" style="transition: stroke-dashoffset 5s linear;stroke-dasharray: 282.7;transform: rotate(-90deg);transform: rotate(-90deg);transform-origin: 50% 50%;"></circle> 
-                <text x="50" y="50" id="timerDisplay" text-anchor="middle" dominant-baseline="middle" fill="#FFFFFF" style="font-family:'Inter',sans-serif;font-size:30px;font-weight:800;">0</text>
-            </svg>
+                <div id="countdownSVG-div" style="height:100%;width:fit-content;align-self:center;margin-top: 24px;">
+                    <svg id="countdownSVG" class='countdownSVG' class="w-60 h-60" viewBox="0 0 100 100">
+                        <defs>
+                            <linearGradient id="countdownGradient" x1="100%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" style="stop-color: #FFA500; stop-opacity: 1"></stop> 
+                                <stop offset="30%" style="stop-color: #FFA500; stop-opacity: 1"></stop> 
+                                <stop offset="100%" style="stop-color: #FF0000; stop-opacity: 1"></stop> 
+                            </linearGradient>
+                        </defs>
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="#333333" stroke-width="8"></circle>
+                        <circle id="countdownCircle" cx="50" cy="50" r="45" fill="none" stroke="url(#countdownGradient)" stroke-width="8" stroke-dashoffset="282.7px" style="transition: stroke-dashoffset 5s linear;stroke-dasharray: 282.7;transform: rotate(-90deg);transform: rotate(-90deg);transform-origin: 50% 50%;"></circle> 
+                        <text x="50" y="50" id="timerDisplay" text-anchor="middle" dominant-baseline="middle" fill="#FFFFFF" style="font-family:'Inter',sans-serif;font-size:30px;font-weight:800;">0</text>
+                    </svg>
+                </div>
 
-            <div class='bt-question' id="bt-question">WHAT IS THE TITLE?</div>
-
-            <div style="display:none;jusity-content:center;flex-direction:column;width:calc(100% - 100px);align-self:center;max-width: 300px;" id="bt-song">
-                <div class="bt-img" id="bt-img"></div>
-                <div class='bt-box'>
-                    <h2 class='bt-text-title' id="bt-text-title"></h2>
-                    <h2 class='bt-text-author' id="bt-text-author"></h2>
+                <div class="bt-song" id="bt-song">
+                    <div class="bt-img" id="bt-img"></div>
+                    <div class='bt-box'>
+                        <h2 class='bt-text-title' id="bt-text-title"></h2>
+                        <h2 class='bt-text-author' id="bt-text-author"></h2>
+                    </div>
                 </div>
             </div>
+            <div class='bt-container-part2'>
+                <div class='bt-question' id="bt-question">WHAT IS THE TITLE?</div>
 
-            <div style='display:flex;flex-direction:column;gap:0.75rem;justify-content:center;align-items:center;width:100%;'>
-                <yt-bt-button id="bt-answer1"></yt-bt-button>
-                <yt-bt-button id="bt-answer2"></yt-bt-button>
-                <yt-bt-button id="bt-answer3"></yt-bt-button>
-                <yt-bt-button id="bt-answer4"></yt-bt-button>
+                <div style='display:flex;flex-direction:column;gap:0.75rem;justify-content:center;align-items:center;width:100%;'>
+                    <yt-bt-button id="bt-answer1"></yt-bt-button>
+                    <yt-bt-button id="bt-answer2"></yt-bt-button>
+                    <yt-bt-button id="bt-answer3"></yt-bt-button>
+                    <yt-bt-button id="bt-answer4"></yt-bt-button>
+                </div>
+
+                <div class='bt-info-text-bottom'>Song info revealed after answer...</div>
             </div>
-
-            <div class='bt-info-text-bottom'>Song info revealed after answer...</div>
         </div>
         `
 

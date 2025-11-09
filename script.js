@@ -43,6 +43,8 @@ function resize(){
         document.getElementsByClassName('playlist-texts-title')[i].style.width=document.body.clientWidth-24-document.getElementsByClassName('playlist-texts-title')[i].offsetLeft+'px'
     }
 
+    
+
     if (document.getElementById('mp-img').clientHeight*16/9>document.getElementById('mp-img').clientWidth){
         document.getElementById('mp-img').style.width=document.getElementById('mp-img').clientHeight+'px'
         document.getElementById('mp-img').style.alignSelf='center'
@@ -54,6 +56,10 @@ function resize(){
 
     if (bt_visible){
         document.getElementById('bt').animState(0)
+        document.getElementById('bt-text-author').style.width='0px'
+        document.getElementById('bt-text-title').style.width='0px'
+        document.getElementById('bt-text-author').style.width=document.getElementById('bt-img').clientWidth-1+'px'
+        document.getElementById('bt-text-title').style.width=document.getElementById('bt-img').clientWidth-1+'px'
     }
 }
 window.addEventListener('resize',()=>{
