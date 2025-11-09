@@ -143,16 +143,13 @@ class BlindTest extends HTMLElement{
                 provider: 'youtube'
             }]
         };
-
         document.getElementById('countdownCircle').style.transition='none'
         document.getElementById('countdownCircle').style.strokeDashoffset='282.7px'
-        document.getElementById('bt-question-counter').innerText='Question '+(bt_number_song-bt_playlist.length+1)+' of '+bt_number_song
+        
 
         bt_player.once('ready',()=>{
             bt_player.play()
             bt_isplaying=false
-
-            document.getElementById('bt').SetAnswerTitle(id)
         })
         
     }
@@ -162,15 +159,8 @@ class BlindTest extends HTMLElement{
         this.startAnim(duration,true,0)
         this.style.pointerEvents=''
         
-        document.getElementById('bt-img').style.backgroundImage=`url('${document.getElementsByTagName('yt-playlist-item')[0].getAttribute('img')}')`
-        
-        setTimeout(()=>{document.getElementById('bt-img').style.width=document.getElementById('bt-img').clientHeight+'px'},10)
-        
-        let title=document.getElementsByTagName('yt-playlist-item')[0].getAttribute('text-title')
-        let author=document.getElementsByTagName('yt-playlist-item')[0].getAttribute('text-author')
-        document.getElementById('bt-text-title').innerText=title
-        document.getElementById('bt-text-author').innerText=author
         document.getElementById('bt-title').innerText='Blind Test: '+document.getElementById('playlist-title-items').innerText
+        document.getElementById('bt-question-counter').innerText='Question 1 of '+bt_number_song
 
         let next=()=>{
             document.getElementById('countdownCircle').style.transition='stroke-dashoffset '+bt_duration_song+'s linear'
@@ -214,13 +204,32 @@ class BlindTest extends HTMLElement{
                 document.getElementById('timerDisplay').innerHTML=Math.ceil(bt_duration_song-bt_player.currentTime)
 
                 if (bt_player.currentTime > 0 && !bt_isplaying){
+                    document.getElementById('bt-question').style.display='flex'
+                    document.getElementById('countdownSVG').style.display='block'
+                    document.getElementById('bt-song').style.display='none'
+
+
                     document.getElementById('countdownCircle').style.transition='stroke-dashoffset '+bt_duration_song+'s linear'
-                    document.getElementById('countdownCircle').style.strokeDashoffset='0px'
+                    setTimeout(()=>{document.getElementById('countdownCircle').style.strokeDashoffset='0px'},10)
+
+                    document.getElementById('bt-img').style.backgroundImage=`url('${document.getElementsByTagName('yt-playlist-item')[playlistIds.indexOf(bt_playlist[0])].getAttribute('img')}')`
+                    document.getElementById('bt-img').style.backgroundSize=document.getElementsByTagName('yt-playlist-item')[playlistIds.indexOf(bt_playlist[0])].getElementsByClassName('playlist-imgs')[0].style.backgroundSize
+                    document.getElementById('bt-text-title').innerText=playlistSongsInfo[bt_playlist[0]][0]
+                    document.getElementById('bt-text-author').innerText=playlistSongsInfo[bt_playlist[0]][1]
+                    document.getElementById('bt-question-counter').innerText='Question '+(bt_number_song-bt_playlist.length+1)+' of '+bt_number_song
+                    document.getElementById('bt').SetAnswerTitle(bt_playlist[0])
+
+                    setTimeout(()=>{
+                        document.getElementById('bt-question').style.display='none'
+                        document.getElementById('countdownSVG').style.display='none'
+                        document.getElementById('bt-song').style.display='flex'
+                        document.getElementById('bt-img').style.width=document.getElementById('bt-img').clientHeight+'px'
+                    },bt_duration_song*1000)
 
                     setTimeout(()=>{
                         bt_playlist.splice(0,1)
                         document.getElementById('bt').LoadSong(bt_playlist[0])
-                    },bt_duration_song*1000)
+                    },bt_duration_song*1000+3000)
 
                     bt_isplaying=true
                 }
@@ -268,7 +277,15 @@ class BlindTest extends HTMLElement{
                 <text x="50" y="50" id="timerDisplay" text-anchor="middle" dominant-baseline="middle" fill="#FFFFFF" style="font-family:'Inter',sans-serif;font-size:30px;font-weight:800;">0</text>
             </svg>
 
-            <div class='bt-question'>WHAT IS THE TITLE?</div>
+            <div class='bt-question' id="bt-question">WHAT IS THE TITLE?</div>
+
+            <div style="display:none;jusity-content:center;flex-direction:column;width:calc(100% - 100px);align-self:center;max-width: 300px;" id="bt-song">
+                <div class="bt-img" id="bt-img"></div>
+                <div class='bt-box'>
+                    <h2 class='bt-text-title' id="bt-text-title"></h2>
+                    <h2 class='bt-text-author' id="bt-text-author"></h2>
+                </div>
+            </div>
 
             <div style='display:flex;flex-direction:column;gap:0.75rem;justify-content:center;align-items:center;width:100%;'>
                 <yt-bt-button id="bt-answer1"></yt-bt-button>
@@ -278,14 +295,6 @@ class BlindTest extends HTMLElement{
             </div>
 
             <div class='bt-info-text-bottom'>Song info revealed after answer...</div>
-
-            <div style="display:none;">
-                <div class="bt-img" id="bt-img"></div>
-                <div class='bt-box'>
-                    <h2 class='bt-text-title' id="bt-text-title"></h2>
-                    <h2 class='bt-text-author' id="bt-text-author"></h2>
-                </div>
-            </div>
         </div>
         `
 

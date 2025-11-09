@@ -10,8 +10,8 @@
 }
 
 .bt-img{
-    height: calc(100vw - 80px);
-    width: calc(100vw - 80px);
+    width: 100%;
+    aspect-ratio: 1 / 1;
     background-size:cover;
     background-position: center center;
     border-radius: 10px;
@@ -19,6 +19,13 @@
     align-self: center;
     transform-origin: top left;
 }
+
+/* @media (width > 400px){
+    .bt-img{
+        height: 300px;
+        width: 300px;
+    }
+} */
 
 .bt-canvas{
     position: fixed;
