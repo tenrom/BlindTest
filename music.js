@@ -61,7 +61,7 @@ let player = new Plyr('#player',{
             rel: 0,              // Prevents showing related videos at the end
             controls:0,
             showinfo: 0,
-            hl:'vo',
+            hl:'fr',
             persist_hl:1
     }
 });
