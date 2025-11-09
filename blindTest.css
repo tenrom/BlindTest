@@ -185,7 +185,7 @@
 
 .bt-info-text-bottom{
     margin-top: 1.5rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.3rem;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -238,4 +238,5 @@
         max-height: min(calc(100vw - 32px), 300px);
         max-width: min(calc(100vw - 32px), 300px);
     }
+
 }
