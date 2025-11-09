@@ -287,9 +287,24 @@ function ShowPlaylist(json){
     db=json
     for (let i in json['items']){
         if (json['items'][i]['status']['privacyStatus']==='public'){
-            playlistIds.push(json['items'][i]['snippet']['resourceId']['videoId'])
-            playlistSongs.push([json['items'][i]['snippet']['resourceId']['videoId'],json['items'][i]['snippet']['title'],json['items'][i]['snippet']['videoOwnerChannelTitle']])
-            playlistSongsInfo[json['items'][i]['snippet']['resourceId']['videoId']]=[json['items'][i]['snippet']['title'],json['items'][i]['snippet']['videoOwnerChannelTitle']]
+            let j=json['items'][i]
+            let id=j['snippet']['resourceId']['videoId']
+            let title=j['snippet']['title']
+            let author=j['snippet']['videoOwnerChannelTitle']
+            if (author.includes(' - Topic')){
+                let arr=j['snippet']['description'].match(/[^\n]+/g)[1].split(" · ") 
+                title=arr.splice(0,1)[0]
+                if (arr.length>1){
+                    last=arr.splice(-1,1)[0]
+                    author=arr.join(', ')+' et '+last
+                }else{
+                    author=arr.splice(-1,1)[0]
+                }
+            }
+
+            playlistIds.push(id)
+            playlistSongs.push([id,title,author])
+            playlistSongsInfo[id]=[title,author]
         }
     }
 
@@ -1280,7 +1295,7 @@ document.getElementById('btn-channel-v').addEventListener('click',()=>{
     document.getElementById('btn-channel-v').setAttribute('select','true')
     
     let playlistid
-    if (urlParams.get('mine')!==true){
+    if (urlParams.get('mine')!==true && urlParams.get('channel')){
         playlistid='UULF'+urlParams.get('channel').slice(2)
     }else{
         playlistid='UULF'+channelId
@@ -1296,7 +1311,7 @@ document.getElementById('btn-channel-s').addEventListener('click',()=>{
     document.getElementById('btn-channel-s').setAttribute('select','true')
 
     let playlistid
-    if (urlParams.get('mine')!==true){
+    if (urlParams.get('mine')!==true && urlParams.get('channel')){
         playlistid='UUSH'+urlParams.get('channel').slice(2)
     }else{
         playlistid='UUSH'+channelId
@@ -1316,8 +1331,24 @@ function ShowChannelUploads(json,type){
         db=json
         for (let i in json['items']){
             if (json['items'][i]['status']['privacyStatus']==='public'){
-                playlistIds.push(json['items'][i]['snippet']['resourceId']['videoId'])
-                playlistSongs.push([json['items'][i]['snippet']['resourceId']['videoId'],json['items'][i]['snippet']['title'],json['items'][i]['snippet']['videoOwnerChannelTitle']])
+                let j=json['items'][i]
+                let id=j['snippet']['resourceId']['videoId']
+                let title=j['snippet']['title']
+                let author=j['snippet']['videoOwnerChannelTitle']
+                if (author.includes(' - Topic')){
+                    let arr=j['snippet']['description'].match(/[^\n]+/g)[1].split(" · ") 
+                    title=arr.splice(0,1)[0]
+                    if (arr.length>1){
+                        last=arr.splice(-1,1)[0]
+                        author=arr.join(', ')+' et '+last
+                    }else{
+                        author=arr.splice(-1,1)[0]
+                    }
+                }
+
+                playlistIds.push(id)
+                playlistSongs.push([id,title,author])
+                playlistSongsInfo[id]=[title,author]
             }
         }
 

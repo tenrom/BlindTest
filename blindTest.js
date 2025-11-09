@@ -308,7 +308,7 @@ class BlindTest extends HTMLElement{
             <div class='bt-title' id='bt-title'>Blind Test: French Rap Hits</div>
             <div class='bt-question-counter' id="bt-question-counter">Question 1 of 5</div>
 
-            <svg onclick="Test()" id="countdownSVG" class='countdownSVG' class="w-60 h-60" viewBox="0 0 100 100">
+            <svg id="countdownSVG" class='countdownSVG' class="w-60 h-60" viewBox="0 0 100 100">
                 <defs>
                     <linearGradient id="countdownGradient" x1="100%" y1="0%" x2="0%" y2="100%">
                         <stop offset="0%" style="stop-color: #FFA500; stop-opacity: 1"></stop> 
