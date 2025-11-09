@@ -35,6 +35,10 @@ if (window.location.search){
 function resize(){
     document.getElementById('playlist-container').style.width=document.body.clientWidth+'px'
 
+    for (let i=0;i<document.getElementsByClassName('playlist-texts-author').length;i++){
+        document.getElementsByClassName('playlist-texts-author')[i].style.width=document.body.clientWidth-24-document.getElementsByClassName('playlist-texts-author')[i].offsetLeft+'px'
+    }
+
     for (let i=0;i<document.getElementsByClassName('playlist-texts-title').length;i++){
         document.getElementsByClassName('playlist-texts-title')[i].style.width=document.body.clientWidth-24-document.getElementsByClassName('playlist-texts-title')[i].offsetLeft+'px'
     }
@@ -207,6 +211,8 @@ class ytPlaylist extends HTMLElement{
         `
         if (this.getAttribute('square')==="true"){
             this.getElementsByClassName('playlist-imgs')[0].style.backgroundSize='cover'
+        }else{
+            this.getElementsByClassName('playlist-imgs')[0].style.backgroundSize='contain'
         }
 
         this.addEventListener('click',()=>{
@@ -238,6 +244,8 @@ class ytPlaylistItem extends HTMLElement{
         `
         if (this.getAttribute('square')==="true"){
             this.getElementsByClassName('playlist-imgs')[0].style.backgroundSize='cover'
+        }else{
+            this.getElementsByClassName('playlist-imgs')[0].style.backgroundSize='contain'
         }
 
         this.addEventListener('click',()=>{
@@ -303,9 +311,23 @@ function ShowPlaylist(json){
             }catch{
 
             }
-        
+            let square='false'
+            let title=j['snippet']['title']
+            let author=j['snippet']['videoOwnerChannelTitle']
+            if (author.includes(' - Topic')){
+                let arr=j['snippet']['description'].match(/[^\n]+/g)[1].split(" · ") 
+                title=arr.splice(0,1)[0]
+                if (arr.length>1){
+                    last=arr.splice(-1,1)[0]
+                    author=arr.join(', ')+' et '+last
+                }else{
+                    author=arr.splice(-1,1)[0]
+                }
+                square='true'
+            }
+
             html+=`
-                <yt-playlist-item text-author="${j['snippet']['videoOwnerChannelTitle']}" text-title="${j['snippet']['title']}" img='${url}' id='${i}' square='${'true'}' ytid='${j['snippet']['resourceId']['videoId']}'></yt-playlist-item>
+                <yt-playlist-item text-author="${author}" text-title="${title}" img='${url}' id='${i}' square='${square}' ytid='${j['snippet']['resourceId']['videoId']}'></yt-playlist-item>
             `
             len++
         }
@@ -625,7 +647,10 @@ class musicPlayer extends HTMLElement{
             // ctx.fillStyle = '#ff0000ff'; // Darker color for contrast
             ctx.fillRect(0,0,canvas.width,canvas.height)
 
-            document.body.style.overflow=''
+            if (!bt_visible){
+                document.body.style.overflow='visible'
+            }
+            
             this.style.pointerEvents=''
 
             issmall=true
@@ -650,8 +675,8 @@ class musicPlayer extends HTMLElement{
         }
     }
     show(){
+        document.body.style.overflow='hidden'
         if (issmall && !justchange){
-            document.body.style.overflow='hidden'
             this.style.display='block'
             this.startAnim(duration,true,0)
             this.style.pointerEvents=''
@@ -659,7 +684,8 @@ class musicPlayer extends HTMLElement{
         
         let json=db['items'][indexMusic]
         document.getElementById('mp-img').style.backgroundImage=`url('${document.getElementsByTagName('yt-playlist-item')[indexMusic].getAttribute('img')}')`
-        
+        document.getElementById('mp-img').style.backgroundSize=document.getElementsByTagName('yt-playlist-item')[indexMusic].getElementsByClassName('playlist-imgs')[0].style.backgroundSize
+
         setTimeout(()=>{document.getElementById('mp-img').style.width=document.getElementById('mp-img').clientHeight+'px'},10)
         
         let title=document.getElementsByTagName('yt-playlist-item')[indexMusic].getAttribute('text-title')
@@ -690,7 +716,7 @@ class musicPlayer extends HTMLElement{
         document.getElementById('div-shorts').style.paddingBottom='52px'
     }
     hide(){
-        document.body.style.overflow=''
+        
         this.startAnim(duration,false,0)
         this.style.pointerEvents='none'
     }
@@ -1078,7 +1104,9 @@ document.addEventListener('touchend',(e)=>{
         }
         smalldirection=null
         issmallclick=false
-        document.body.style.overflow=''
+        if (!bt_visible){
+            document.body.style.overflow='visible'
+        }
     }
 })
 
@@ -1311,9 +1339,23 @@ function ShowChannelUploads(json,type){
                 }catch{
 
                 }
+                let square='false'
+                let title=j['snippet']['title']
+                let author=j['snippet']['videoOwnerChannelTitle']
+                if (author.includes(' - Topic')){
+                    let arr=j['snippet']['description'].match(/[^\n]+/g)[1].split(" · ") 
+                    title=arr.splice(0,1)[0]
+                    if (arr.length>1){
+                        last=arr.splice(-1,1)[0]
+                        author=arr.join(', ')+' et '+last
+                    }else{
+                        author=arr.splice(-1,1)[0]
+                    }
+                    square='true'
+                }
             
                 html+=`
-                    <yt-playlist-item text-author="${j['snippet']['videoOwnerChannelTitle']}" text-title="${j['snippet']['title']}" img='${url}' id='${i}' square='${'true'}' ytid='${j['snippet']['resourceId']['videoId']}'></yt-playlist-item>
+                    <yt-playlist-item text-author="${author}" text-title="${title}" img='${url}' id='${i}' square='${square}' ytid='${j['snippet']['resourceId']['videoId']}'></yt-playlist-item>
                 `
             }
         }

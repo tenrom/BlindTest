@@ -36,6 +36,7 @@ let bt_duration_song=10
 let bt_title_song
 let bt_author_song
 let bt_rng
+let bt_isplaying
 let getRandomInt=(rng,min, max)=>{
     return Math.floor(rng() * (max - min + 1)) + min;
 }
@@ -83,7 +84,8 @@ class BlindTest extends HTMLElement{
         document.getElementById('mp').style.transform='translateY('+(clamp(1-a-0.5)*document.getElementById('nav').clientHeight*4)+'px)'
 
         if (a===1){
-            document.body.style.overflow=''
+            document.body.style.overflow='visible'
+
             this.style.pointerEvents=''
             this.style.display='none'
 
@@ -146,18 +148,9 @@ class BlindTest extends HTMLElement{
         document.getElementById('countdownCircle').style.strokeDashoffset='282.7px'
         document.getElementById('bt-question-counter').innerText='Question '+(bt_number_song-bt_playlist.length+1)+' of '+bt_number_song
 
-        bt_player.once('play',()=>{
-            document.getElementById('countdownCircle').style.transition='stroke-dashoffset '+bt_duration_song+'s linear'
-            document.getElementById('countdownCircle').style.strokeDashoffset='0px'
-
-            setTimeout(()=>{
-                bt_playlist.splice(0,1)
-                document.getElementById('bt').LoadSong(bt_playlist[0])
-            },bt_duration_song*1000)
-        })
-
         bt_player.once('ready',()=>{
             bt_player.play()
+            bt_isplaying=false
 
             document.getElementById('bt').SetAnswerTitle(id)
         })
@@ -218,9 +211,20 @@ class BlindTest extends HTMLElement{
             })
 
             bt_player.on('timeupdate',()=>{
-                document.getElementById('timerDisplay').innerHTML=Math.round(bt_duration_song-bt_player.currentTime)
-            })
+                document.getElementById('timerDisplay').innerHTML=Math.ceil(bt_duration_song-bt_player.currentTime)
 
+                if (bt_player.currentTime > 0 && !bt_isplaying){
+                    document.getElementById('countdownCircle').style.transition='stroke-dashoffset '+bt_duration_song+'s linear'
+                    document.getElementById('countdownCircle').style.strokeDashoffset='0px'
+
+                    setTimeout(()=>{
+                        bt_playlist.splice(0,1)
+                        document.getElementById('bt').LoadSong(bt_playlist[0])
+                    },bt_duration_song*1000)
+
+                    bt_isplaying=true
+                }
+            })
             
         }else{
             next()
@@ -229,7 +233,6 @@ class BlindTest extends HTMLElement{
         
     }
     hide(){
-        document.body.style.overflow=''
         this.startAnim(duration,false,0)
         this.style.pointerEvents='none'
     }
@@ -297,14 +300,3 @@ class BlindTest extends HTMLElement{
 }
 
 window.customElements.define('yt-blind-test',BlindTest)
-
-
-function Test(){
-    document.getElementById('countdownCircle').style.transition='stroke-dashoffset '+bt_duration_song+'s linear'
-    document.getElementById('countdownCircle').style.strokeDashoffset='0px'
-
-    setTimeout(()=>{
-        bt_playlist.splice(0,1)
-        document.getElementById('bt').LoadSong(bt_playlist[0])
-    },bt_duration_song*1000)
-}
