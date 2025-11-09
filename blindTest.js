@@ -105,53 +105,92 @@ class BlindTest extends HTMLElement{
             this.style.translate='0px 0px'
         }
     }
-    SetAnswerAuthor(id){
-        let playlist=playlistSongs.map(e => e[2]);
-        playlist=playlist.filter((value, index, self) => self.indexOf(value) === index);
-        
-        let answers=[playlistSongsInfo[id][1]]
-        playlist.splice(playlist.indexOf(playlistSongsInfo[id][1]),1)
-        for (let i=0;i<3;i++){
-            answers.push(playlist.splice(getRandomInt(bt_rng,0,playlist.length-1),1)[0])
-        }
-
-        document.getElementById('bt-answer1').setAnswer(answers.splice(getRandomInt(bt_rng,0,answers.length-1),1)[0])
-        document.getElementById('bt-answer2').setAnswer(answers.splice(getRandomInt(bt_rng,0,answers.length-1),1)[0])
-        document.getElementById('bt-answer3').setAnswer(answers.splice(getRandomInt(bt_rng,0,answers.length-1),1)[0])
-        document.getElementById('bt-answer4').setAnswer(answers.splice(getRandomInt(bt_rng,0,answers.length-1),1)[0])
-    }
-    SetAnswerTitle(id){
-        let playlist=playlistSongs.map(e => e[1]);
-        playlist=playlist.filter((value, index, self) => self.indexOf(value) === index);
-        
-        let answers=[playlistSongsInfo[id][0]]
-        playlist.splice(playlist.indexOf(playlistSongsInfo[id][0]),1)
-        for (let i=0;i<3;i++){
-            answers.push(playlist.splice(getRandomInt(bt_rng,0,playlist.length-1),1)[0])
-        }
-
-        document.getElementById('bt-answer1').setAnswer(answers.splice(getRandomInt(bt_rng,0,answers.length-1),1)[0])
-        document.getElementById('bt-answer2').setAnswer(answers.splice(getRandomInt(bt_rng,0,answers.length-1),1)[0])
-        document.getElementById('bt-answer3').setAnswer(answers.splice(getRandomInt(bt_rng,0,answers.length-1),1)[0])
-        document.getElementById('bt-answer4').setAnswer(answers.splice(getRandomInt(bt_rng,0,answers.length-1),1)[0])
-    }
     LoadSong(id){
+        // Load song
         bt_player.source = {
             type: 'video',
             sources: [{
                 src: id,
                 provider: 'youtube'
             }]
-        };
+        }
+
+        // Reset Timer animation
         document.getElementById('countdownCircle').style.transition='none'
         document.getElementById('countdownCircle').style.strokeDashoffset='282.7px'
         
+        // Reset variable isplaying for trigger the function in timeupdate as soon as video start
+        bt_isplaying=false
 
+        // Once ready play
         bt_player.once('ready',()=>{
             bt_player.play()
-            bt_isplaying=false
         })
+    }
+    setUpNext(){
+        // Show Timer and last Solution
+        document.getElementById('bt-question').style.display='flex'
+        document.getElementById('countdownSVG').style.display='block'
+        document.getElementById('bt-song').style.display='none'
+
+        // Set Solution in Background
+        document.getElementById('bt-img').style.backgroundImage=`url('${document.getElementsByTagName('yt-playlist-item')[playlistIds.indexOf(bt_playlist[0])].getAttribute('img')}')`
+        document.getElementById('bt-img').style.backgroundSize=document.getElementsByTagName('yt-playlist-item')[playlistIds.indexOf(bt_playlist[0])].getElementsByClassName('playlist-imgs')[0].style.backgroundSize
+        document.getElementById('bt-text-title').innerText=playlistSongsInfo[bt_playlist[0]][0]
+        document.getElementById('bt-text-author').innerText=playlistSongsInfo[bt_playlist[0]][1]
+
+        // Set text about Blind Test
+        document.getElementById('bt-question-counter').innerText='Question '+(bt_number_song-bt_playlist.length+1)+' of '+bt_number_song
         
+        // Reset Timer Text
+        document.getElementById('timerDisplay').innerHTML=bt_duration_song
+        
+        // Set Answers
+        document.getElementById('bt').SetAnswerTitle(bt_playlist[0])
+    }
+    SetAnswerAuthor(id){
+        // Get all the possible answer (all Authors)
+        let playlist=playlistSongs.map(e => e[2]);
+        // Remove double
+        playlist=playlist.filter((value, index, self) => self.indexOf(value) === index);
+        
+        // Add to the answer the solution
+        let answers=[playlistSongsInfo[id][1]]
+        // Remove it to the possible other answer
+        playlist.splice(playlist.indexOf(playlistSongsInfo[id][1]),1)
+
+        // Add 3 unique other anwser
+        for (let i=0;i<3;i++){
+            answers.push(playlist.splice(getRandomInt(bt_rng,0,playlist.length-1),1)[0])
+        }
+
+        // Push them randomly to the different slots
+        document.getElementById('bt-answer1').setAnswer(answers.splice(getRandomInt(bt_rng,0,answers.length-1),1)[0])
+        document.getElementById('bt-answer2').setAnswer(answers.splice(getRandomInt(bt_rng,0,answers.length-1),1)[0])
+        document.getElementById('bt-answer3').setAnswer(answers.splice(getRandomInt(bt_rng,0,answers.length-1),1)[0])
+        document.getElementById('bt-answer4').setAnswer(answers.splice(getRandomInt(bt_rng,0,answers.length-1),1)[0])
+    }
+    SetAnswerTitle(id){
+        // Get all the possible answer (all Titles)
+        let playlist=playlistSongs.map(e => e[1]);
+        // Remove double
+        playlist=playlist.filter((value, index, self) => self.indexOf(value) === index);
+        
+        // Add to the answer the solution
+        let answers=[playlistSongsInfo[id][0]]
+        // Remove it to the possible other answer
+        playlist.splice(playlist.indexOf(playlistSongsInfo[id][0]),1)
+
+        // Add 3 unique other anwser
+        for (let i=0;i<3;i++){
+            answers.push(playlist.splice(getRandomInt(bt_rng,0,playlist.length-1),1)[0])
+        }
+
+        // Push them randomly to the different slots
+        document.getElementById('bt-answer1').setAnswer(answers.splice(getRandomInt(bt_rng,0,answers.length-1),1)[0])
+        document.getElementById('bt-answer2').setAnswer(answers.splice(getRandomInt(bt_rng,0,answers.length-1),1)[0])
+        document.getElementById('bt-answer3').setAnswer(answers.splice(getRandomInt(bt_rng,0,answers.length-1),1)[0])
+        document.getElementById('bt-answer4').setAnswer(answers.splice(getRandomInt(bt_rng,0,answers.length-1),1)[0])
     }
     show(){
         document.body.style.overflow='hidden'
@@ -159,33 +198,39 @@ class BlindTest extends HTMLElement{
         this.startAnim(duration,true,0)
         this.style.pointerEvents=''
         
+        // Set up text about Blind Test
         document.getElementById('bt-title').innerText='Blind Test: '+document.getElementById('playlist-title-items').innerText
         document.getElementById('bt-question-counter').innerText='Question 1 of '+bt_number_song
 
-        let next=()=>{
-            document.getElementById('countdownCircle').style.transition='stroke-dashoffset '+bt_duration_song+'s linear'
-            document.getElementById('countdownCircle').style.strokeDashoffset='282.7px'
+        let runBlindTest=()=>{
             
+            // Create Playlist Code
             let seed=CryptoJS.SHA3(String(Date.now())).toString().slice(0,15)
             bt_rng = new Math.seedrandom(seed)
             
+            // Create Playlist
             bt_playlist=[]
             let playlist=playlistSongs.map(e => e[0]);
             for (let i=0;i<bt_number_song;i++){
                 let index=getRandomInt(bt_rng,0,playlist.length-1)
                 bt_playlist.push(playlist.splice(index,1)[0])
             }
+
+            // Run Blind Test
             bt_player.play()
-            document.getElementById('bt').LoadSong(bt_playlist[0],bt_rng) 
+            document.getElementById('bt').LoadSong(bt_playlist[0],bt_rng)
+            document.getElementById('bt').setUpNext()
         }
+
         if (document.getElementById('bt-player')){
+            // Set up Music Player
             document.getElementById('bt-player').setAttribute('data-plyr-embed-id','KGM_2z4GW-8')
             bt_player = new Plyr('#bt-player',{
                 muted:false,
                 autoplay:false,
                 youtube: {
-                        modestbranding: 1,  // Removes YouTube branding from the player
-                        rel: 0,              // Prevents showing related videos at the end
+                        modestbranding: 1,
+                        rel: 0,
                         controls:0,
                         showinfo: 0,
                         hl:'en',
@@ -196,47 +241,46 @@ class BlindTest extends HTMLElement{
             window.bt_player = bt_player
 
             bt_player.once('ready',()=>{
-                console.log('Yes')
-                next()
+                // Once ready run Blind Test
+                runBlindTest()
             })
 
             bt_player.on('timeupdate',()=>{
+                // Update Timer
                 document.getElementById('timerDisplay').innerHTML=Math.ceil(bt_duration_song-bt_player.currentTime)
 
                 if (bt_player.currentTime > 0 && !bt_isplaying){
-                    document.getElementById('bt-question').style.display='flex'
-                    document.getElementById('countdownSVG').style.display='block'
-                    document.getElementById('bt-song').style.display='none'
+                    //// Video Start
+                    bt_isplaying=true
 
-
+                    // Start Circle Animation
                     document.getElementById('countdownCircle').style.transition='stroke-dashoffset '+bt_duration_song+'s linear'
-                    setTimeout(()=>{document.getElementById('countdownCircle').style.strokeDashoffset='0px'},10)
+                    document.getElementById('countdownCircle').style.strokeDashoffset='0px'
 
-                    document.getElementById('bt-img').style.backgroundImage=`url('${document.getElementsByTagName('yt-playlist-item')[playlistIds.indexOf(bt_playlist[0])].getAttribute('img')}')`
-                    document.getElementById('bt-img').style.backgroundSize=document.getElementsByTagName('yt-playlist-item')[playlistIds.indexOf(bt_playlist[0])].getElementsByClassName('playlist-imgs')[0].style.backgroundSize
-                    document.getElementById('bt-text-title').innerText=playlistSongsInfo[bt_playlist[0]][0]
-                    document.getElementById('bt-text-author').innerText=playlistSongsInfo[bt_playlist[0]][1]
-                    document.getElementById('bt-question-counter').innerText='Question '+(bt_number_song-bt_playlist.length+1)+' of '+bt_number_song
-                    document.getElementById('bt').SetAnswerTitle(bt_playlist[0])
-
+                    // Timer End
                     setTimeout(()=>{
+                        // Hide Timer and Show Solution
                         document.getElementById('bt-question').style.display='none'
                         document.getElementById('countdownSVG').style.display='none'
                         document.getElementById('bt-song').style.display='flex'
                         document.getElementById('bt-img').style.width=document.getElementById('bt-img').clientHeight+'px'
                     },bt_duration_song*1000)
 
+                    // Timer End
                     setTimeout(()=>{
+                        // Pass To Next Song
                         bt_playlist.splice(0,1)
                         document.getElementById('bt').LoadSong(bt_playlist[0])
-                    },bt_duration_song*1000+3000)
 
-                    bt_isplaying=true
+                        document.getElementById('bt').setUpNext()
+
+                    },bt_duration_song*1000+3000)
                 }
             })
             
         }else{
-            next()
+            // Run Blind Test
+            runBlindTest()
         }
 
         
