@@ -3,7 +3,13 @@ body{
 }
 
 .btn-signin{
-    background-color: white;
+    width: 100%;
+    padding: 10px;
+    background-color: rgb(255, 0, 0);
+    color: white ;
+    border-radius: 50vh;
+    border: none;
+    font-family: 'Roboto';
 }
 
 .token{

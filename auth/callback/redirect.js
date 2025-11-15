@@ -41,7 +41,7 @@ function exchangeCodeForTokens(code,after,refresh) {
     if (localStorage.getItem('client_secret')){
         CLIENT_SECRET=localStorage.getItem('client_secret')
     }else{
-        CLIENT_SECRET=prompt('ClientSecret')
+        CLIENT_SECRET=prompt('client_secret')
         localStorage.setItem('client_secret',CLIENT_SECRET)
     }
     
