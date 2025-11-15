@@ -1,9 +1,0 @@
-[{
-  "relation": ["delegate_permission/common.handle_all_urls"],
-  "target": {
-    "namespace": "android_app",
-    "package_name": "com.tenrom.tenrommusic",
-    "sha256_cert_fingerprints":
-    ["A9:8E:30:53:05:2B:86:2F:65:03:67:62:57:55:23:1B:0F:31:DF:C3:A1:A9:C7:AC:2E:A4:07:FC:04:B8:F0:C4"]
-  }
-}]
