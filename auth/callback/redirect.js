@@ -94,5 +94,5 @@ function exchangeCodeForTokens(code,after,refresh) {
 }
 
 function goApp(){
-    open('tenrommusic://oauth?source=website_button','_self')
+    open('https://tenrommusic.com/oauth?token='+ACCESS_TOKEN,'_self')
 }
