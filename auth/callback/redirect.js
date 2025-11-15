@@ -36,7 +36,7 @@ fetch('../../client_secret.json')
 
 
 
-function exchangeCodeForTokens(code,after,refresh) {
+function exchangeCodeForTokens(code,after) {
     // The parameters must be sent in a URL-encoded format
     if (localStorage.getItem('client_secret')){
         CLIENT_SECRET=localStorage.getItem('client_secret')
@@ -90,6 +90,8 @@ function exchangeCodeForTokens(code,after,refresh) {
         // Handle any errors that occurred during the fetch or in the .then() blocks
         console.error('Error during token exchange:', error);
         localStorage.removeItem('client_secret')
+        document.getElementById('token').innerText=error
+
 
         //open(location.href,'_self')
         
