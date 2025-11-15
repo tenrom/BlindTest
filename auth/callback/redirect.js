@@ -88,7 +88,7 @@ function exchangeCodeForTokens(code,after,refresh) {
         console.error('Error during token exchange:', error);
         localStorage.removeItem('client_secret')
 
-        open(location.href,'_self')
+        //open(location.href,'_self')
         
     });
 }
