@@ -6,7 +6,7 @@ let AUTH_URI
 let REDIRECT_URI
 
 let SCOPES
-let ACCESS_TOKEN
+let ACCESS_TOKEN="123"
 let REFRESH_TOKEN
 
 let urlParams
@@ -29,7 +29,7 @@ fetch('../../client_secret.json')
 
         SCOPES = 'https://www.googleapis.com/auth/youtube.readonly';
 
-        exchangeCodeForTokens(urlParams.get('code'),()=>{})
+        //exchangeCodeForTokens(urlParams.get('code'),()=>{})
     }).catch(error => console.log(error))
 
 
@@ -94,5 +94,5 @@ function exchangeCodeForTokens(code,after,refresh) {
 }
 
 function goApp(){
-    open('https://tenrommusic.com/oauth/'+ACCESS_TOKEN,'_self')
+    open('tenrommusic://oauth?source=website_button','_self')
 }
