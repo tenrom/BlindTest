@@ -88,6 +88,8 @@ function exchangeCodeForTokens(code,after) {
         ACCESS_TOKEN=tokenData.access_token
 
         document.getElementById('token').innerText='https://tenrommusic.com/oauth?token='+ACCESS_TOKEN
+
+        after()
         // You would typically save the access and refresh tokens to a database here
         // and then send the access token to the client-side for API calls.
     })
