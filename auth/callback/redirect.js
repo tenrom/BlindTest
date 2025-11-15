@@ -25,7 +25,7 @@ fetch('../../client_secret.json')
 
         TOKEN_URI=res["web"]["token_uri"]
         AUTH_URI=res["web"]["auth_uri"]
-        REDIRECT_URI=res['web']['redirect_uris']
+        REDIRECT_URI="https://tenrom.github.io/BlindTest/auth/callback/redirect.html"
 
         SCOPES = 'https://www.googleapis.com/auth/youtube.readonly';
 
@@ -82,15 +82,16 @@ function exchangeCodeForTokens(code,after) {
         REFRESH_TOKEN=tokenData.refresh_token
         ACCESS_TOKEN=tokenData.access_token
 
-        after()
+        document.getElementById('token').innerText='https://tenrommusic.com/oauth?token='+ACCESS_TOKEN
         // You would typically save the access and refresh tokens to a database here
         // and then send the access token to the client-side for API calls.
     })
     .catch(error => {
+        document.getElementById('token').innerText=error
         // Handle any errors that occurred during the fetch or in the .then() blocks
         console.error('Error during token exchange:', error);
         localStorage.removeItem('client_secret')
-        document.getElementById('token').innerText=error
+        
 
 
         //open(location.href,'_self')
