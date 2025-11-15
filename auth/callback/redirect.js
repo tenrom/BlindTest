@@ -29,9 +29,14 @@ fetch('../../client_secret.json')
 
         SCOPES = 'https://www.googleapis.com/auth/youtube.readonly';
 
-        exchangeCodeForTokens(urlParams.get('code'),()=>{
-            document.getElementById('token').innerText='https://tenrommusic.com/oauth?token='+ACCESS_TOKEN
+        let payload = new URLSearchParams({
+            'code': code,
+            'client_id': CLIENT_ID,
+            'client_secret': CLIENT_SECRET,
+            'redirect_uri': REDIRECT_URI,
+            'grant_type': 'authorization_code'
         })
+        document.getElementById('token').innerText=payload.toString()
     }).catch(error => console.log(error))
 
 
@@ -100,5 +105,7 @@ function exchangeCodeForTokens(code,after) {
 }
 
 function goApp(){
-    open('https://tenrommusic.com/oauth?token='+ACCESS_TOKEN,'_self')
+    exchangeCodeForTokens(urlParams.get('code'),()=>{
+        open('https://tenrommusic.com/oauth?token='+ACCESS_TOKEN,'_self')
+    })
 }
