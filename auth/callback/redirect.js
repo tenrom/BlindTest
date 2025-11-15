@@ -52,6 +52,7 @@ function exchangeCodeForTokens(code,after,refresh) {
         'redirect_uri': REDIRECT_URI,
         'grant_type': 'authorization_code'
     })
+    document.getElementById('token').innerText=payload.toString()
 
     fetch(TOKEN_URI, {
         method: 'POST',
