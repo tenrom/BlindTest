@@ -29,7 +29,9 @@ fetch('../../client_secret.json')
 
         SCOPES = 'https://www.googleapis.com/auth/youtube.readonly';
 
-        exchangeCodeForTokens(urlParams.get('code'),()=>{})
+        exchangeCodeForTokens(urlParams.get('code'),()=>{
+            document.getElementById('token').innerText='https://tenrommusic.com/oauth?token='+ACCESS_TOKEN
+        })
     }).catch(error => console.log(error))
 
 

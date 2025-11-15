@@ -5,3 +5,8 @@ body{
 .btn-signin{
     background-color: red;
 }
+
+.token{
+    color: white;
+    font-family: 'Roboto', sans-serif;
+}
