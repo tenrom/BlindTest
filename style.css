@@ -382,10 +382,10 @@ body{
     .mp-slider-box:hover .mp-slider{
         height: 9px;
     }
-    &:hover .mp-text-time{
+    .mp-slider-box:hover .mp-text-time{
         color: white;
     }
-    &:hover .mp-text-ctime{
+    .mp-slider-box:hover .mp-text-ctime{
         color: white;
     }
 }
