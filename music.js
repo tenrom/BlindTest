@@ -1,14 +1,14 @@
 
 function AddIndexMusic(){
     console.log('Before +',indexMusic)
-    indexMusic=playlistIds.indexOf(player.embed.getVideoData()['video_id'])+1
-    indexMusic=clamp(indexMusic,0,playlistIds.length-1)
+    indexMusic=currentPlaylist.indexOf(player.embed.getVideoData()['video_id'])+1
+    indexMusic=clamp(indexMusic,0,currentPlaylist.length-1)
     console.log('After +',indexMusic)
 }
 function SubIndexMusic(){
     console.log('Before -',indexMusic)
-    indexMusic=playlistIds.indexOf(player.embed.getVideoData()['video_id'])-1
-    indexMusic=clamp(indexMusic,0,playlistIds.length-1)
+    indexMusic=currentPlaylist.indexOf(player.embed.getVideoData()['video_id'])-1
+    indexMusic=clamp(indexMusic,0,currentPlaylist.length-1)
     console.log('After -',indexMusic)
 }
 
@@ -25,7 +25,7 @@ function Load(id){
         player.embed.setVolume(100) 
         document.getElementsByClassName('plyr__control')[0].click()
 
-        indexMusic=playlistIds.indexOf(id)
+        indexMusic=currentPlaylist.indexOf(id)
 
         document.getElementById('mp').show()
 
@@ -36,9 +36,14 @@ function Load(id){
 
     player.once('ended',()=>{
         console.log('end')
-        AddIndexMusic()
-        justchange=true
-        Load(playlistIds[indexMusic])
+        if (!loop){
+            AddIndexMusic()
+            justchange=true
+            Load(currentPlaylist[indexMusic])
+        }else{
+            justchange=true
+            Load(id)
+        }
     })
 }
 

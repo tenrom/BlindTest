@@ -5,6 +5,7 @@ class BlindTestButton extends HTMLElement{
     setAnswer(text){
         this.children[0].innerText=text
         this.children[0].style.backgroundColor=''
+        this.style.pointerEvents=''
     }
     connectedCallback(){
         this.classList.add('bt-btn')
@@ -15,6 +16,10 @@ class BlindTestButton extends HTMLElement{
 
         this.addEventListener('click',()=>{
             this.children[0].style.backgroundColor='#1DB954'
+
+            for (let i =0;i<document.getElementsByTagName('yt-bt-button').length;i++){
+                document.getElementsByTagName('yt-bt-button')[i].style.pointerEvents='none'
+            }
         })
     }
 }

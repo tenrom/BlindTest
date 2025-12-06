@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YT Music Blind Test - Gradient Timer</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        /* Set true black background and Inter font, allowing for scrolling */
+        body {
+            background-color: #000000;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh; 
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding-top: 20px; 
+            padding-bottom: 20px;
+        }
+
+        /* Define the NEW primary accent color (ORANGE) for the button */
+        .ytm-accent { background-color: #FFA500; } /* Bright Orange for Button */
+        /* Success and Fail strokes/backgrounds remain solid */
+        .ytm-success { stroke: #1DB954; background-color: #1DB954; } 
+        .ytm-fail { stroke: #E3342F; background-color: #E3342F; }
+
+        /* Custom shadow for accent buttons (now using Orange shadow) */
+        .ytm-accent-shadow {
+            box-shadow: 0 10px 15px -3px rgba(255, 165, 0, 0.3), 0 4px 6px -2px rgba(255, 165, 0, 0.15);
+        }
+
+        /* Base style for answer buttons */
+        .answer-button {
+            transition: background-color 0.4s ease, transform 0.1s;
+        }
+
+        /* Keyframe for a subtle "snap" animation on click */
+        .clicked {
+            animation: snap .1s ease-in-out;
+        }
+        @keyframes snap {
+            0% { transform: scale(1); }
+            50% { transform: scale(0.98); }
+            100% { transform: scale(1); }
+        }
+
+        /* Container adjustment for better mobile presentation and responsiveness */
+        #mobileContainer {
+            max-width: 420px; 
+            width: 100%;
+            min-height: 90vh;
+        }
+        
+        /* Ensure the inner content area can scroll if needed */
+        #scrollableContent {
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+
+        /* Circular Timer Specific Styles */
+        #countdownCircle {
+            /* Sets the starting position for the dash-offset (full circle) */
+            stroke-dasharray: 282.7; 
+            /* Rotates the circle to start the countdown from the top (12 o'clock) */
+            transform: rotate(-90deg); 
+            transform-origin: 50% 50%;
+        }
+
+        /* Style for the text in the center of the timer */
+        #timerDisplay {
+            font-size: 30px; /* Larger font for the countdown number */
+            font-weight: 800;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="mobileContainer" class="bg-black shadow-2xl rounded-3xl flex flex-col relative mx-auto"> 
+
+        <div class="flex justify-center p-2 pt-3 flex-shrink-0">
+            <!-- Mobile pull-down handle -->
+            <div class="w-10 h-1 rounded-full bg-gray-700"></div>
+        </div>
+        
+        <!-- Scrollable wrapper for content -->
+        <div id="scrollableContent" class="flex-grow p-4 flex flex-col"> 
+
+            <!-- Header and close button - ALIGNMENT FIX APPLIED HERE -->
+            <div class="flex justify-between items-center mb-6 flex-shrink-0">
+                <!-- Left: Close Button (takes up space) -->
+                <button class="text-white text-3xl font-light w-10 h-8 flex items-center justify-center hover:text-gray-400 transition" aria-label="Close Game">
+                    &times; 
+                </button>
+                
+                <!-- Center: The Result Text (takes up all remaining center space, centered) -->
+                <div class="flex-1 text-center">
+                    <p id="resultText" class="text-gray-400 text-sm font-semibold tracking-wider">CHOOSE THE ARTIST</p>
+                </div>
+
+                <!-- Right: Spacer (balances the space taken by the left button) -->
+                <div class="w-10 h-8"></div>
+            </div>
+
+            <!-- Title and Question Counter -->
+            <div class="text-center mb-6 flex-shrink-0">
+                <h1 class="text-white text-xl font-bold">Blind Test: French Rap Hits</h1>
+                <p id="questionCounter" class="text-gray-500 text-sm mt-1">Question 1 of 5</p>
+            </div>
+
+            <!-- CIRCULAR TIMER WITH GRADIENT -->
+            <div id="timerContainer" class="flex-shrink-0 w-full flex items-center justify-center mb-6 relative"> 
+                <svg id="countdownSVG" class="w-60 h-60" viewBox="0 0 100 100">
+                    <defs>
+                        <!-- Rotated Gradient: Flows from Top-Right (Orange) to Bottom-Left (Red) -->
+                        <linearGradient id="countdownGradient" x1="100%" y1="0%" x2="0%" y2="100%">
+                            <!-- Stop 1: Start Top-Right (Orange) -->
+                            <stop offset="0%" style="stop-color: #FFA500; stop-opacity: 1" /> 
+                            <!-- Stop 2: Keep Orange dominant up to 60% of the path -->
+                            <stop offset="60%" style="stop-color: #FFA500; stop-opacity: 1" /> 
+                            <!-- Stop 3: Transition to Red at 100% (Bottom-Left) -->
+                            <stop offset="100%" style="stop-color: #FF0000; stop-opacity: 1" /> 
+                        </linearGradient>
+                    </defs>
+
+                    <!-- Background ring (gray/dark) - stroke-width 8 -->
+                    <circle cx="50" cy="50" r="45" fill="none" stroke="#333333" stroke-width="8"/>
+                    
+                    <!-- Foreground Countdown Ring (uses gradient URL) - stroke-width 8 -->
+                    <circle id="countdownCircle" cx="50" cy="50" r="45" fill="none" stroke="url(#countdownGradient)" stroke-width="8" 
+                            stroke-dashoffset="282.7"/> 
+                    
+                    <!-- Numerical Timer Display in Center -->
+                    <text x="50" y="50" id="timerDisplay" text-anchor="middle" dominant-baseline="middle" fill="#FFFFFF"></text>
+                </svg>
+                
+                <!-- NEXT SONG Button (Large Circular Orange Button) -->
+                <button id="nextButton" onclick="nextSong()" 
+                    class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
+                           w-40 h-40 p-4 rounded-full ytm-accent text-black font-extrabold text-2xl 
+                           flex items-center justify-center text-center transition hover:opacity-90 active:scale-[.98] hidden">
+                    NEXT SONG
+                </button>
+            </div>
+            <!-- END CIRCULAR TIMER REPLACEMENT -->
+
+
+            <!-- Answer options container (grows to fill space) -->
+            <div id="answerOptions" class="flex flex-col space-y-3 flex-grow justify-start min-h-0">
+                <h2 class="text-white text-lg font-semibold text-center mb-2 flex-shrink-0">WHO IS THE ARTIST?</h2>
+            </div>
+
+            <!-- Song Info Display -->
+            <p id="songInfo" class="text-center text-xs text-gray-700 mt-3 pb-3 flex-shrink-0">Song info revealed after answer...</p> 
+
+        </div>
+    </div>
+
+    <script>
+        // --- CONSTANTS AND STATE ---
+        const TIME_LIMIT = 5000; // 5 seconds in milliseconds
+        const FULL_DASH_ARRAY = 282.7; // Circumference of the circle (2 * PI * 45)
+        const GRADIENT_URL = 'url(#countdownGradient)'; // Reference to the SVG gradient
+        
+        let isAnswered = false;
+        let currentQuestionIndex = 0;
+        let timerId = null; // Stores the main setTimeout ID for the 5-second limit
+        let intervalId = null; // Stores the setInterval ID for the numerical countdown
+
+        // Simulating the playlist received from an API
+        const playlist = [
+            { artist: "Gazo", song: "Casanova", options: ["Gazo", "Ninho", "Damso", "Booba"], correctIndex: 0 },
+            { artist: "Aya Nakamura", song: "Djadja", options: ["Vitaa", "Aya Nakamura", "Dadju", "Zaho"], correctIndex: 1 },
+            { artist: "PNL", song: "Au DD", options: ["PNL", "Niska", "Jul", "Kaaris"], correctIndex: 0 },
+            { artist: "SCH", song: "A7", options: ["SCH", "Koba LaD", "Freeze Corleone", "Hamza"], correctIndex: 0 },
+            { artist: "Orelsan", song: "La Pluie", options: ["Bigflo & Oli", "Grand Corps Malade", "Orelsan", "Stromae"], correctIndex: 2 }
+        ];
+
+        // --- DOM REFERENCES ---
+        const answerOptionsContainer = document.getElementById('answerOptions');
+        const nextButton = document.getElementById('nextButton');
+        const resultText = document.getElementById('resultText');
+        const songInfo = document.getElementById('songInfo');
+        const questionCounter = document.getElementById('questionCounter');
+        const countdownCircle = document.getElementById('countdownCircle');
+        const timerDisplay = document.getElementById('timerDisplay');
+
+        // --- TIMER LOGIC ---
+
+        function stopTimer() {
+            clearTimeout(timerId);
+            clearInterval(intervalId);
+        }
+
+        function timeUp() {
+            if (isAnswered) return; 
+            
+            // Treat as incorrect, as time ran out
+            isAnswered = true;
+
+            // CRITICAL FIX: Disable all buttons immediately to prevent clicks
+            const allButtons = answerOptionsContainer.querySelectorAll('.answer-button');
+            allButtons.forEach(btn => {
+                btn.onclick = null; // Disable click handler
+                btn.classList.remove('hover:bg-gray-700');
+            });
+            
+            // Update UI elements for timeout state (Failure)
+            resultText.textContent = "TIME UP! 0 Points";
+            resultText.classList.remove('text-gray-400', 'text-green-400');
+            resultText.classList.add('text-red-400');
+            
+            // Visually update the circle to SOLID red
+            countdownCircle.style.stroke = '#E3342F'; 
+            timerDisplay.style.display = 'none'; // Hide the timer number
+
+            // Show the correct answer
+            allButtons.forEach(btn => {
+                if (btn.getAttribute('data-correct') === 'true') {
+                    // Correct button turns success green
+                    btn.classList.remove('bg-gray-800');
+                    btn.classList.add('ytm-success', 'font-extrabold');
+                }
+            });
+
+            // Final UI updates
+            const currentSong = playlist[currentQuestionIndex];
+            nextButton.classList.remove('hidden'); // Show the button in the circle
+            songInfo.textContent = `The song was: ${currentSong.song} - ${currentSong.artist}`;
+            songInfo.classList.remove('text-gray-700');
+            songInfo.classList.add('text-white');
+        }
+
+        function startTimer() {
+            stopTimer(); // Clear any existing timers
+
+            // 1. Reset visual circle styles for start
+            countdownCircle.style.transition = 'none';
+            countdownCircle.style.strokeDashoffset = FULL_DASH_ARRAY;
+            // CRITICAL: Apply the gradient URL stroke
+            countdownCircle.style.stroke = GRADIENT_URL; 
+            timerDisplay.textContent = 5;
+            timerDisplay.style.display = 'block'; // Ensure timer number is visible
+            
+            // 2. CRITICAL FIX: Ensure next button is hidden at the start of the timer
+            nextButton.classList.add('hidden'); 
+
+            // Use a slight delay to ensure the browser registers 'transition: none' before starting
+            setTimeout(() => {
+                // 3. Start CSS animation for 5 seconds
+                countdownCircle.style.transition = `stroke-dashoffset ${TIME_LIMIT / 1000}s linear`;
+                countdownCircle.style.strokeDashoffset = 0;
+            }, 50);
+
+            // 4. Start numerical counter (updates every second)
+            let timeLeft = 4;
+            intervalId = setInterval(() => {
+                if (timeLeft >= 0) {
+                    timerDisplay.textContent = timeLeft;
+                    timeLeft--;
+                }
+            }, 1000);
+
+            // 5. Set final timeout for Time Up (5 seconds)
+            timerId = setTimeout(() => {
+                timeUp();
+            }, TIME_LIMIT);
+        }
+
+        // --- GAME LOGIC FUNCTIONS ---
+
+        function loadQuestion(index) {
+            if (index >= playlist.length) {
+                // Game Over state - Custom message box
+                document.getElementById('resultText').textContent = "GAME OVER!";
+                document.getElementById('questionCounter').textContent = `Total Questions: ${playlist.length}`;
+                answerOptionsContainer.innerHTML = `<p class="text-white text-center text-xl mt-8">Congratulations! Restart the page to play again.</p>`;
+                nextButton.classList.add('hidden'); // Ensure button stays hidden
+                stopTimer();
+                return; 
+            }
+
+            isAnswered = false;
+            const currentSong = playlist[index];
+
+            // 1. Reset UI elements
+            resultText.textContent = "CHOOSE THE ARTIST";
+            resultText.classList.remove('text-green-400', 'text-red-400');
+            resultText.classList.add('text-gray-400');
+            
+            songInfo.textContent = "Song info revealed after answer...";
+            songInfo.classList.remove('text-white');
+            songInfo.classList.add('text-gray-700');
+            
+            nextButton.classList.add('hidden'); // Hide button
+
+            questionCounter.textContent = `Question ${index + 1} of ${playlist.length}`;
+
+            // 2. Start the 5-second timer
+            startTimer();
+
+            // 3. Populate answer buttons
+            answerOptionsContainer.innerHTML = `
+                <h2 class="text-white text-lg font-semibold text-center mb-2 flex-shrink-0">WHO IS THE ARTIST?</h2>
+            `;
+            
+            currentSong.options.forEach((option, i) => {
+                const isCorrect = i === currentSong.correctIndex;
+                const button = document.createElement('button');
+                button.className = 'answer-button w-full p-4 rounded-xl bg-gray-800 text-white font-medium text-base hover:bg-gray-700 transition duration-150 flex-shrink-0'; 
+                button.textContent = option;
+                button.setAttribute('data-index', i);
+                button.setAttribute('data-correct', isCorrect);
+                
+                // CRITICAL FIX: Prevent default action and call handler
+                button.onclick = (event) => {
+                    event.preventDefault(); 
+                    handleAnswer(button, currentSong);
+                };
+                
+                answerOptionsContainer.appendChild(button);
+            });
+        }
+
+        function handleAnswer(selectedButton, currentSong) {
+            if (isAnswered) {
+                return;
+            }
+            isAnswered = true;
+            stopTimer(); // <-- Stop the 5-second clock immediately
+
+            const isCorrect = selectedButton.getAttribute('data-correct') === 'true';
+            const allButtons = answerOptionsContainer.querySelectorAll('.answer-button');
+
+            // 1. Disable all buttons
+            allButtons.forEach(btn => {
+                btn.onclick = null;
+                btn.classList.remove('hover:bg-gray-700');
+            });
+            
+            selectedButton.classList.add('clicked'); // Add animation class
+
+            // 2. Apply visual feedback
+            if (isCorrect) {
+                // Correct Answer
+                selectedButton.classList.remove('bg-gray-800');
+                selectedButton.classList.add('ytm-success', 'font-extrabold', 'shadow-lg');
+                resultText.textContent = "CORRECT! +10 Points";
+                resultText.classList.remove('text-gray-400');
+                resultText.classList.add('text-green-400');
+                
+                // Circle visual feedback (Success Green)
+                countdownCircle.style.stroke = '#1DB954'; 
+            } else {
+                // Incorrect Answer
+                selectedButton.classList.remove('bg-gray-800');
+                selectedButton.classList.add('ytm-fail', 'font-bold', 'shadow-lg');
+                resultText.textContent = "INCORRECT! 0 Points";
+                resultText.classList.remove('text-gray-400');
+                resultText.classList.add('text-red-400');
+
+                // Reveal the correct answer in Green
+                const correctButton = Array.from(allButtons).find(btn => btn.getAttribute('data-correct') === 'true');
+                if (correctButton) {
+                    correctButton.classList.remove('bg-gray-800');
+                    correctButton.classList.add('ytm-success', 'font-extrabold');
+                }
+                
+                // Circle visual feedback (Failure Red)
+                countdownCircle.style.stroke = '#E3342F'; 
+            }
+            
+            // Stop the countdown animation/reset it
+            countdownCircle.style.transition = 'none';
+            timerDisplay.style.display = 'none'; // Hide numerical timer
+            
+            // 3. Update game flow elements
+            nextButton.classList.remove('hidden'); // Show the next song button
+            songInfo.textContent = `The song was: ${currentSong.song} - ${currentSong.artist}`;
+            songInfo.classList.remove('text-gray-700');
+            songInfo.classList.add('text-white');
+        }
+
+        function nextSong() {
+            currentQuestionIndex++;
+            loadQuestion(currentQuestionIndex);
+        }
+
+        // --- INITIALIZATION ---
+        window.onload = () => {
+            loadQuestion(currentQuestionIndex);
+        };
+    </script>
+</body>
+</html>
