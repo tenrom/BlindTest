@@ -17,6 +17,8 @@ document.getElementById('btn-play').innerHTML=`
 const lerp = (x, y, a) => x * (1 - a) + y * a;
 const clamp = (a, min = 0, max = 1) => Math.min(max, Math.max(min, a));
 
+let bodyOverflow='visible'
+
 let db
 let channelId
 let currentPlaylist=[]
@@ -688,6 +690,7 @@ class musicPlayer extends HTMLElement{
 
             if (!bt_visible){
                 document.body.style.overflow='visible'
+                bodyOverflow='visible'
             }
             
             this.style.pointerEvents=''
@@ -700,6 +703,7 @@ class musicPlayer extends HTMLElement{
             
             this.style.display='block'
             document.body.style.overflow='hidden'
+            bodyOverflow='hidden'
 
             issmall=false
             
@@ -714,7 +718,10 @@ class musicPlayer extends HTMLElement{
         }
     }
     show(){
-        document.body.style.overflow='hidden'
+        if (!issmall){
+            document.body.style.overflow='hidden'
+            bodyOverflow='hidden'
+        }
         if (issmall && !justchange){
             this.style.display='block'
             this.startAnim(duration,true,0)
@@ -926,6 +933,7 @@ class musicPlayer extends HTMLElement{
         document.getElementById('mp-small-box').addEventListener('touchstart',(e)=>{
             issmallclick=true
             document.body.style.overflow='hidden'
+            bodyOverflow='hidden'
             smalloffset=[e.changedTouches[0].clientX,e.changedTouches[0].clientY,e.changedTouches[0].clientY-document.getElementById('mp-small-box').getBoundingClientRect().y]
         })
 
@@ -1159,6 +1167,7 @@ document.addEventListener('touchend',(e)=>{
         issmallclick=false
         if (!bt_visible){
             document.body.style.overflow='visible'
+            bodyOverflow='visible'
         }
     }
 })

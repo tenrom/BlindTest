@@ -90,6 +90,7 @@ class BlindTest extends HTMLElement{
 
         if (a===1){
             document.body.style.overflow='visible'
+            bodyOverflow='visible'
 
             this.style.pointerEvents=''
             this.style.display='none'
@@ -98,6 +99,7 @@ class BlindTest extends HTMLElement{
         }else{
             this.style.display='block'
             document.body.style.overflow='hidden'
+            bodyOverflow='hidden'
 
             bt_visible=true
         }
@@ -199,6 +201,7 @@ class BlindTest extends HTMLElement{
     }
     show(){
         document.body.style.overflow='hidden'
+        bodyOverflow='hidden'
         this.style.display='block'
         this.startAnim(duration,true,0)
         this.style.pointerEvents=''

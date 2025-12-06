@@ -68,6 +68,9 @@ let player = new Plyr('#player',{
             showinfo: 0,
             hl:'fr',
             persist_hl:1
+    },
+    fullscreen: { 
+        enabled: false, 
     }
 });
 
@@ -207,5 +210,6 @@ if ('mediaSession' in navigator) {
 }
 
 
-
-
+player.on('ready', () => {
+    document.body.style.overflow =  bodyOverflow
+})
