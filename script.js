@@ -1258,9 +1258,10 @@ function ExtractVideoFromURI(url){
 }
 
 function SearchAnim(){
-    document.getElementById('search-bar').style.animation='SearchAnim 1000ms ease-in-out forwards'
-    document.getElementById('explore-search-container').click()
+    document.getElementById('search-bar').style.animation=''
     setTimeout(()=>{
+        document.getElementById('search-bar').style.animation='SearchAnim 1000ms ease-in-out forwards'
+        document.getElementById('search-bar').blur()
         document.getElementById('search-bar').addEventListener('click',()=>{
             document.getElementById('search-bar').style.animation='SearchAnimReverse 600ms ease-in-out forwards reverse'
         },{once:true})
@@ -1491,4 +1492,5 @@ function randomIconUpdate(v){
         currentPlaylist=playlistIds
         indexMusic=currentPlaylist.indexOf(player.embed.getVideoData()['video_id'])
     }
+
 }
