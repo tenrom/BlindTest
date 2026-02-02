@@ -299,16 +299,13 @@ function getPlaylists(channelid='',mine=false,after){
     }
 }
 
-function fetchAllPages(url,after,pageToken=''){
+function fetchAllPages(url,after,pageToken='',items=[]){
     fetch(url+`&pageToken=${pageToken}`).then(res => res.json()).then(res => {
+        items.push(...res.items)
         if(res.nextPageToken){
-            fetchAllPages(url,(t)=>{
-                for (let i in res.items){
-                    t.items.push(res.items[i]}
-                }
-                after(t)
-            },res.nextPageToken)
+            fetchAllPages(url,after,res.nextPageToken,items)
         }else{
+            res.items=items
             after(res)
         }
     }).catch(refresh)
@@ -1503,6 +1500,7 @@ function randomIconUpdate(v){
     }
 
 }
+
 
 
 
