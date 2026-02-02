@@ -301,10 +301,10 @@ function getPlaylists(channelid='',mine=false,after){
 
 function fetchAllPages(url,after,pageToken=''){
     fetch(url+`&pageToken=${pageToken}`).then(res => res.json()).then(res => {
-        if(res.nextPageToken)){
+        if(res.nextPageToken){
             fetchAllPages(url,(t)=>{
                 for (let i in res.items){
-                    res.push(res.items[i]}
+                    t.items.push(res.items[i]}
                 }
                 after(t)
             },res.nextPageToken)
@@ -1503,5 +1503,6 @@ function randomIconUpdate(v){
     }
 
 }
+
 
 
