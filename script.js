@@ -299,16 +299,23 @@ function getPlaylists(channelid='',mine=false,after){
     }
 }
 
+function fetchAllPages(url,after,pageToken=''){
+    fetch(url+`&pageToken=${pageToken}`).then(res => res.json()).then(res => {
+        if(res.nextPageToken)){
+            fetchAllPages(url,(t)=>{
+                for (let i in res.items){
+                    res.push(res.items[i]}
+                }
+                after(t)
+            },res.nextPageToken)
+        }else{
+            after(res)
+        }
+    }).catch(refresh)
+}
+
 function getPlaylistItems(playlistid,mine=false,after){
-    if (mine){
-        fetch(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet,status,contentDetails&maxResults=500&playlistId=${playlistid}&access_token=${ACCESS_TOKEN}`).then(res => res.json()).then(res => {
-            after(res)
-        }).catch(refresh)
-    }else{
-        fetch(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet,status,contentDetails&maxResults=500&playlistId=${playlistid}&access_token=${ACCESS_TOKEN}`).then(res => res.json()).then(res => {
-            after(res)
-        }).catch(refresh)
-    }
+    fetchAllPages(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet,status,contentDetails&maxResults=500&playlistId=${playlistid}&access_token=${ACCESS_TOKEN}`,after)
 }
 
 
@@ -1496,4 +1503,5 @@ function randomIconUpdate(v){
     }
 
 }
+
 
