@@ -34,7 +34,6 @@ body{
     height: 57px;
     gap: 16px;
     cursor: pointer;
-    
 }
 
 .playlist-container{
@@ -135,9 +134,18 @@ body{
     flex-direction: column;
     justify-content:center;
     align-items: start;
-    width: 100%;
+    width: fit-content;
     height: 100%;
     gap:4px;
+}
+
+.playlist-box-btn{
+    display: flex;
+    flex-direction: column;
+    justify-content:center;
+    align-items: end;
+    width: fit-content;
+    height: 100%;
 }
 
 .playlist-texts-title{
@@ -293,6 +301,16 @@ body{
     height: 100%;
     z-index: 1;
     background-color: black;
+}
+
+.mp-mobileBlocker{
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
 }
 .mp-container{
     position: fixed;

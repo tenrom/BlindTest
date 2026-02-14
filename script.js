@@ -7,7 +7,8 @@ let svgs={
     "ic-loop":[` width="32px" height="32px" viewBox="0 0 24 24"><path fill="currentColor" d="M12 4a7.99 7.99 0 0 1 6.616 3.5H16v2h6v-6h-2V6a9.98 9.98 0 0 0-8-4C6.477 2 2 6.477 2 12h2a8 8 0 0 1 8-8m8 8a8 8 0 0 1-14.616 4.5H8v-2H2v6h2V18a9.98 9.98 0 0 0 8 4c5.523 0 10-4.477 10-10z"/>`,` width="25px" height="25px" viewBox="0 0 24 24"><path fill="currentColor" d="M17.293 1.293a1 1 0 000 1.415L18.586 4H7a5 5 0 00-5 5v4a1 1 0 102 0V9a3 3 0 013-3h11.586l-1.293 1.293a1 1 0 001.414 1.415L22.414 5l-3.707-3.707a1 1 0 00-1.414 0ZM21 10a1 1 0 00-1 1v4a3 3 0 01-3 3H5.414l1.293-1.292a1.001 1.001 0 00-1.414-1.415L1.586 19l3.707 3.707a1 1 0 101.414-1.413L5.414 20H17a5 5 0 005-5v-4a1 1 0 00-1-1Z"></path>`],
     "ic-loop2":[` width="32px" height="32px" viewBox="0 0 24 24"><path fill="currentColor" d="M17.293 1.293a1 1 0 000 1.415L18.586 4H7a5 5 0 00-5 5v4a1 1 0 102 0V9a3 3 0 013-3h11.586l-1.293 1.293a1 1 0 001.414 1.415L22.414 5l-3.707-3.707a1 1 0 00-1.414 0ZM13 15V8h-2.5a1 1 0 000 2h.5v5a1 1 0 002 0Zm8-5a1 1 0 00-1 1v4a3 3 0 01-3 3H5.414l1.293-1.292a1.001 1.001 0 00-1.414-1.415L1.586 19l3.707 3.707a1 1 0 101.414-1.413L5.414 20H17a5 5 0 005-5v-4a1 1 0 00-1-1Z"/>`,` width="25px" height="25px" viewBox="0 0 24 24"><path fill="currentColor" d="M17.293 1.293a1 1 0 000 1.415L18.586 4H7a5 5 0 00-5 5v4a1 1 0 102 0V9a3 3 0 013-3h11.586l-1.293 1.293a1 1 0 001.414 1.415L22.414 5l-3.707-3.707a1 1 0 00-1.414 0ZM13 15V8h-2.5a1 1 0 000 2h.5v5a1 1 0 002 0Zm8-5a1 1 0 00-1 1v4a3 3 0 01-3 3H5.414l1.293-1.292a1.001 1.001 0 00-1.414-1.415L1.586 19l3.707 3.707a1 1 0 101.414-1.413L5.414 20H17a5 5 0 005-5v-4a1 1 0 00-1-1Z"></path>`],
     "ic-random":[` width="32px" height="32px" viewBox="0 0 512 512"><path fill="currentColor" d="M403.8 34.4c12-5 25.7-2.2 34.9 6.9l64 64c6 6 9.4 14.1 9.4 22.6s-3.4 16.6-9.4 22.6l-64 64c-9.2 9.2-22.9 11.9-34.9 6.9S384 204.9 384 192v-32h-32c-10.1 0-19.6 4.7-25.6 12.8L294 216l-40-53.3l21.2-28.3C293.3 110.2 321.8 96 352 96h32V64c0-12.9 7.8-24.6 19.8-29.6M154 296l40 53.3l-21.2 28.3C154.7 401.8 126.2 416 96 416H32c-17.7 0-32-14.3-32-32s14.3-32 32-32h64c10.1 0 19.6-4.7 25.6-12.8zm284.6 174.6c-9.2 9.2-22.9 11.9-34.9 6.9S384 460.9 384 448v-32h-32c-30.2 0-58.7-14.2-76.8-38.4L121.6 172.8c-6-8.1-15.5-12.8-25.6-12.8H32c-17.7 0-32-14.3-32-32s14.3-32 32-32h64c30.2 0 58.7 14.2 76.8 38.4l153.6 204.8c6 8.1 15.5 12.8 25.6 12.8h32v-32c0-12.9 7.8-24.6 19.8-29.6s25.7-2.2 34.9 6.9l64 64c6 6 9.4 14.1 9.4 22.6s-3.4 16.6-9.4 22.6l-64 64z"/>`,` width="32px" height="32px" viewBox="0 0 24 24"><path fill="currentColor" d="M16.293 1.293a1 1 0 00-.001 1.415L18.585 5H17.21a7 7 0 00-5.823 3.118L6.95 14.774A5 5 0 012.79 17H2a1 1 0 000 2h.79a7 7 0 005.822-3.117l4.438-6.656A5 5 0 0117.21 7h1.376l-2.293 2.293a1 1 0 001.414 1.414L22.414 6l-4.707-4.707a1 1 0 00-1.414 0ZM2.789 5H2a1 1 0 000 2h.79a5 5 0 014.159 2.227l.647.97 1.202-1.802-.185-.277A7 7 0 002.789 5Zm13.504 8.293a1 1 0 00-.001 1.414L18.585 17H17.21a5 5 0 01-4.16-2.226l-.648-.972-1.202 1.803.186.278A7 7 0 0017.21 19h1.376l-2.293 2.294-.068.076a1 1 0 001.406 1.406l.076-.07L22.414 18l-4.707-4.707a1 1 0 00-1.414 0Z"></path>`],
-    "ic-random2":[` width="32px" height="32px" viewBox="0 0 512 512"><path fill="currentColor" d="M403.8 34.4c12-5 25.7-2.2 34.9 6.9l64 64c6 6 9.4 14.1 9.4 22.6s-3.4 16.6-9.4 22.6l-64 64c-9.2 9.2-22.9 11.9-34.9 6.9S384 204.9 384 192v-32h-32c-10.1 0-19.6 4.7-25.6 12.8L294 216l-40-53.3l21.2-28.3C293.3 110.2 321.8 96 352 96h32V64c0-12.9 7.8-24.6 19.8-29.6M154 296l40 53.3l-21.2 28.3C154.7 401.8 126.2 416 96 416H32c-17.7 0-32-14.3-32-32s14.3-32 32-32h64c10.1 0 19.6-4.7 25.6-12.8zm284.6 174.6c-9.2 9.2-22.9 11.9-34.9 6.9S384 460.9 384 448v-32h-32c-30.2 0-58.7-14.2-76.8-38.4L121.6 172.8c-6-8.1-15.5-12.8-25.6-12.8H32c-17.7 0-32-14.3-32-32s14.3-32 32-32h64c30.2 0 58.7 14.2 76.8 38.4l153.6 204.8c6 8.1 15.5 12.8 25.6 12.8h32v-32c0-12.9 7.8-24.6 19.8-29.6s25.7-2.2 34.9 6.9l64 64c6 6 9.4 14.1 9.4 22.6s-3.4 16.6-9.4 22.6l-64 64z"/>`,` width="32px" height="32px" viewBox="0 0 24 24"><path fill="currentColor" d="M16.293 13.293a1 1 0 011.414 0L22.414 18l-4.707 4.707a1 1 0 01-1.414-1.413L18.586 19H17.21a7.001 7.001 0 01-5.824-3.117l-.186-.278 1.202-1.803.648.972A5.001 5.001 0 0017.21 17h1.375l-2.293-2.293a1 1 0 010-1.414Zm0-12a1 1 0 011.414 0L22.414 6l-4.707 4.707a1 1 0 01-1.414-1.414L18.586 7H17.21a5 5 0 00-4.16 2.227l-4.438 6.656A7 7 0 012.79 19H2a1 1 0 010-2h.79a5 5 0 004.16-2.226l4.437-6.656A7 7 0 0117.21 5h1.375l-2.293-2.292a1 1 0 010-1.415ZM3 10.001a2 2 0 110 4 2 2 0 010-4Zm-.21-5a7 7 0 015.823 3.117l.185.277-1.202 1.803-.647-.971A5 5 0 002.79 7H2a1 1 0 010-2h.79Z"></path>`]
+    "ic-random2":[` width="32px" height="32px" viewBox="0 0 512 512"><path fill="currentColor" d="M403.8 34.4c12-5 25.7-2.2 34.9 6.9l64 64c6 6 9.4 14.1 9.4 22.6s-3.4 16.6-9.4 22.6l-64 64c-9.2 9.2-22.9 11.9-34.9 6.9S384 204.9 384 192v-32h-32c-10.1 0-19.6 4.7-25.6 12.8L294 216l-40-53.3l21.2-28.3C293.3 110.2 321.8 96 352 96h32V64c0-12.9 7.8-24.6 19.8-29.6M154 296l40 53.3l-21.2 28.3C154.7 401.8 126.2 416 96 416H32c-17.7 0-32-14.3-32-32s14.3-32 32-32h64c10.1 0 19.6-4.7 25.6-12.8zm284.6 174.6c-9.2 9.2-22.9 11.9-34.9 6.9S384 460.9 384 448v-32h-32c-30.2 0-58.7-14.2-76.8-38.4L121.6 172.8c-6-8.1-15.5-12.8-25.6-12.8H32c-17.7 0-32-14.3-32-32s14.3-32 32-32h64c30.2 0 58.7 14.2 76.8 38.4l153.6 204.8c6 8.1 15.5 12.8 25.6 12.8h32v-32c0-12.9 7.8-24.6 19.8-29.6s25.7-2.2 34.9 6.9l64 64c6 6 9.4 14.1 9.4 22.6s-3.4 16.6-9.4 22.6l-64 64z"/>`,` width="32px" height="32px" viewBox="0 0 24 24"><path fill="currentColor" d="M16.293 13.293a1 1 0 011.414 0L22.414 18l-4.707 4.707a1 1 0 01-1.414-1.413L18.586 19H17.21a7.001 7.001 0 01-5.824-3.117l-.186-.278 1.202-1.803.648.972A5.001 5.001 0 0017.21 17h1.375l-2.293-2.293a1 1 0 010-1.414Zm0-12a1 1 0 011.414 0L22.414 6l-4.707 4.707a1 1 0 01-1.414-1.414L18.586 7H17.21a5 5 0 00-4.16 2.227l-4.438 6.656A7 7 0 012.79 19H2a1 1 0 010-2h.79a5 5 0 004.16-2.226l4.437-6.656A7 7 0 0117.21 5h1.375l-2.293-2.292a1 1 0 010-1.415ZM3 10.001a2 2 0 110 4 2 2 0 010-4Zm-.21-5a7 7 0 015.823 3.117l.185.277-1.202 1.803-.647-.971A5 5 0 002.79 7H2a1 1 0 010-2h.79Z"></path>`],
+    "ic-menu":[` width="32px" height="32px" viewBox="0 0 32 32"><path fill="currentColor" d="M12 4a2 2 0 100 4 2 2 0 000-4Zm0 6a2 2 0 100 4 2 2 0 000-4Zm0 6a2 2 0 100 4 2 2 0 000-4Z"/>`,` width="24px" height="24px" viewBox="0 0 24 24"><path fill="currentColor" d="M12 4a2 2 0 100 4 2 2 0 000-4Zm0 6a2 2 0 100 4 2 2 0 000-4Zm0 6a2 2 0 100 4 2 2 0 000-4Z"/>`]
 }
 
 document.getElementById('btn-play').innerHTML=`
@@ -58,11 +59,11 @@ function resize(){
     document.getElementById('playlist-container').style.width=document.body.clientWidth+'px'
 
     for (let i=0;i<document.getElementsByClassName('playlist-texts-author').length;i++){
-        document.getElementsByClassName('playlist-texts-author')[i].style.width=document.body.clientWidth-24-document.getElementsByClassName('playlist-texts-author')[i].offsetLeft+'px'
+        document.getElementsByClassName('playlist-texts-author')[i].style.width=document.body.clientWidth-document.getElementsByClassName('playlist-texts-author')[i].offsetLeft-16-24-16+'px'
     }
 
     for (let i=0;i<document.getElementsByClassName('playlist-texts-title').length;i++){
-        document.getElementsByClassName('playlist-texts-title')[i].style.width=document.body.clientWidth-24-document.getElementsByClassName('playlist-texts-title')[i].offsetLeft+'px'
+        document.getElementsByClassName('playlist-texts-title')[i].style.width=document.body.clientWidth-document.getElementsByClassName('playlist-texts-title')[i].offsetLeft-16-24-16+'px'
     }
 
     
@@ -88,7 +89,10 @@ window.addEventListener('resize',()=>{
     resize()
 })
 
-window.addEventListener('load',resize)
+window.addEventListener('load',()=>{
+    resize()
+    setTimeout(resize,1000)
+})
 
 fetch('client_secret.json')
     .then(res => res.json())
@@ -262,6 +266,9 @@ class ytPlaylistItem extends HTMLElement{
                 <div class='playlist-box'>
                     <h2 class='playlist-texts-title'>${this.getAttribute('text-title')}</h2>
                     <h2 class='playlist-texts-author'>${this.getAttribute('text-author')}</h2>
+                </div>
+                <div class="playlist-box-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" style="display: block;color:white;"${svgs['ic-menu'][iconIndex]}</svg>
                 </div>
             </div>
         `
@@ -545,7 +552,6 @@ function initialization(){
     }else{
         if (urlParams.get('mine')==='true'){
             if (urlParams.get('mine')==='true'){
-                console.log('Mine')
                 if (urlParams.get('list')){
                     getPlaylistItems(urlParams.get('list'),mine=true,ShowPlaylist)
                 }else{
@@ -697,7 +703,7 @@ class musicPlayer extends HTMLElement{
                 bodyOverflow='visible'
             }
             
-            this.style.pointerEvents=''
+            document.getElementById('mp-mobileBlocker').style.display='none'
 
             issmall=true
 
@@ -714,7 +720,7 @@ class musicPlayer extends HTMLElement{
         }
 
         if (a===0 && reverse){
-            document.getElementById('mp').style.pointerEvents=''
+            document.getElementById('mp-mobileBlocker').style.display='none'
         }
 
         if (a===0){
@@ -729,7 +735,7 @@ class musicPlayer extends HTMLElement{
         if (issmall && !justchange){
             this.style.display='block'
             this.startAnim(duration,true,0)
-            this.style.pointerEvents=''
+            document.getElementById('mp-mobileBlocker').style.display='none'
         }
         
         document.getElementById('mp-img').style.backgroundImage=`url('${document.getElementsByTagName('yt-playlist-item')[playlistIds.indexOf(currentPlaylist[indexMusic])].getAttribute('img')}')`
@@ -767,7 +773,7 @@ class musicPlayer extends HTMLElement{
     hide(){
         
         this.startAnim(duration,false,0)
-        this.style.pointerEvents='none'
+        document.getElementById('mp-mobileBlocker').style.display='none'
     }
     connectedCallback(){
         this.classList.add('mp')
@@ -824,6 +830,8 @@ class musicPlayer extends HTMLElement{
 
         <div class="mp-playlist-bar"></div>
         <h2 class="mp-text-playlist" id="mp-text-playlist"></h2>
+
+        <div id="mp-mobileBlocker" class="mp-mobileBlocker"></div>
         
         `
 
@@ -978,7 +986,6 @@ document.addEventListener('mousemove',(e)=>{
             }
         }else{
             if (smalldirection==='v'){
-                console.log(smalloffset[2])
                 valueXMp=(e.clientY-smalloffset[2])/document.getElementById('mp').clientHeight
                 valueXMp=Math.max(Math.min(valueXMp,1),0)
 
@@ -1011,7 +1018,7 @@ let mouseup=(e)=>{
     }else{
         if (isclickingMp){
             isclickingMp=false
-            document.getElementById('mp').style.pointerEvents='none'
+            document.getElementById('mp-mobileBlocker').style.display='none'
             valueXMp=(e.clientY-offsetXMp)/document.getElementById('mp').clientHeight
             valueXMp=Math.max(Math.min(valueXMp,1),0)
 
@@ -1027,7 +1034,7 @@ let mouseup=(e)=>{
         if (smalldirection==='v'){
             smalldirection=null
             issmallclick=false
-            document.getElementById('mp').style.pointerEvents='none'
+            document.getElementById('mp-mobileBlocker').style.display='none'
             valueXMp=(e.clientY-smalloffset[2])/document.getElementById('mp').clientHeight
             valueXMp=Math.max(Math.min(valueXMp,1),0)
 
@@ -1127,7 +1134,7 @@ document.addEventListener('touchend',(e)=>{
     }else{
         if (isclickingMp){
             isclickingMp=false
-            document.getElementById('mp').style.pointerEvents='none'
+            document.getElementById('mp-mobileBlocker').style.display='block'
             valueXMp=(e.changedTouches[0].clientY-offsetXMp)/document.getElementById('mp').clientHeight
             valueXMp=Math.max(Math.min(valueXMp,1),0)
 
@@ -1141,7 +1148,7 @@ document.addEventListener('touchend',(e)=>{
 
     if (issmallclick){
         if (smalldirection==='v'){
-            document.getElementById('mp').style.pointerEvents='none'
+            document.getElementById('mp-mobileBlocker').style.display='block'
             valueXMp=(e.changedTouches[0].clientY-smalloffset[2])/document.getElementById('mp').clientHeight
             valueXMp=Math.max(Math.min(valueXMp,1),0)
 
