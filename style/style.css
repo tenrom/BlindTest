@@ -684,3 +684,42 @@ body{
 
 
 
+.menuItem-div{
+    display: flex;
+    flex-direction: row;
+    justify-content:start;
+    align-items: center;
+    width: 100%;
+    height: 57px;
+    gap: 16px;
+    cursor: pointer;
+}
+
+.menuItem-box{
+    display: flex;
+    flex-direction: column;
+    justify-content:center;
+    align-items: start;
+    width: fit-content;
+    height: 100%;
+}
+
+.menuItem-name{
+    color: white;
+    margin: 0;
+    font-family: "Roboto", sans-serif;
+    font-weight: 400;
+    font-size: 18px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.menu-div{
+    width: calc(100% - 56px);
+    background-color: #212121;
+    display: flex;
+    flex-direction: column;
+    border-radius: 16px;
+    margin-bottom: 16px;
+    padding: 0px 16px;
+}

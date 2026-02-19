@@ -253,10 +253,12 @@ class ytPlaylist extends HTMLElement{
 }
 
 
-
 class ytPlaylistItem extends HTMLElement{
     constructor(){
         super()
+    }
+    ShowMenu(e){
+        document.getElementById('menuSong').show(this.getAttribute('ytid'))
     }
     connectedCallback(){
         this.style.width='100%'
@@ -284,8 +286,14 @@ class ytPlaylistItem extends HTMLElement{
             }else{
                 loopIconUpdate(false)
                 randomIconUpdate(false)
+                indexMusic=currentPlaylist.indexOf(this.getAttribute('ytid'))
                 Load(this.getAttribute('ytid'))
             }
+        })
+
+        this.getElementsByClassName('playlist-box-btn')[0].addEventListener('click',(e)=>{
+            e.stopPropagation()
+            this.ShowMenu()
         })
     }
 }
@@ -321,7 +329,6 @@ function fetchAllPages(url,after,pageToken='',items=[]){
 function getPlaylistItems(playlistid,mine=false,after){
     fetchAllPages(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet,status,contentDetails&maxResults=500&playlistId=${playlistid}&access_token=${ACCESS_TOKEN}`,after)
 }
-
 
 function ShowPlaylist(json){
     console.log(json)
@@ -510,7 +517,7 @@ function ShowPlaylists(json){
             channelId=res['items'][0]['id']
         })  
     }else{
-        fetch(`https://youtube.googleapis.com/youtube/v3/channels?part=snippet&id=${urlParams.get('channel')}&access_token=${ACCESS_TOKEN}`).then(res => res.json()).then(res => {
+        fetch(`https://youtube.googleapis.com/youtube/v3/channels?part=snippet,statistics,contentDetails,contentOwnerDetails,localizations,status,topicDetails&id=${urlParams.get('channel')}&access_token=${ACCESS_TOKEN}`).then(res => res.json()).then(res => {
             console.log(res)
             document.getElementById('channel-img').src=res['items'][0]['snippet']['thumbnails']['high']['url']
             document.getElementById('playlist-author').innerText=res['items'][0]['snippet']['title']

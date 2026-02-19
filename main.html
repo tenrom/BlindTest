@@ -10,8 +10,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&amp;display=swap" rel="stylesheet">
     <link rel="shortcut icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSIjZjAwIiBkPSJtMTAuMjc1IDE2bDUuNTc1LTMuNTc1cS4yMjUtLjE1LjIyNS0uNDI1dC0uMjI1LS40MjVMMTAuMjc1IDhxLS4yNS0uMTc1LS41MTMtLjAyNXQtLjI2Mi40NXY3LjE1cTAgLjMuMjYzLjQ1dC41MTItLjAyNU00IDIwcS0uODI1IDAtMS40MTItLjU4N1QyIDE4VjZxMC0uODI1LjU4OC0xLjQxMlQ0IDRoMTZxLjgyNSAwIDEuNDEzLjU4OFQyMiA2djEycTAgLjgyNS0uNTg3IDEuNDEzVDIwIDIweiIvPjwvc3ZnPg==" type="image/x-icon">
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="blindTest.css">
+    <link rel="stylesheet" href="style/style.css">
+    <link rel="stylesheet" href="style/blindTest.css">
     <link rel="stylesheet" href="https://unpkg.com/plyr@3/dist/plyr.css">
 
     <script src="https://apis.google.com/js/api.js"></script>
@@ -20,18 +20,18 @@
     <script src="https://unpkg.com/plyr@3"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/seedrandom/3.0.5/seedrandom.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-    <script src="bezierEasing.js"></script>
-    <script src="music.js" defer></script>
-    <script src="script.js" defer></script>
-    <script src="blindTest.js" defer></script>
-
+    <script src="script/bezierEasing.js"></script>
+    <script src="script/music.js" defer></script>
+    <script src="script/script.js" defer></script>
+    <script src="script/blindTest.js" defer></script>
+    <script src="script/menu.js" defer></script>
 </head>
 <body>
     <div style="width:100%;height:100%;overflow-x:hidden;position: relative;">
         <div class="container" style="display: none;">
             <div id="player" data-plyr-provider="youtube" data-plyr-embed-id=""></div>
         </div>
-        
+
         <button onclick="authenticate()" style="display: none;" id="btn-signin">Sign In</button>
         <div class="playlist-container" id="playlist-container" style="display: none;">
             <div class="playlist-banner" id="playlist-banner">
@@ -88,9 +88,10 @@
                 </div>
             </div>
         </div>
-
+        
         <yt-blind-test id="bt"></yt-blind-test>
         <yt-music-player id="mp"></yt-music-player>
+        <yt-menu type="song" id="menuSong"></yt-menu>
 
         <iframe src="nav.html" style="border: none;height: 70px;z-index: 3;" class="nav" id="nav"></iframe>
 
