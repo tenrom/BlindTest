@@ -28,10 +28,17 @@ ActionsMenu={
         currentPlaylist=currentPlaylist.concat([menuSongID])
     },
     "Remove from queue":()=>{
-        currentPlaylist=currentPlaylist.filter(e => e!==menuSongID)
+        if(menuSongID===currentPlaylist[indexMusic]){
+            currentPlaylist=currentPlaylist.filter(e => e!==menuSongID)
+            loopIconUpdate(false)
+            justchange=true
+            Load(currentPlaylist[indexMusic])
+        }else{
+            currentPlaylist=currentPlaylist.filter(e => e!==menuSongID)
+        }
     },
     "Go to artist":()=>{
-        console.log('Go to artist')
+        open
     }
 }
 

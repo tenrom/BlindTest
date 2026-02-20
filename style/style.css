@@ -157,7 +157,7 @@ body{
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    width: calc(100%);
+    width: calc(100vw - 140px);
     box-sizing: border-box;
 }
 
@@ -170,7 +170,7 @@ body{
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    width: calc(100%);
+    width: calc(100vw - 140px);
     box-sizing: border-box;
 }
 
@@ -550,7 +550,6 @@ body{
     position: fixed;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
     padding-bottom: 12px;
     margin-bottom: 70px;
@@ -569,28 +568,28 @@ body{
     gap: 5px;
     width:70%;
     cursor:text;
-    
+    z-index: 1;
 }
 
 @keyframes SearchAnim {
     0%{
-        translate: 0px 0px;
+        translate: 0px calc(0px + 50vh);
     }
     20%{
-        translate: 0px 60px;
+        translate: 0px calc(60px + 50vh);
     }
 
     100%{
-        translate:0px calc(-50vh + 70px + 30px);
+        translate:0px calc(70px + 30px);
     }
 }
 
 @keyframes SearchAnimReverse {
     20%{
-        translate: 0px 0px;
+        translate: 0px calc(0px + 50vh);
     }
     100%{
-        translate:0px calc(-50vh + 70px + 30px);
+        translate:0px calc(70px + 30px);
     }
 }
 
@@ -722,4 +721,16 @@ body{
     border-radius: 16px;
     margin-bottom: 16px;
     padding: 0px 16px;
+}
+
+.search-result-div{
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    background-color: #000000;
+    padding-left: 24px;
+    translate: 0px calc(-50vh + 230px);
 }
