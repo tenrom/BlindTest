@@ -157,7 +157,7 @@ body{
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    width: calc(100vw - 140px);
+    width: calc(100vw - 128px);
     box-sizing: border-box;
 }
 
@@ -170,7 +170,7 @@ body{
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    width: calc(100vw - 140px);
+    width: calc(100vw - 128px);
     box-sizing: border-box;
 }
 
@@ -569,27 +569,28 @@ body{
     width:70%;
     cursor:text;
     z-index: 1;
+    translate: 0px calc(50vh + -60px);
 }
 
 @keyframes SearchAnim {
     0%{
-        translate: 0px calc(0px + 50vh);
+        translate: 0px calc(50vh + -60px);
     }
     20%{
-        translate: 0px calc(60px + 50vh);
+        translate: 0px calc(60px + 50vh + -60px);
     }
 
     100%{
-        translate:0px calc(70px + 30px);
+        translate: 0px calc(60px);
     }
 }
 
 @keyframes SearchAnimReverse {
     20%{
-        translate: 0px calc(0px + 50vh);
+        translate: 0px calc(50vh + -60px);
     }
     100%{
-        translate:0px calc(70px + 30px);
+        translate: 0px calc(60px);
     }
 }
 
@@ -732,5 +733,5 @@ body{
     width: 100%;
     background-color: #000000;
     padding-left: 24px;
-    translate: 0px calc(-50vh + 230px);
+    translate: 0px calc(50px + 120px);
 }

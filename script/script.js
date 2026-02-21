@@ -273,7 +273,7 @@ class ytPlaylistItem extends HTMLElement{
         }
 
         this.addEventListener('click',()=>{
-            if (playlistSongs[indexMusic]==this.getAttribute('ytid')){
+            if (indexMusic && playlistSongs[indexMusic][0]===this.getAttribute('ytid')){
                 document.getElementById('mp').show()
             }else{
                 loopIconUpdate(false)
