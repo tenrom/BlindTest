@@ -1294,15 +1294,15 @@ function search(){
         if (query.includes('@')){
             query=ExtractChannelFromURI(query)
             value.push(['c',query])
-            url=`https://youtube.googleapis.com/youtube/v3/channels?part=snippet,id,contentDetails,status&forHandle=${query}&maxResults=50&access_token=${ACCESS_TOKEN}`
+            url=`https://youtube.googleapis.com/youtube/v3/channels?part=snippet,id,statistics&forHandle=${query}&maxResults=50&access_token=${ACCESS_TOKEN}`
         }else if(query.includes('https://www.youtube.com/channel')){
             query=ExtractChannelFromURI(query)
             value.push(['c',query])
-            url=`https://youtube.googleapis.com/youtube/v3/channels?part=snippet,id,contentDetails,status&id=${query}&maxResults=50&access_token=${ACCESS_TOKEN}`
+            url=`https://youtube.googleapis.com/youtube/v3/channels?part=snippet,id,statistics&id=${query}&maxResults=50&access_token=${ACCESS_TOKEN}`
         }else if(query.includes('https://www.youtube.com/user') || query.includes('https://www.youtube.com/c')){
             query='@'+ExtractChannelFromURI(query)
             value.push(['c',query])
-            url=`https://youtube.googleapis.com/youtube/v3/channels?part=snippet,id,contentDetails,status&forHandle=${query}&maxResults=50&access_token=${ACCESS_TOKEN}`
+            url=`https://youtube.googleapis.com/youtube/v3/channels?part=snippet,id,statistics&forHandle=${query}&maxResults=50&access_token=${ACCESS_TOKEN}`
         }else{
             up=new URLSearchParams(new URL(query).search)
             if (ExtractVideoFromURI(query)){
@@ -1314,11 +1314,11 @@ function search(){
     }else{
         if (query.includes('@')){
             value.push(['c',query])
-            url=`https://youtube.googleapis.com/youtube/v3/channels?part=snippet,id,contentDetails,status&forHandle=${query}&maxResults=50&access_token=${ACCESS_TOKEN}`
+            url=`https://youtube.googleapis.com/youtube/v3/channels?part=snippet,id,statistics&forHandle=${query}&maxResults=50&access_token=${ACCESS_TOKEN}`
         }else{
             if (query.slice(0,2)==='UC'){
                 value.push(['c',query])
-                url=`https://youtube.googleapis.com/youtube/v3/channels?part=snippet,id,contentDetails,status&id=${query}&maxResults=50&access_token=${ACCESS_TOKEN}`
+                url=`https://youtube.googleapis.com/youtube/v3/channels?part=snippet,id,statistics&id=${query}&maxResults=50&access_token=${ACCESS_TOKEN}`
             }else if(query.slice(0,2)==='PL' || query.length>=24){
                 value.push(['l',query])
             }else{
@@ -1327,7 +1327,6 @@ function search(){
         }
     }
 
-    console.log(value)
     t=value.map(e => e[0])
     SearchAnim()
 
@@ -1337,17 +1336,10 @@ function search(){
         fetch(url).then(res => res.json()).then(res => {
             if (res['items'].length>0){
                 console.log('Channel',res['items'][0]['id'])
-                urlParams.set('channel',res['items'][0]['id'])
-                urlParams.set('mine','false')
-                urlParams.delete('explore',urlParams.get('explore'))
-                urlParams.delete('list',urlParams.get('list'))
-                open(location.href.replace(location.search,'')+'?'+urlParams.toString(),'_self')
+                showSearchChannel(res)
             }
         })
-    }
-
-    else{
-
+    }else{
         if (t.includes('l')){
             list=value.filter(e => e[0]==='l').map(e => e[1])
             for (let i in list){
@@ -1423,6 +1415,27 @@ function showSearchVideo(json){
     }
 }
 
+function showSearchChannel(json){
+    console.log(json)
+    let j=json['items'][0]
+
+    let url=j['snippet']['thumbnails']['medium']['url']
+    try{
+        url=j['snippet']['thumbnails']['maxres']['url']
+    }catch{}
+
+    document.getElementById('search-result-div').innerHTML+=`
+        <search-item-channel id="${j.id}" url="${url}" text="${j.snippet.title}" sub="${j.statistics.subscriberCount}"></search-item-channel>
+    `
+}
+
+function formatSubscribers(count) {
+    const format = (num, suffix) => parseFloat(num.toFixed(2)) + suffix
+    if (count >= 1_000_000_000) return format(count / 1_000_000_000, 'B')
+    if (count >= 1_000_000) return format(count / 1_000_000, 'M')
+    if (count >= 1_000) return format(count / 1_000, 'K')
+    return count.toString()
+}
 
 class searchItemChannel extends HTMLElement{
     constructor(){
@@ -1430,15 +1443,25 @@ class searchItemChannel extends HTMLElement{
     }
     connectedCallback(){
         this.style=`
-        
+        width: 100%;
         `
         this.innerHTML=`
-            <div class='search-item-div'>
-                
-                <div>
+            <div class='search-channel-div'>
+                <div class="search-channel-img" style="background-image:url('${this.getAttribute('url')}');"></div>
+                <div style="display:flex;flex-direction:column;">
+                    <h2 class="search-channel-text">${this.getAttribute('text')}</h2>
+                    <h2 class="search-channel-sub">${formatSubscribers(Number(this.getAttribute('sub')))}</h2>
                 </div>
             </div>
         `
+
+        this.addEventListener('click',()=>{
+            urlParams.set('channel',this.getAttribute('id'))
+            urlParams.set('mine','false')
+            urlParams.delete('explore',urlParams.get('explore'))
+            urlParams.delete('list',urlParams.get('list'))
+            open(location.href.replace(location.search,'')+'?'+urlParams.toString(),'_self')
+        })
     }
 }
 

@@ -735,3 +735,47 @@ body{
     padding-left: 24px;
     translate: 0px calc(50px + 120px);
 }
+
+.search-channel-div{
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+    width: 100%;
+    background-color: black;
+    border-bottom: solid 1px rgba(255,255,255,0.1);
+    height: 70px;
+    gap: 16px;
+    cursor: pointer;
+}
+
+.search-channel-img{
+    width: 60px;
+    height: 60px;
+    background-size: contain;
+    border-radius: 50%;
+}
+
+.search-channel-text{
+    color: white;
+    margin: 0;
+    font-family: "Roboto", sans-serif;
+    font-weight: 500;
+    font-size: 20px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: fit-content;
+    box-sizing: border-box;
+}
+
+.search-channel-sub{
+    color: #aaaaaa;
+    margin: 0;
+    font-family: "Roboto", sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    white-space: nowrap;
+    width: fit-content;
+    padding-right: 16px;
+}
