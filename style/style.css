@@ -555,7 +555,18 @@ body{
     margin-bottom: 70px;
 }
 
+.hider{
+    position: absolute;
+    top: 0;
+    background:linear-gradient(#000000 0%,#000000 60%, rgba(0,0,0,0) 100%);
+    width:100%;
+    height: calc(50vh + -60px + 110px);
+    z-index: 1;
+}
+
 .search-bar{
+    position: absolute;
+    top: 0;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -591,6 +602,28 @@ body{
     }
     100%{
         translate: 0px calc(60px);
+    }
+}
+
+@keyframes SearchAnimDiv {
+    0%{
+        height: calc(50vh + -60px + 110px);
+    }
+    20%{
+        height: calc(60px + 50vh + -60px + 110px);
+    }
+
+    100%{
+        height: calc(60px + 110px);
+    }
+}
+
+@keyframes SearchAnimReverseDiv {
+    20%{
+        height: calc(50vh + -60px + 110px);
+    }
+    100%{
+        height: calc(60px + 110px);
     }
 }
 
@@ -779,3 +812,4 @@ body{
     width: fit-content;
     padding-right: 16px;
 }
+

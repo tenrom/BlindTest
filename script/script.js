@@ -1274,12 +1274,15 @@ function ExtractVideoFromURI(url){
 
 function SearchAnim(){
     document.getElementById('search-bar').style.animation=''
+    document.getElementById('hider').style.animation=''
     document.getElementById('btn-search-bar').style.pointerEvents='None'
     setTimeout(()=>{
         document.getElementById('search-bar').style.animation='SearchAnim 1000ms ease-in-out forwards'
+        document.getElementById('hider').style.animation='SearchAnimDiv 1000ms ease-in-out forwards'
         document.getElementById('search-bar').blur()
         document.getElementById('search-bar').addEventListener('click',()=>{
             document.getElementById('search-bar').style.animation='SearchAnimReverse 600ms ease-in-out forwards reverse'
+            document.getElementById('hider').style.animation='SearchAnimReverseDiv 600ms ease-in-out forwards reverse'
             document.getElementById('btn-search-bar').style.pointerEvents=''
             document.getElementById('search-result-div').innerHTML=''
         },{once:true})
