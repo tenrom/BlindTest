@@ -34,6 +34,7 @@ body{
     height: 57px;
     gap: 16px;
     cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .playlist-container{
@@ -755,6 +756,20 @@ body{
     border-radius: 16px;
     margin-bottom: 16px;
     padding: 0px 16px;
+    animation:MenuAppearance 300ms ease-in-out both;
+}
+
+@keyframes MenuAppearance {
+    0%{
+        opacity: 0;
+        transform: translateY(100px);
+    }
+    50%{
+        opacity: 1;
+    }
+    100%{
+        transform: translateY(0px);
+    }
 }
 
 .search-result-div{
@@ -813,3 +828,31 @@ body{
     padding-right: 16px;
 }
 
+
+@keyframes MenuBlackFade{
+    from{
+        background-color:rgba(0,0,0,0);
+    }to{
+        background-color:rgba(0, 0, 0, 0.5);
+    }
+}
+
+.menu-header{
+    width: calc(100% + 32px);
+    translate: -16px 0px;
+    border-bottom: solid 2px rgba(255,255,255,0.1);
+}
+
+.menu-title{
+    height: 70px;
+    color: white;
+    margin: 0;
+    font-family: "Roboto", sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: calc(100vw - 32px);
+    box-sizing: border-box;
+}

@@ -306,16 +306,16 @@ function getPlaylists(channelid,mine=false,after){
     }
 }
 
-function fetchAllPages(url,after,pageToken='',items=[]){
+function fetchAllPages(url,after,pageToken='',items=[],canCatch=true){
     fetch(url+`&pageToken=${pageToken}`).then(res => res.json()).then(res => {
         items.push(...res.items)
         if(res.nextPageToken){
-            fetchAllPages(url,after,res.nextPageToken,items)
+            fetchAllPages(url,after,res.nextPageToken,items,canCatch)
         }else{
             res.items=items
             after(res)
         }
-    }).catch(refresh)
+    }).catch(()=>{if (canCatch){refresh}})
 }
 
 function getPlaylistItems(playlistid,mine=false,after){
@@ -1498,7 +1498,7 @@ document.getElementById('btn-channel-v').addEventListener('click',()=>{
         playlistid='UULF'+channelId
     }
 
-    fetchAllPages(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet,status,contentDetails&maxResults=500&playlistId=${playlistid}&access_token=${ACCESS_TOKEN}`,(res)=>{ShowChannelUploads(res,'Videos')})
+    fetchAllPages(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet,status,contentDetails&maxResults=500&playlistId=${playlistid}&access_token=${ACCESS_TOKEN}`,(res)=>{ShowChannelUploads(res,'Videos',canCatch=false)})
 })
 
 document.getElementById('btn-channel-s').addEventListener('click',()=>{
@@ -1513,7 +1513,7 @@ document.getElementById('btn-channel-s').addEventListener('click',()=>{
         playlistid='UUSH'+channelId
     }
 
-    fetchAllPages(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet,status,contentDetails&maxResults=500&playlistId=${playlistid}&access_token=${ACCESS_TOKEN}`,(res)=>{ShowChannelUploads(res,'Shorts')})
+    fetchAllPages(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet,status,contentDetails&maxResults=500&playlistId=${playlistid}&access_token=${ACCESS_TOKEN}`,(res)=>{ShowChannelUploads(res,'Shorts',canCatch=false)})
 })
 
 
