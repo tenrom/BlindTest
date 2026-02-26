@@ -115,6 +115,16 @@ class menu extends HTMLElement{
         bodyOverflow='hidden'
         this.style.display='flex'
         menuSongID=id
+
+
+        for (let i in db.items){
+            if (db.items[i].snippet.resourceId.videoId===menuSongID){
+                document.getElementById('menu-title').innerText=db.items[i].snippet.title
+                document.getElementById('menu-author').innerText=db.items[i].snippet.videoOwnerChannelTitle
+            }
+        }
+
+
     }
     connectedCallback(){
         this.style.width='100%'
@@ -132,10 +142,14 @@ class menu extends HTMLElement{
         animation:MenuBlackFade 200ms ease-in-out both;
         user-select:none;
         `
+        
+        let path="M17.293 5.293 12 10.586 6.707 5.293a1 1 0 10-1.414 1.414L10.586 12l-5.293 5.293a1 1 0 001.414 1.414L12 13.414l5.293 5.293a1 1 0 001.414-1.414L13.414 12l5.293-5.293a1 1 0 10-1.414-1.414Z"
         this.innerHTML=`
             <div class="menu-div">
                 <div class="menu-header">
-                    <h2 class="menu-title"></h2>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="menu-cross" style="display: flex;color:white;justify-content:center;" width="26px" height="26px" viewBox="0 0 24 24"><path fill="currentColor" d="${path}"/></svg>
+                    <h2 class="menu-title" id="menu-title"></h2>
+                    <h2 class="menu-author" id="menu-author"></h2>
                 </div>
             </div>
         `

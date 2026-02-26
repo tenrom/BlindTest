@@ -838,21 +838,40 @@ body{
 }
 
 .menu-header{
-    width: calc(100% + 32px);
+    width: calc(100%);
     translate: -16px 0px;
     border-bottom: solid 2px rgba(255,255,255,0.1);
+    padding: 16px;
 }
 
 .menu-title{
-    height: 70px;
     color: white;
     margin: 0;
     font-family: "Roboto", sans-serif;
-    font-weight: 500;
+    font-weight: 400;
+    font-size: 20px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: calc(100vw - 24px - 32px - 50px);
+    box-sizing: border-box;
+    padding-bottom: 5px;
+}
+
+.menu-author{
+    color: #aaaaaa;
+    margin: 0;
+    font-family: "Roboto", sans-serif;
+    font-weight: 400;
     font-size: 16px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    width: calc(100vw - 32px);
+    width: calc(100vw - 24px - 32px - 50px);
     box-sizing: border-box;
+}
+
+.menu-cross{
+    position: absolute;
+    right: 16px;
 }
