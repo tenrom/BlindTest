@@ -115,16 +115,9 @@ class menu extends HTMLElement{
         bodyOverflow='hidden'
         this.style.display='flex'
         menuSongID=id
-
-
-        for (let i in db.items){
-            if (db.items[i].snippet.resourceId.videoId===menuSongID){
-                document.getElementById('menu-title').innerText=db.items[i].snippet.title
-                document.getElementById('menu-author').innerText=db.items[i].snippet.videoOwnerChannelTitle
-            }
-        }
-
-
+        
+        document.getElementById('menu-title').innerText=playlistSongsInfo[menuSongID][0]
+        document.getElementById('menu-author').innerText=playlistSongsInfo[menuSongID][1]
     }
     connectedCallback(){
         this.style.width='100%'
@@ -169,3 +162,4 @@ class menu extends HTMLElement{
 }
 
 window.customElements.define('yt-menu',menu)
+
