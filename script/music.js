@@ -93,11 +93,44 @@ function formatTime(t){
     return (h===0?'':(String(h).length===1?'0'+h:h)+":")+(String(m).length===1?'0'+m:m)+":"+(String(s).length===1?'0'+s:s)
 }
 
+function parseLyrics(lyrics) {
+    const lines = lyrics.trim().split("\n")
+
+    return lines.map(line => {
+        const match = line.match(/\[(\d+):(\d+\.\d+)\](.*)/)
+        if (!match) return null
+
+        const minutes = parseInt(match[1])
+        const seconds = parseFloat(match[2])
+        const time = minutes * 60 + seconds
+
+        return {
+        time: time,
+        text: match[3].trim()
+        }
+    }).filter(Boolean)
+}
+
+function getLastNewRowLyrics(lrc,time){
+    for (let i in lrc){
+        if (lrc[i].time>time){
+            try{
+                return lrc[i-1].text
+            }catch{
+                return ""
+            }
+        }
+    }
+    return ""
+}
+
 player.on('timeupdate', () => {
     if (!isSliding){
         document.getElementById('mp-slider-bar').style.transform = 'scaleX('+(player.currentTime / player.duration) * 100+'%)'
         document.getElementById('mp-text-ctime').innerText = formatTime(player.currentTime)
     }
+
+    document.getElementById('lyrics-panel').innerText=getLastNewRowLyrics(currentLyrics,player.currentTime)
 })
 
 //player.on('paused',()=>{

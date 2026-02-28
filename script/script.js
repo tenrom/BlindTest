@@ -608,7 +608,7 @@ window.addEventListener('pagehide',  (e)=>{
     e.preventDefault();
 })
 
-
+let currentLyrics
 
 let isclicking=false
 let isSliding=false
@@ -768,6 +768,17 @@ class musicPlayer extends HTMLElement{
         document.getElementById('playlist-container').style.paddingBottom='72px'
         document.getElementById('div-videos').style.paddingBottom='52px'
         document.getElementById('div-shorts').style.paddingBottom='52px'
+
+
+        for (let i in db.items){
+            if (db.items[i].snippet.resourceId.videoId==currentPlaylist[indexMusic]){
+                fetch(`https://lrclib.net/api/get?artist_name=${db.items[i].snippet.videoOwnerChannelTitle.replace(' - Topic','')}&track_name=${db.items[i].snippet.title}`).then(res => res.json()).then((res)=>{
+                    console.log(res.syncedLyrics)
+                    currentLyrics=parseLyrics(res.syncedLyrics)
+                })
+            }
+        }
+        
     }
     hide(){
         
