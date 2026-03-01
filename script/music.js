@@ -112,17 +112,136 @@ function parseLyrics(lyrics) {
 }
 
 function getLastNewRowLyrics(lrc,time){
-    for (let i in lrc){
-        if (lrc[i].time>time){
-            try{
-                return lrc[i-1].text
-            }catch{
-                return ""
+    if (lrc){
+        for (let i in lrc){
+            if (lrc[i].time>time){
+                try{
+                    lrc[i-1].text
+                    return i-1
+                }catch{
+                    return null
+                }
+            }
+        }
+        return lrc.length-1
+    }
+}
+
+class LyricsRow extends HTMLElement{
+    constructor(){
+        super()
+    }
+    connectedCallback(){
+        this.style=`
+        width: 100%;
+        height: 100%;
+        `
+
+        this.innerHTML=`
+        <div class="lrc-item-div">
+            <h2 class="lrc-item-text">${currentLyrics[this.getAttribute('index')].text!=="" ?currentLyrics[this.getAttribute('index')].text:"♪"}</h2>
+        </div>
+        `
+
+        this.addEventListener('click',()=>{
+            player.embed.seekTo(currentLyrics[this.getAttribute('index')].time)
+        })
+    }
+}
+
+window.customElements.define('lrc-item',LyricsRow)
+
+class LyricsPanel extends HTMLElement{
+    constructor(){
+        super()
+    }  
+    updateLrc(i){
+        let row=this.getElementsByClassName('lrc-list')[0].getElementsByClassName('lrc-item-text')
+        for (let index in currentLyrics){
+            if (Number(index)===i){
+                row[index].style.opacity=1
+            }else{
+                row[index].style.opacity=0.3
+            }
+        }
+
+        try{
+            this.getElementsByClassName('lrc-list')[0].scrollTo({behavior: "smooth",left:0,top:this.getElementsByClassName('lrc-list')[0].getElementsByTagName('lrc-item')[i].offsetTop-Math.round(this.getElementsByClassName('lrc-list')[0].offsetHeight/2)+Math.round(this.getElementsByClassName('lrc-list')[0].getElementsByTagName('lrc-item')[i].offsetHeight/2)})
+        }catch{}
+    }
+    show(){
+        this.style.display="flex"
+        document.body.style.overflow='hidden'
+        bodyOverflow='hidden'
+        
+        this.getElementsByClassName('lrc-list')[0].innerHTML=""
+
+        for (let i in db.items){
+            if (db.items[i].snippet.resourceId.videoId==currentPlaylist[indexMusic]){
+                let j=db.items[i]
+                fetch(`https://lrclib.net/api/get?artist_name=${j.snippet.videoOwnerChannelTitle.replace(' - Topic','')}&track_name=${j.snippet.title}&album_name=${j.snippet.description.match(/[^\n]+/g)[2]}&duration=${player.duration}`).then(res => res.json()).then((res)=>{
+                    console.log(res.syncedLyrics)
+                    currentLyrics=parseLyrics("[00:00.00]  \n"+res.syncedLyrics)
+
+                    for (let i in currentLyrics){
+                        this.getElementsByClassName('lrc-list')[0].innerHTML+=`
+                        <lrc-item index="${i}"></lrc-item>
+                        `
+                    }
+                })
+
+                let url=j['snippet']['thumbnails']['medium']['url']
+                try{
+                    url=j['snippet']['thumbnails']['maxres']['url']
+                }catch{
+
+                }
+
+                this.getElementsByClassName('lrc-background')[0].style.backgroundImage=`url(${url})`
+                document.getElementById('lrc-title').innerText="Lyrics of "+playlistSongsInfo[j.snippet.resourceId.videoId][0]
             }
         }
     }
-    return ""
+    hide(){
+        this.style.display="none"
+        document.body.style.overflow='visible'
+        bodyOverflow='visible'  
+    }
+    connectedCallback(){
+        this.style=`
+        position: fixed;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index:3;
+        display:none;
+        `
+
+        this.innerHTML=`
+        <div class="lrc-div">
+            <div class="lrc-background"></div>
+            <div style="width:100%;height:100%;position:absolute;top:0;background-color: rgba(0, 0, 0, 0.4);"></div>
+            <div class="lrc-content">
+                <div class="lrc-banner">
+                    <h2 class="lrc-title" id="lrc-title"></h2>
+                    <svg xmlns="http://www.w3.org/2000/svg" id="lrc-cross" style="cursor:pointer;display: flex;color:white;justify-content:center;" width="26px" height="26px" viewBox="0 0 24 24"><path fill="currentColor" d="M17.293 5.293 12 10.586 6.707 5.293a1 1 0 10-1.414 1.414L10.586 12l-5.293 5.293a1 1 0 001.414 1.414L12 13.414l5.293 5.293a1 1 0 001.414-1.414L13.414 12l5.293-5.293a1 1 0 10-1.414-1.414Z"></path></svg>
+                </div>
+                <div class="lrc-list"></div>
+            </div>
+        </div>
+        `
+
+        document.getElementById('lrc-cross').addEventListener('click',()=>{
+            this.hide()
+        })
+
+    }
 }
+
+window.customElements.define('lrc-',LyricsPanel)
 
 player.on('timeupdate', () => {
     if (!isSliding){
@@ -130,8 +249,10 @@ player.on('timeupdate', () => {
         document.getElementById('mp-text-ctime').innerText = formatTime(player.currentTime)
     }
 
-    document.getElementById('lyrics-panel').innerText=getLastNewRowLyrics(currentLyrics,player.currentTime)
+    document.getElementById('lrc').updateLrc(getLastNewRowLyrics(currentLyrics,player.currentTime))
 })
+
+
 
 //player.on('paused',()=>{
 //    player.play()

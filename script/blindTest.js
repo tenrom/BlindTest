@@ -36,8 +36,8 @@ let bt_reverse
 let bt_visible=false
 let bt_player
 let bt_playlist=[]
-let bt_number_song=20
-let bt_duration_song=20
+let bt_number_song=10
+let bt_duration_song=10
 let bt_title_song
 let bt_author_song
 let bt_rng
@@ -370,4 +370,3 @@ class BlindTest extends HTMLElement{
 }
 
 window.customElements.define('yt-blind-test',BlindTest)
-

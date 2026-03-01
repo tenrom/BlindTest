@@ -769,16 +769,6 @@ class musicPlayer extends HTMLElement{
         document.getElementById('div-videos').style.paddingBottom='52px'
         document.getElementById('div-shorts').style.paddingBottom='52px'
 
-
-        for (let i in db.items){
-            if (db.items[i].snippet.resourceId.videoId==currentPlaylist[indexMusic]){
-                fetch(`https://lrclib.net/api/get?artist_name=${db.items[i].snippet.videoOwnerChannelTitle.replace(' - Topic','')}&track_name=${db.items[i].snippet.title}&duration=${player.duration}`).then(res => res.json()).then((res)=>{
-                    console.log(res.syncedLyrics)
-                    currentLyrics=parseLyrics(res.syncedLyrics)
-                })
-            }
-        }
-        
     }
     hide(){
         
@@ -964,6 +954,10 @@ class musicPlayer extends HTMLElement{
         })
         document.getElementById('mp-btn-random').addEventListener('click',()=>{
             randomIconUpdate(!randomize)
+        })
+
+        document.getElementById('mp-text-playlist').addEventListener('click',()=>{
+            document.getElementById('lrc').show()
         })
     }
 }
@@ -1634,7 +1628,6 @@ function randomIconUpdate(v){
     }
 
 }
-
 
 
 

@@ -140,7 +140,7 @@ class menu extends HTMLElement{
         this.innerHTML=`
             <div class="menu-div">
                 <div class="menu-header">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="menu-cross" style="display: flex;color:white;justify-content:center;" width="26px" height="26px" viewBox="0 0 24 24"><path fill="currentColor" d="${path}"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="menu-cross" style="cursor:pointer;display: flex;color:white;justify-content:center;" width="26px" height="26px" viewBox="0 0 24 24"><path fill="currentColor" d="${path}"/></svg>
                     <h2 class="menu-title" id="menu-title"></h2>
                     <h2 class="menu-author" id="menu-author"></h2>
                 </div>
