@@ -179,15 +179,28 @@ class LyricsPanel extends HTMLElement{
         for (let i in db.items){
             if (db.items[i].snippet.resourceId.videoId==currentPlaylist[indexMusic]){
                 let j=db.items[i]
-                navigator.clipboard.writeText(`https://lrclib.net/api/get?artist_name=${j.snippet.videoOwnerChannelTitle.replace(' - Topic','')}&track_name=${j.snippet.title}&album_name=${j.snippet.description.match(/[^\n]+/g)[2]}&duration=${player.duration}`)
-                fetch(`https://lrclib.net/api/get?artist_name=${j.snippet.videoOwnerChannelTitle.replace(' - Topic','')}&track_name=${j.snippet.title}&album_name=${j.snippet.description.match(/[^\n]+/g)[2]}&duration=${player.duration}`).then(res => res.json()).then((res)=>{
-                    console.log(res.syncedLyrics)
+                let after=(res)=>{
                     currentLyrics=parseLyrics("[00:00.00]  \n"+res.syncedLyrics)
 
                     for (let i in currentLyrics){
                         this.getElementsByClassName('lrc-list')[0].innerHTML+=`
                         <lrc-item index="${i}"></lrc-item>
                         `
+                    }
+                }
+                fetch(`https://lrclib.net/api/get?artist_name=${j.snippet.videoOwnerChannelTitle.replace(' - Topic','')}&track_name=${j.snippet.title}&album_name=${j.snippet.description.match(/[^\n]+/g)[2]}&duration=${player.duration}`).then(res => res.json()).then((res)=>{
+                    console.log(res.syncedLyrics)
+                    if (res.syncedLyrics){
+                        after(res)
+                    }else{
+                        fetch(`https://lrclib.net/api/get?artist_name=${j.snippet.videoOwnerChannelTitle.replace(' - Topic','')}&track_name=${j.snippet.title}`).then(res => res.json()).then((res)=>{
+                            console.log(res.syncedLyrics)
+                            if (res.syncedLyrics){
+                                after(res)
+                            }else{
+                                after(res)
+                            }
+                        })
                     }
                 })
 
@@ -369,3 +382,4 @@ player.on('ready', () => {
     document.body.style.overflow =  bodyOverflow
 
 })
+
