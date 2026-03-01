@@ -772,7 +772,7 @@ class musicPlayer extends HTMLElement{
 
         for (let i in db.items){
             if (db.items[i].snippet.resourceId.videoId==currentPlaylist[indexMusic]){
-                fetch(`https://lrclib.net/api/get?artist_name=${db.items[i].snippet.videoOwnerChannelTitle.replace(' - Topic','')}&track_name=${db.items[i].snippet.title}`).then(res => res.json()).then((res)=>{
+                fetch(`https://lrclib.net/api/get?artist_name=${db.items[i].snippet.videoOwnerChannelTitle.replace(' - Topic','')}&track_name=${db.items[i].snippet.title}&duration=${player.duration}`).then(res => res.json()).then((res)=>{
                     console.log(res.syncedLyrics)
                     currentLyrics=parseLyrics(res.syncedLyrics)
                 })
@@ -1634,6 +1634,7 @@ function randomIconUpdate(v){
     }
 
 }
+
 
 
 
