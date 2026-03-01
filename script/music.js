@@ -179,6 +179,7 @@ class LyricsPanel extends HTMLElement{
         for (let i in db.items){
             if (db.items[i].snippet.resourceId.videoId==currentPlaylist[indexMusic]){
                 let j=db.items[i]
+                navigator.clipboard.writeText(`https://lrclib.net/api/get?artist_name=${j.snippet.videoOwnerChannelTitle.replace(' - Topic','')}&track_name=${j.snippet.title}&album_name=${j.snippet.description.match(/[^\n]+/g)[2]}&duration=${player.duration}`)
                 fetch(`https://lrclib.net/api/get?artist_name=${j.snippet.videoOwnerChannelTitle.replace(' - Topic','')}&track_name=${j.snippet.title}&album_name=${j.snippet.description.match(/[^\n]+/g)[2]}&duration=${player.duration}`).then(res => res.json()).then((res)=>{
                     console.log(res.syncedLyrics)
                     currentLyrics=parseLyrics("[00:00.00]  \n"+res.syncedLyrics)
@@ -366,4 +367,5 @@ if ('mediaSession' in navigator) {
 
 player.on('ready', () => {
     document.body.style.overflow =  bodyOverflow
+
 })
