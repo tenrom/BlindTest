@@ -49,14 +49,19 @@ function Load(id){
 
     player.once('ended',()=>{
         console.log('end')
-        if (!loop){
-            AddIndexMusic()
-            justchange=true
-            Load(currentPlaylist[indexMusic])
+        if (id===currentPlaylist[indexMusic]){
+            if (!loop){
+                AddIndexMusic()
+                justchange=true
+                Load(currentPlaylist[indexMusic])
+            }else{
+                justchange=true
+                Load(id)
+            }
         }else{
-            justchange=true
-            Load(id)
+            console.log('end catch')
         }
+        
     })
 }
 
