@@ -36,7 +36,12 @@ ActionsMenu={
         currentPlaylist=currentPlaylist.slice(0,indexMusic+1).concat([menuSongID]).concat(currentPlaylist.slice(indexMusic+1))
     },
     "Share":(e)=>{
-        navigator.clipboard.writeText("https://tenrom.github.io/BlindTest/main.html")
+        let link="https://tenrom.github.io/BlindTest/main.html"
+        if (window.Android) {
+            window.Android.shareLink(link)
+        }else{
+            navigator.clipboard.writeText(link)
+        }
     },
     "Add to queue":()=>{
         currentPlaylist=currentPlaylist.concat([menuSongID])
