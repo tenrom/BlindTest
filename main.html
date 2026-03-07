@@ -32,7 +32,10 @@
             <div id="player" data-plyr-provider="youtube" data-plyr-embed-id=""></div>
         </div>
 
-        <button onclick="authenticate()" style="display: none;" id="btn-signin">Sign In</button>
+        <div class="signin-div" id="signin-div" style="display: none;">
+            <button onclick="authenticate()" class="signin-btn">Sign in with Google</button>
+        </div>
+        
         <div class="playlist-container" id="playlist-container" style="display: none;">
             <div class="playlist-banner" id="playlist-banner">
                 <svg onclick="Back()" id="btn-back" xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 24 24"><path fill="#fff" d="M19 13H6.75L12 18.25l-.66.75l-6.5-6.5l6.5-6.5l.66.75L6.75 12H19z"/></svg>

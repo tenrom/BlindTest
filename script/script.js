@@ -543,7 +543,7 @@ function initialization(){
         },false)
     }else{
         if (!urlParams.get('token')){
-            document.getElementById('btn-signin').style.display='block'
+            document.getElementById('signin-div').style.display='flex'
         }
     }
     if (urlParams.get('token')){

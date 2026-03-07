@@ -1,15 +1,26 @@
 body{
     background-color: black;
+    margin: 0;
 }
 
 .btn-signin{
-    width: 100%;
+    width: calc(100% - 100px);
     padding: 10px;
     background-color: rgb(109, 18, 18);
     color: white ;
     border-radius: 50vh;
     border: none;
     font-family: 'Roboto';
+    cursor: pointer;
+}
+.signin-div{
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .token{
