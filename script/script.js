@@ -104,7 +104,11 @@ fetch('client_secret.json')
 
 
 function authenticate() {
-    open(`${AUTH_URI}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code&scope=${SCOPES}&access_type=offline&prompt=select_account`,"_self")
+    if (window.Android){
+        window.Android.signIn()
+    }else{
+        open(`${AUTH_URI}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code&scope=${SCOPES}&access_type=offline&prompt=select_account`,"_self")
+    }
 }
 
 function refresh(){
