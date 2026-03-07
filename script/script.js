@@ -279,6 +279,7 @@ class ytPlaylistItem extends HTMLElement{
                 loopIconUpdate(false)
                 randomIconUpdate(false)
                 indexMusic=currentPlaylist.indexOf(this.getAttribute('ytid'))
+                UpdateIndexUrl()
                 Load(this.getAttribute('ytid'))
             }
         })
@@ -1621,10 +1622,12 @@ function randomIconUpdate(v){
         document.getElementById('mp-btn-random').innerHTML=`<svg xmlns="http://www.w3.org/2000/svg" color="white" width="25px" height="25px"${svgs['ic-random2'][iconIndex]}</svg>`
         currentPlaylist=[playlistIds[indexMusic]].concat(shuffle(playlistIds.filter(item => item !== playlistIds[indexMusic]),new Math.seedrandom(CryptoJS.SHA3(String(Date.now())).toString().slice(0,15))))
         indexMusic=currentPlaylist.indexOf(player.embed.getVideoData()['video_id'])
+        UpdateIndexUrl()
     }else{
         document.getElementById('mp-btn-random').innerHTML=`<svg xmlns="http://www.w3.org/2000/svg" color="white" width="25px" height="25px"${svgs['ic-random'][iconIndex]}</svg>`
         currentPlaylist=playlistIds
         indexMusic=currentPlaylist.indexOf(player.embed.getVideoData()['video_id'])
+        UpdateIndexUrl()
     }
 
 }

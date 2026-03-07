@@ -1,16 +1,29 @@
+let stateObj = { id: "100" };
+
+function LoadIndexUrl(){
+    indexMusic=Number(new URLSearchParams(window.location.search).get("indexMusic"))
+}
+
+function UpdateIndexUrl(){
+    let up=new URLSearchParams(window.location.search)
+    up.set("indexMusic",indexMusic)
+    window.history.replaceState(stateObj,location.pathname+location.search,location.pathname+"?"+up.toString())
+}
 
 function AddIndexMusic(){
     console.log('Before +',indexMusic)
-    //indexMusic=currentPlaylist.indexOf(player.embed.getVideoData()['video_id'])+1
+    LoadIndexUrl()
     indexMusic+=1
     indexMusic=clamp(indexMusic,0,currentPlaylist.length-1)
+    UpdateIndexUrl()
     console.log('After +',indexMusic)
 }
 function SubIndexMusic(){
     console.log('Before -',indexMusic)
-    //indexMusic=currentPlaylist.indexOf(player.embed.getVideoData()['video_id'])-1
+    LoadIndexUrl()
     indexMusic-=1
     indexMusic=clamp(indexMusic,0,currentPlaylist.length-1)
+    UpdateIndexUrl()
     console.log('After -',indexMusic)
 }
 
