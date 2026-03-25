@@ -58,8 +58,15 @@ ActionsMenu={
     },
     "Go to artist":()=>{
         for (let i in db.items){
-            if (db.items[i].snippet.resourceId.videoId===menuSongID){
+            let c=false
+            if (urlParams.get('explore') && db.items[i].id===menuSongID){
+                urlParams.set('channel', db.items[i].snippet.channelId)
+                c=true
+            }else if (db.items[i].snippet.resourceId.videoId===menuSongID){
                 urlParams.set('channel', db.items[i].snippet.videoOwnerChannelId)
+                c=true
+            }
+            if (c){
                 urlParams.set('mine', 'false')
                 urlParams.delete('explore', urlParams.get('explore'))
                 urlParams.delete('list', urlParams.get('list'))

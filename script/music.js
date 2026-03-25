@@ -192,12 +192,16 @@ class LyricsPanel extends HTMLElement{
         document.body.style.overflow='hidden'
         bodyOverflow='hidden'
         
+        document.getElementsByClassName('lrc-spinner')[0].style.display="flex"
+        document.getElementsByClassName('lrc-notFound')[0].style.display="none"
+
         this.getElementsByClassName('lrc-list')[0].innerHTML=""
 
         for (let i in db.items){
             if (db.items[i].snippet.resourceId.videoId==currentPlaylist[indexMusic]){
                 let j=db.items[i]
                 let after=(res)=>{
+                    document.getElementsByClassName('lrc-spinner')[0].style.display="none"
                     currentLyrics=parseLyrics("[00:00.00]  \n"+res.syncedLyrics)
 
                     for (let i in currentLyrics){
@@ -216,7 +220,8 @@ class LyricsPanel extends HTMLElement{
                             if (res.syncedLyrics){
                                 after(res)
                             }else{
-                                after(res)
+                                document.getElementsByClassName('lrc-notFound')[0].style.display="flex"
+                                document.getElementsByClassName('lrc-spinner')[0].style.display="none"
                             }
                         })
                     }
@@ -261,6 +266,8 @@ class LyricsPanel extends HTMLElement{
                     <h2 class="lrc-title" id="lrc-title"></h2>
                     <svg xmlns="http://www.w3.org/2000/svg" id="lrc-cross" style="cursor:pointer;display: flex;color:white;justify-content:center;" width="26px" height="26px" viewBox="0 0 24 24"><path fill="currentColor" d="M17.293 5.293 12 10.586 6.707 5.293a1 1 0 10-1.414 1.414L10.586 12l-5.293 5.293a1 1 0 001.414 1.414L12 13.414l5.293 5.293a1 1 0 001.414-1.414L13.414 12l5.293-5.293a1 1 0 10-1.414-1.414Z"></path></svg>
                 </div>
+                <div class="lrc-spinner"><icon-spinner></icon-spinner></div>
+                <div class="lrc-notFound" style="display:none;"><h2>No lyrics found...</h2></div>
                 <div class="lrc-list"></div>
             </div>
         </div>
