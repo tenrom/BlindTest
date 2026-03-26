@@ -40,7 +40,8 @@ ActionsMenu={
         if (window.Android) {
             window.Android.shareLink(link)
         }else{
-            navigator.clipboard.writeText(link)
+            navigator.share({"url":link,"text":link,"TenromMusic Link"})
+            //navigator.clipboard.writeText(link)
         }
     },
     "Add to queue":()=>{
