@@ -40,7 +40,7 @@ ActionsMenu={
         if (window.Android) {
             window.Android.shareLink(link)
         }else{
-            navigator.share({"url":link,"text":link,"TenromMusic Link"})
+            navigator.share({"url":link,"text":link,"title":"TenromMusic Link"})
             //navigator.clipboard.writeText(link)
         }
     },
