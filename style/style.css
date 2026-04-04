@@ -1,3 +1,6 @@
+*{
+        -webkit-tap-highlight-color: transparent;
+}
 
 :root{
     --image-height:40px;
@@ -361,6 +364,40 @@ body{
     text-overflow: ellipsis;
     width: calc(100%);
     box-sizing: border-box;
+}
+
+.mp-carousel{
+    margin-top:30px;
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+    gap: 10px;
+    height: 40px;
+    overflow: clip;
+}
+
+.mp-carousel-item{
+    border-radius: 50vh;
+    background-color: #212121cc;
+    padding: 10px 15px;
+    color: white;
+    font-family: "Roboto", sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    margin: 0;
+    height: calc(40px - 20px);
+    cursor: pointer;
+    transition: transform 100ms ease-in-out;
+}
+
+.mp-carousel-item:hover{
+    transform: scale(0.9);
 }
 
 .mp-btn-box{

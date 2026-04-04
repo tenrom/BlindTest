@@ -277,7 +277,8 @@ class ytPlaylistItem extends HTMLElement{
         }
 
         this.addEventListener('click',()=>{
-            if (indexMusic && playlistSongs[indexMusic][0]===this.getAttribute('ytid')){
+            
+            if ((indexMusic || indexMusic===0) && player.embed.getVideoData()['video_id']===this.getAttribute('ytid')){
                 document.getElementById('mp').show()
             }else{
                 loopIconUpdate(false)
@@ -802,6 +803,24 @@ class musicPlayer extends HTMLElement{
                 <h2 class='mp-text-title' id="mp-text-title"></h2>
                 <h2 class='mp-text-author' id="mp-text-author"></h2>
             </div>
+            <div class='mp-carousel'>
+                <div class='mp-carousel-item' id="mp-c-liked">
+                    <svg xmlns="http://www.w3.org/2000/svg" style="display: flex;color:white;justify-content:center;" width="32px" height="32px" viewBox="0 0 32 32"><path style="transform-box: fill-box;transform-origin: center;transform: translate(20%,20%);" fill="currentColor" d="M9.221 1.795a1 1 0 011.109-.656l1.04.173a4 4 0 013.252 4.784L14 9h4.061a3.664 3.664 0 013.576 2.868A3.68 3.68 0 0121 14.85l.02.087A3.815 3.815 0 0120 18.5v.043l-.01.227a2.82 2.82 0 01-.135.663l-.106.282A3.754 3.754 0 0116.295 22h-3.606l-.392-.007a12.002 12.002 0 01-5.223-1.388l-.343-.189-.27-.154a2.005 2.005 0 00-.863-.26l-.13-.004H3.5a1.5 1.5 0 01-1.5-1.5V12.5A1.5 1.5 0 013.5 11h1.79l.157-.013a1 1 0 00.724-.512l.063-.145 2.987-8.535Zm-1.1 9.196A3 3 0 015.29 13H4v4.998h1.468a4 4 0 011.986.528l.27.155.285.157A10 10 0 0012.69 20h3.606c.754 0 1.424-.483 1.663-1.2l.03-.126a.819.819 0 00.012-.131v-.872l.587-.586c.388-.388.577-.927.523-1.465l-.038-.23-.02-.087-.21-.9.55-.744A1.663 1.663 0 0018.061 11H14a2.002 2.002 0 01-1.956-2.418l.623-2.904a2 2 0 00-1.626-2.392l-.21-.035-2.71 7.741Z"/></svg>
+                    Like
+                </div>
+                <div class='mp-carousel-item' id="mp-c-lyrics">
+                    <svg  style="display: flex;color:white;justify-content:center;" width="32px" height="32px" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><g style="transform-box: fill-box;transform-origin: center;transform: translate(0%,15%);" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M42 32v16c0 1-.1 1.7-.2 2L35 66.3h-8.4l4.5-15H20c-2.2 0-4-1.8-4-4V32c0-2.2 1.8-4 4-4h18c2.2 0 4 1.8 4 4" /><path d="M78 32v16c0 1-.1 1.7-.2 2L71 66.3h-8.4l4.5-15H56c-2.2 0-4-1.8-4-4V32c0-2.2 1.8-4 4-4h18c2.2 0 4 1.8 4 4" /></g></svg>
+                    Lyrics
+                </div>
+                <div class='mp-carousel-item' id="mp-c-share">
+                    <svg xmlns="http://www.w3.org/2000/svg" style="display: flex;color:white;justify-content:center;" width="32px" height="32px" viewBox="0 0 24 24"><path style="transform-box: fill-box;transform-origin: center;transform: translate(20%,20%);" fill="currentColor" d="M7.5 2.369v3.263c-4.394.18-6.529 3.25-6.733 9.795-.011.354.433.513.659.24 2.347-2.838 3.262-3.258 6.074-3.291v3.259a.75.75 0 001.235.572l8.515-7.205-8.515-7.205a.75.75 0 00-1.235.572ZM9 7.07V3.986l5.928 5.016L9 14.017v-3.159l-1.517.018c-1.452.017-2.69.127-3.898.768-.35.186-.683.41-1.01.67.266-1.46.687-2.543 1.222-3.32.797-1.156 1.956-1.789 3.765-1.863L9 7.07Z"/></svg>
+                    Share
+                </div>
+                <div class='mp-carousel-item' id="mp-c-comment">
+                    <svg xmlns="http://www.w3.org/2000/svg" style="display: flex;color:white;justify-content:center;" width="32px" height="32px" viewBox="0 0 32 32"><path style="transform-box: fill-box;transform-origin: center;transform: translate(20%,20%);" fill="currentColor" d="M1 6a4 4 0 014-4h14a4 4 0 014 4v10a4 4 0 01-4 4h-4.8l-5.105 2.836A1.41 1.41 0 017 21.604V20H5a4 4 0 01-4-4V6Zm8 12v2.601l4.229-2.35.453-.251H19a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2h4ZM7 8a1 1 0 000 2h10a1 1 0 100-2H7Zm-1 5a1 1 0 001 1h6a1 1 0 000-2H7a1 1 0 00-1 1Z"/></svg>
+                    Comment
+                </div>
+            </div>
             <div class='mp-btn-box'>
                 <div class='mp-btn' id="mp-btn-random" style="margin-right: 5px;">
                     <svg xmlns="http://www.w3.org/2000/svg" color="white" width="25px" height="25px"${svgs['ic-random'][iconIndex]}</svg>
@@ -961,9 +980,14 @@ class musicPlayer extends HTMLElement{
             randomIconUpdate(!randomize)
         })
 
-        document.getElementById('mp-text-playlist').addEventListener('click',()=>{
+        document.getElementById('mp-c-lyrics').addEventListener('click',()=>{
             document.getElementById('lrc').show()
         })
+
+        document.getElementById('mp-c-share').addEventListener('click',()=>{
+            ActionsMenu["Share"]()
+        })
+
     }
 }
 
@@ -1409,8 +1433,9 @@ function showSearchVideo(json){
             square='true'
         }
 
-        playlistIds.push(id)
-        playlistSongs.push([id,title,author])
+        playlistIds=[id]
+        playlistSongs=[[id,title,author]]
+        playlistSongsInfo={}
         playlistSongsInfo[id]=[title,author]
 
         currentPlaylist=playlistIds
@@ -1637,5 +1662,8 @@ function randomIconUpdate(v){
 }
 
 
-
-
+function getComments(id){
+    fetch(`https://youtube.googleapis.com/youtube/v3/commentThreads?part=snippet&access_token=${ACCESS_TOKEN}&videoId=${id}`).then(res => res.json()).then(res => {
+        console.log(res)
+    })
+}

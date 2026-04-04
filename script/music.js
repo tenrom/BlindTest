@@ -41,6 +41,7 @@ function Load(id){
         document.getElementsByClassName('plyr__control')[0].click()
 
         document.getElementById('mp').show()
+        if (document.getElementById('lrc').style.display==="flex") document.getElementById('lrc').show()
 
         setTimeout(()=>{
             justchange=false
@@ -175,20 +176,25 @@ class LyricsPanel extends HTMLElement{
     }  
     updateLrc(i){
         let row=this.getElementsByClassName('lrc-list')[0].getElementsByClassName('lrc-item-text')
-        for (let index in currentLyrics){
-            if (Number(index)===i){
-                row[index].style.opacity=1
-            }else{
-                row[index].style.opacity=0.3
+        if (row.length){
+            for (let index in currentLyrics){
+                if (Number(index)===i){
+                    row[index].style.opacity=1
+                }else{
+                    row[index].style.opacity=0.3
+                }
             }
-        }
 
-        try{
-            this.getElementsByClassName('lrc-list')[0].scrollTo({behavior: "smooth",left:0,top:this.getElementsByClassName('lrc-list')[0].getElementsByTagName('lrc-item')[i].offsetTop-Math.round(this.getElementsByClassName('lrc-list')[0].offsetHeight/2)+Math.round(this.getElementsByClassName('lrc-list')[0].getElementsByTagName('lrc-item')[i].offsetHeight/2)})
-        }catch{}
+            try{
+                this.getElementsByClassName('lrc-list')[0].scrollTo({behavior: "smooth",left:0,top:this.getElementsByClassName('lrc-list')[0].getElementsByTagName('lrc-item')[i].offsetTop-Math.round(this.getElementsByClassName('lrc-list')[0].offsetHeight/2)+Math.round(this.getElementsByClassName('lrc-list')[0].getElementsByTagName('lrc-item')[i].offsetHeight/2)})
+            }catch{}
+        }
+        
     }
     show(){
         this.style.display="flex"
+        setTimeout(()=>{this.style.opacity=1},0)
+
         document.body.style.overflow='hidden'
         bodyOverflow='hidden'
         
@@ -197,50 +203,66 @@ class LyricsPanel extends HTMLElement{
 
         this.getElementsByClassName('lrc-list')[0].innerHTML=""
 
-        for (let i in db.items){
-            if (db.items[i].snippet.resourceId.videoId==currentPlaylist[indexMusic]){
-                let j=db.items[i]
-                let after=(res)=>{
-                    document.getElementsByClassName('lrc-spinner')[0].style.display="none"
-                    currentLyrics=parseLyrics("[00:00.00]  \n"+res.syncedLyrics)
+        let getLyrics=(j,id,channel,title,description)=>{
 
-                    for (let i in currentLyrics){
-                        this.getElementsByClassName('lrc-list')[0].innerHTML+=`
-                        <lrc-item index="${i}"></lrc-item>
-                        `
-                    }
+            let after=(res)=>{
+                document.getElementsByClassName('lrc-spinner')[0].style.display="none"
+                currentLyrics=parseLyrics("[00:00.00]  \n"+res.syncedLyrics)
+
+                for (let i in currentLyrics){
+                    this.getElementsByClassName('lrc-list')[0].innerHTML+=`
+                    <lrc-item index="${i}"></lrc-item>
+                    `
                 }
-                fetch(`https://lrclib.net/api/get?artist_name=${j.snippet.videoOwnerChannelTitle.replace(' - Topic','')}&track_name=${j.snippet.title}&album_name=${j.snippet.description.match(/[^\n]+/g)[2]}&duration=${player.duration}`).then(res => res.json()).then((res)=>{
-                    console.log(res.syncedLyrics)
-                    if (res.syncedLyrics){
-                        after(res)
-                    }else{
-                        fetch(`https://lrclib.net/api/get?artist_name=${j.snippet.videoOwnerChannelTitle.replace(' - Topic','')}&track_name=${j.snippet.title}`).then(res => res.json()).then((res)=>{
-                            console.log(res.syncedLyrics)
-                            if (res.syncedLyrics){
-                                after(res)
-                            }else{
-                                document.getElementsByClassName('lrc-notFound')[0].style.display="flex"
-                                document.getElementsByClassName('lrc-spinner')[0].style.display="none"
-                            }
-                        })
-                    }
-                })
-
-                let url=j['snippet']['thumbnails']['medium']['url']
-                try{
-                    url=j['snippet']['thumbnails']['maxres']['url']
-                }catch{
-
-                }
-
-                this.getElementsByClassName('lrc-background')[0].style.backgroundImage=`url(${url})`
-                document.getElementById('lrc-title').innerText="Lyrics of "+playlistSongsInfo[j.snippet.resourceId.videoId][0]
             }
+            fetch(`https://lrclib.net/api/get?artist_name=${channel.replace(' - Topic','')}&track_name=${title}&album_name=${description.match(/[^\n]+/g)[2]}&duration=${player.duration}`).then(res => res.json()).then((res)=>{
+                if (res.syncedLyrics){
+                    after(res)
+                }else{
+                    fetch(`https://lrclib.net/api/get?artist_name=${channel.replace(' - Topic','')}&track_name=${title}`).then(res => res.json()).then((res)=>{
+                        if (res.syncedLyrics){
+                            after(res)
+                        }else{
+                            document.getElementsByClassName('lrc-notFound')[0].style.display="flex"
+                            document.getElementsByClassName('lrc-spinner')[0].style.display="none"
+                        }
+                    })
+                }
+            })
+
+            let url=j['snippet']['thumbnails']['medium']['url']
+            try{
+                url=j['snippet']['thumbnails']['maxres']['url']
+            }catch{
+
+            }
+
+            this.getElementsByClassName('lrc-background')[0].style.backgroundImage=`url(${url})`
+            document.getElementById('lrc-title').innerText="Lyrics of "+playlistSongsInfo[id][0]
+        }
+
+        for (let i in db.items){
+            if (urlParams.get('explore')==="1"){
+                if (db.items[i].id==currentPlaylist[indexMusic]){
+                    let j=db.items[i]
+                    getLyrics(j,db.items[i].id,j.snippet.channelTitle,j.snippet.title,j.snippet.description)
+                }
+            }else{
+                if (db.items[i].snippet.resourceId.videoId==currentPlaylist[indexMusic]){
+                    let j=db.items[i]
+                    getLyrics(j,db.items[i].snippet.resourceId.videoId,j.snippet.videoOwnerChannelTitle,j.snippet.title,j.snippet.description)
+                }
+            }
+            
         }
     }
     hide(){
-        this.style.display="none"
+        this.style.pointerEvents="none"
+        this.style.opacity=0
+        setTimeout(()=>{
+            this.style.pointerEvents=""
+            this.style.display="none"
+        },300)
         document.body.style.overflow='visible'
         bodyOverflow='visible'  
     }
@@ -255,6 +277,8 @@ class LyricsPanel extends HTMLElement{
         align-items: center;
         z-index:3;
         display:none;
+        transition:opacity 300ms ease-in-out;
+        opacity:0;
         `
 
         this.innerHTML=`
