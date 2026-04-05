@@ -37,10 +37,14 @@ ActionsMenu={
     },
     "Share":(e)=>{
         let link="https://tenrom.github.io/BlindTest/main.html"
-        if (window.Android) {
+        if (window.Android){
             window.Android.shareLink(link)
         }else{
-            navigator.clipboard.writeText(link)
+            try{
+                navigator.share({"title": "TenromMusic Link","text": "TenromMusic Link:","url": link})
+            }catch{
+                navigator.clipboard.writeText(link)
+            }
         }
     },
     "Add to queue":()=>{

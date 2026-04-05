@@ -367,14 +367,14 @@ body{
 }
 
 .mp-carousel{
-    margin-top:30px;
+    margin-top:20px;
     display: flex;
     flex-direction: row;
     justify-content: start;
     align-items: center;
     gap: 10px;
-    height: 40px;
-    overflow: clip;
+    height: 35px;
+    translate: -20px 0px;
 }
 
 .mp-carousel-item{
@@ -391,17 +391,17 @@ body{
     justify-content: center;
     gap: 2px;
     margin: 0;
-    height: calc(40px - 20px);
+    height: calc(35px - 20px);
     cursor: pointer;
     transition: transform 100ms ease-in-out;
 }
 
-.mp-carousel-item:hover{
+.mp-carousel-item:active{
     transform: scale(0.9);
 }
 
 .mp-btn-box{
-    margin-top:30px;
+    margin-top:20px;
     display: flex;
     flex-direction: row;
     justify-content: center;
