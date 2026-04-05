@@ -632,14 +632,14 @@ let smalldirection
 let smallsValueH
 let justchange=false
 
-let t
+let _t
 let duration=500
 let startAlpha
 let reverse
 
 function animate(){
     let time=performance.now()
-    let ti=time-t+(Inversespline(startAlpha)*duration)
+    let ti=time-_t+(Inversespline(startAlpha)*duration)
 
     if (ti<=duration){
         
@@ -658,7 +658,7 @@ class musicPlayer extends HTMLElement{
         super()
     }
     startAnim(dura,re,a){
-        t=performance.now()
+        _t=performance.now()
         duration=dura
         startAlpha=a
         reverse=re
