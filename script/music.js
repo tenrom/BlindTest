@@ -163,12 +163,17 @@ class LyricsRow extends HTMLElement{
         `
 
         this.addEventListener('click',()=>{
+            autoScroll = true
             player.embed.seekTo(currentLyrics[this.getAttribute('index')].time)
         })
     }
 }
 
 window.customElements.define('lrc-item',LyricsRow)
+
+let autoScroll = true
+let isAutoScroll = false
+
 
 class LyricsPanel extends HTMLElement{
     constructor(){
@@ -186,10 +191,12 @@ class LyricsPanel extends HTMLElement{
             }
 
             try{
-                this.getElementsByClassName('lrc-list')[0].scrollTo({behavior: "smooth",left:0,top:this.getElementsByClassName('lrc-list')[0].getElementsByTagName('lrc-item')[i].offsetTop-Math.round(this.getElementsByClassName('lrc-list')[0].offsetHeight/2)+Math.round(this.getElementsByClassName('lrc-list')[0].getElementsByTagName('lrc-item')[i].offsetHeight/2)})
+                if (autoScroll){
+                    isAutoScroll=true
+                    this.getElementsByClassName('lrc-list')[0].scrollTo({behavior: "smooth",left:0,top:this.getElementsByClassName('lrc-list')[0].getElementsByTagName('lrc-item')[i].offsetTop-Math.round(this.getElementsByClassName('lrc-list')[0].offsetHeight/2)+Math.round(this.getElementsByClassName('lrc-list')[0].getElementsByTagName('lrc-item')[i].offsetHeight/2)})
+                }
             }catch{}
         }
-        
     }
     show(){
         this.style.display="flex"
@@ -292,7 +299,7 @@ class LyricsPanel extends HTMLElement{
                 </div>
                 <div class="lrc-spinner"><icon-spinner></icon-spinner></div>
                 <div class="lrc-notFound" style="display:none;"><h2>No lyrics found...</h2></div>
-                <div class="lrc-list"></div>
+                <div class="lrc-list" id="lrc-list"></div>
             </div>
         </div>
         `
@@ -301,6 +308,19 @@ class LyricsPanel extends HTMLElement{
             this.hide()
         })
 
+        document.getElementById('lrc-list').addEventListener('scroll',(e)=>{
+            if (!isAutoScroll){
+                autoScroll=false
+            }
+        })
+
+        document.getElementById('lrc-list').addEventListener('touchmove',(e)=>{
+            isAutoScroll=false
+        })
+
+        document.getElementById('lrc-list').addEventListener('wheel',(e)=>{
+            isAutoScroll=false
+        })
     }
 }
 
@@ -432,3 +452,12 @@ player.on('ready', () => {
 
 })
 
+
+window.__onGCastApiAvailable = function(isAvailable) {
+  if (isAvailable) {
+    cast.framework.CastContext.getInstance().setOptions({
+      receiverApplicationId: chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID,
+      autoJoinPolicy: chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED
+    });
+  }
+};
