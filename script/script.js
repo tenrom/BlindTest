@@ -997,28 +997,13 @@ class musicPlayer extends HTMLElement{
 
         // Wait for user interaction
         document.getElementById('mp-c-cast').addEventListener('click', function() {
+            console.log("cast")
             // Check if casting is available
             if (cjs.available) {
                 // Initiate new cast session with a simple video
-                cjs.cast('https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4');
-
-                // A more complex example
-                cjs.cast('https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4', {
-                    poster     : 'https://castjs.io/media/poster.jpg',
-                    title      : 'Sintel',
-                    description: 'Third Open Movie by Blender Foundation',
-                    subtitles: [{
-                        active: true,
-                        label : 'English',
-                        src   : 'https://castjs.io/media/english.vtt'
-                    }, {
-                        label : 'Spanish',
-                        src   : 'https://castjs.io/media/spanish.vtt'
-                    }],
-                })
+                cjs.cast('https://tenrom.github.io/BlindTest/GIMS%20-%20CIEL%20(Clip%20officiel).mp4');
             }
         });
-
     }
 }
 
