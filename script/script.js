@@ -992,10 +992,7 @@ class musicPlayer extends HTMLElement{
             ActionsMenu["Share"]()
         })
 
-        // Create new Castjs instance
-        const cjs = new Castjs();
 
-        // Wait for user interaction
         document.getElementById('mp-c-cast').addEventListener('click', function() {
             console.log("cast")
             // Check if casting is available

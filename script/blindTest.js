@@ -5,6 +5,7 @@ class BlindTestButton extends HTMLElement{
     setAnswer(text){
         this.children[0].innerText=text
         this.children[0].style.backgroundColor=''
+        this.answer=text
         this.style.pointerEvents=''
     }
     connectedCallback(){
@@ -15,11 +16,10 @@ class BlindTestButton extends HTMLElement{
         `
 
         this.addEventListener('click',()=>{
-            this.children[0].style.backgroundColor='#1DB954'
-
             for (let i =0;i<document.getElementsByTagName('yt-bt-button').length;i++){
-                document.getElementsByTagName('yt-bt-button')[i].style.pointerEvents='none'
+                document.getElementsByTagName('yt-bt-button')[i].children[0].style.backgroundColor=''
             }
+            this.children[0].style.backgroundColor='#1f3c7b'
         })
     }
 }
@@ -37,7 +37,10 @@ let bt_visible=false
 let bt_player
 let bt_playlist=[]
 let bt_number_song=10
-let bt_duration_song=10
+let bt_duration_song=5
+let bt_duration_after_song=3
+let bt_delay_start=20
+let bt_type_answer=0 // 0 for title 1 for author
 let bt_title_song
 let bt_author_song
 let bt_rng
@@ -132,6 +135,7 @@ class BlindTest extends HTMLElement{
         // Once ready play
         bt_player.once('ready',()=>{
             bt_player.play()
+            bt_player.embed.seekTo(bt_delay_start)
         })
     }
     setUpNext(){
@@ -153,40 +157,18 @@ class BlindTest extends HTMLElement{
         document.getElementById('timerDisplay').innerHTML=bt_duration_song
         
         // Set Answers
-        document.getElementById('bt').SetAnswerTitle(bt_playlist[0])
+        document.getElementById('bt').SetAnswers(bt_playlist[0])
     }
-    SetAnswerAuthor(id){
+    SetAnswers(id){
         // Get all the possible answer (all Authors)
-        let playlist=playlistSongs.map(e => e[2]);
+        let playlist=playlistSongs.map(e => e[bt_type_answer+1]);
         // Remove double
         playlist=playlist.filter((value, index, self) => self.indexOf(value) === index);
         
         // Add to the answer the solution
-        let answers=[playlistSongsInfo[id][1]]
+        let answers=[playlistSongsInfo[id][bt_type_answer]]
         // Remove it to the possible other answer
-        playlist.splice(playlist.indexOf(playlistSongsInfo[id][1]),1)
-
-        // Add 3 unique other anwser
-        for (let i=0;i<3;i++){
-            answers.push(playlist.splice(getRandomInt(bt_rng,0,playlist.length-1),1)[0])
-        }
-
-        // Push them randomly to the different slots
-        document.getElementById('bt-answer1').setAnswer(answers.splice(getRandomInt(bt_rng,0,answers.length-1),1)[0])
-        document.getElementById('bt-answer2').setAnswer(answers.splice(getRandomInt(bt_rng,0,answers.length-1),1)[0])
-        document.getElementById('bt-answer3').setAnswer(answers.splice(getRandomInt(bt_rng,0,answers.length-1),1)[0])
-        document.getElementById('bt-answer4').setAnswer(answers.splice(getRandomInt(bt_rng,0,answers.length-1),1)[0])
-    }
-    SetAnswerTitle(id){
-        // Get all the possible answer (all Titles)
-        let playlist=playlistSongs.map(e => e[1]);
-        // Remove double
-        playlist=playlist.filter((value, index, self) => self.indexOf(value) === index);
-        
-        // Add to the answer the solution
-        let answers=[playlistSongsInfo[id][0]]
-        // Remove it to the possible other answer
-        playlist.splice(playlist.indexOf(playlistSongsInfo[id][0]),1)
+        playlist.splice(playlist.indexOf(playlistSongsInfo[id][bt_type_answer]),1)
 
         // Add 3 unique other anwser
         for (let i=0;i<3;i++){
@@ -255,9 +237,9 @@ class BlindTest extends HTMLElement{
 
             bt_player.on('timeupdate',()=>{
                 // Update Timer
-                document.getElementById('timerDisplay').innerHTML=Math.ceil(bt_duration_song-bt_player.currentTime)
+                document.getElementById('timerDisplay').innerHTML=Math.ceil(bt_duration_song-bt_player.currentTime+bt_delay_start)
 
-                if (bt_player.currentTime > 0 && !bt_isplaying){
+                if (bt_player.currentTime-bt_delay_start > 0 && !bt_isplaying){
                     //// Video Start
                     bt_isplaying=true
 
@@ -276,6 +258,23 @@ class BlindTest extends HTMLElement{
                         document.getElementById('bt-text-author').style.width=document.getElementById('bt-img').clientWidth-1+'px'
                         document.getElementById('bt-text-title').style.width=document.getElementById('bt-img').clientWidth-1+'px'
 
+                        let answer
+                        if (bt_type_answer===0){
+                            answer=document.getElementById('bt-text-title').innerText
+                        }else{
+                            answer=document.getElementById('bt-text-author').innerText
+                        }
+                        for (let i =0;i<document.getElementsByTagName('yt-bt-button').length;i++){
+                            document.getElementsByTagName('yt-bt-button')[i].style.pointerEvents='none'
+                            if (document.getElementsByTagName('yt-bt-button')[i].answer===answer){
+                                document.getElementsByTagName('yt-bt-button')[i].children[0].style.backgroundColor='#1DB954'
+                            }else{
+                                if (document.getElementsByTagName('yt-bt-button')[i].children[0].style.backgroundColor==="rgb(31, 60, 123)"){
+                                    document.getElementsByTagName('yt-bt-button')[i].children[0].style.backgroundColor='#b91d1d'
+                                }
+                            } 
+                        }
+
                     },bt_duration_song*1000)
 
                     // Timer End
@@ -286,7 +285,7 @@ class BlindTest extends HTMLElement{
 
                         document.getElementById('bt').setUpNext()
 
-                    },bt_duration_song*1000+3000)
+                    },bt_duration_song*1000+bt_duration_after_song*1000)
                 }
             })
             
@@ -316,7 +315,7 @@ class BlindTest extends HTMLElement{
                 <div class="bt-separator"></div>
                 <div style="display:flex;width:100%;margin-top:16px;position:relative;">
                     <svg onclick="document.getElementById('bt').hide()" style="color:white;scale:1.3;padding:2px;z-index:3;width:24px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m11.25 4.75-6.5 6.5m0-6.5 6.5 6.5"/></svg>
-                    <div class="bt-info-text">CHOOSE THE ARTIST</div>
+                    <div class="bt-info-text">CHOOSE THE ${bt_type_answer===0 ? "TITLE": "AUTHOR"}</div>
                 </div>
                 <div class='bt-title' id='bt-title'>Blind Test: French Rap Hits</div>
                 <div class='bt-question-counter' id="bt-question-counter">Question 1 of 5</div>
@@ -345,7 +344,7 @@ class BlindTest extends HTMLElement{
                 </div>
             </div>
             <div class='bt-container-part2'>
-                <div class='bt-question' id="bt-question">WHAT IS THE TITLE?</div>
+                <div class='bt-question' id="bt-question">WHAT IS THE ${bt_type_answer===0 ? "TITLE": "AUTHOR"}?</div>
 
                 <div style='display:flex;flex-direction:column;gap:0.75rem;justify-content:center;align-items:center;width:100%;'>
                     <yt-bt-button id="bt-answer1"></yt-bt-button>
