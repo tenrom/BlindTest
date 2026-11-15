@@ -49,6 +49,9 @@ function Load(id){
             if (!loop){
                 AddIndexMusic()
                 justchange=true
+                if (id===currentPlaylist[indexMusic]){
+                    playerV.engine.seekTo(0)
+                }
                 Load(currentPlaylist[indexMusic])
             }else{
                 justchange=true
