@@ -1174,7 +1174,7 @@ document.addEventListener('touchend',(e)=>{
         document.getElementById('mp-text-ctime').style.color = ''
         document.getElementById('mp-slider').style.height = ''
 
-        playerV.addEventListener(['play', 'playing', 'pause', 'waiting', 'ended', 'error'],()=>{
+        playerV.addEventListener('playing',()=>{
             isSliding=false
         },{once: true})
     }else{
