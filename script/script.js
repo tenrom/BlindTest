@@ -278,7 +278,7 @@ class ytPlaylistItem extends HTMLElement{
 
         this.addEventListener('click',()=>{
             
-            if ((indexMusic || indexMusic===0) && player.embed.getVideoData()['video_id']===this.getAttribute('ytid')){
+            if ((indexMusic || indexMusic===0) && playerV.engine.getVideoData()['video_id']===this.getAttribute('ytid')){
                 document.getElementById('mp').show()
             }else{
                 loopIconUpdate(false)
@@ -755,9 +755,9 @@ class musicPlayer extends HTMLElement{
         document.getElementById('mp-song-text-title').innerText=title
         document.getElementById('mp-song-text-author').innerText=author
 
-        document.getElementById('mp-text-time').innerText=formatTime(player.duration)
+        document.getElementById('mp-text-time').innerText=formatTime(playerV.duration)
 
-        if (document.getElementsByClassName('plyr__control')[0].getAttribute('aria-label')==='Pause'){
+        if (playerV.paused){
             document.getElementById('mp-btn-play').children[0].style.display='none'
             document.getElementById('mp-btn-play').children[1].style.display='block'
             document.getElementById('mp-small-btn-play').children[0].style.display='none'
@@ -872,19 +872,19 @@ class musicPlayer extends HTMLElement{
         ctx.fillRect(0,0,canvas.width,canvas.height)
 
         document.getElementById('mp-btn-before').addEventListener('click',(e)=>{
-            if (player.currentTime<5){
+            if (playerV.currentTime<5){
                 loopIconUpdate(false)
                 SubIndexMusic()
                 justchange=true
                 Load(currentPlaylist[indexMusic])
             }else{
-                player.embed.seekTo(0)
+                playerV.engine.seekTo(0)
             }
         })
 
         let play=(e)=>{
             e.stopPropagation()
-            if (document.getElementsByClassName('plyr__control')[0].getAttribute('aria-label')==='Play'){
+            if (playerV.paused){
                 document.getElementById('mp-btn-play').children[0].style.display='none'
                 document.getElementById('mp-btn-play').children[1].style.display='block'
                 document.getElementById('mp-small-btn-play').children[0].style.display='none'
@@ -896,8 +896,8 @@ class musicPlayer extends HTMLElement{
                 document.getElementById('mp-small-btn-play').children[1].style.display='none'
             }
 
-            player.embed.setVolume(100)
-            document.getElementsByClassName('plyr__control')[0].click()
+            playerV.engine.setVolume(100)
+            document.getElementsByTagName('video-skin')[0].shadowRoot.querySelector('media-play-button').click()
         }
 
         document.getElementById('mp-btn-play').addEventListener('click',play)
@@ -917,17 +917,17 @@ class musicPlayer extends HTMLElement{
         document.getElementById('mp-slider-box').addEventListener('mousedown',(e)=>{
             isclicking=true
             isSliding=true
-            sliderValue=(e.clientX-document.getElementById('mp-slider').getBoundingClientRect().x)/document.getElementById('mp-slider').clientWidth * player.duration
-            sliderValue=Math.max(Math.min(sliderValue,player.duration),0)
-            document.getElementById('mp-slider-bar').style.transform = 'scaleX('+(sliderValue / player.duration) * 100+'%)'
+            sliderValue=(e.clientX-document.getElementById('mp-slider').getBoundingClientRect().x)/document.getElementById('mp-slider').clientWidth * playerV.duration
+            sliderValue=Math.max(Math.min(sliderValue,playerV.duration),0)
+            document.getElementById('mp-slider-bar').style.transform = 'scaleX('+(sliderValue / playerV.duration) * 100+'%)'
             document.getElementById('mp-text-ctime').innerText = formatTime(sliderValue)
         })
         document.getElementById('mp-slider-box').addEventListener('touchstart',(e)=>{
             isclicking=true
             isSliding=true
-            sliderValue=(e.changedTouches[0].clientX-document.getElementById('mp-slider').getBoundingClientRect().x)/document.getElementById('mp-slider').clientWidth * player.duration
-            sliderValue=Math.max(Math.min(sliderValue,player.duration),0)
-            document.getElementById('mp-slider-bar').style.transform = 'scaleX('+(sliderValue / player.duration) * 100+'%)'
+            sliderValue=(e.changedTouches[0].clientX-document.getElementById('mp-slider').getBoundingClientRect().x)/document.getElementById('mp-slider').clientWidth * playerV.duration
+            sliderValue=Math.max(Math.min(sliderValue,playerV.duration),0)
+            document.getElementById('mp-slider-bar').style.transform = 'scaleX('+(sliderValue / playerV.duration) * 100+'%)'
             document.getElementById('mp-text-ctime').innerText = formatTime(sliderValue)
             document.getElementById('mp-text-time').style.color = 'white'
             document.getElementById('mp-text-ctime').style.color = 'white'
@@ -1009,9 +1009,9 @@ window.customElements.define('yt-music-player',musicPlayer)
 
 document.addEventListener('mousemove',(e)=>{
     if (isclicking && !issmallclick){
-        sliderValue=(e.clientX-document.getElementById('mp-slider').getBoundingClientRect().x)/document.getElementById('mp-slider').clientWidth * player.duration
-        sliderValue=Math.max(Math.min(sliderValue,player.duration),0)
-        document.getElementById('mp-slider-bar').style.transform = 'scaleX('+(sliderValue / player.duration) * 100+'%)'
+        sliderValue=(e.clientX-document.getElementById('mp-slider').getBoundingClientRect().x)/document.getElementById('mp-slider').clientWidth * playerV.duration
+        sliderValue=Math.max(Math.min(sliderValue,playerV.duration),0)
+        document.getElementById('mp-slider-bar').style.transform = 'scaleX('+(sliderValue / playerV.duration) * 100+'%)'
         document.getElementById('mp-text-ctime').innerText = formatTime(sliderValue)
     }else{
         if (isclickingMp){
@@ -1055,12 +1055,12 @@ document.addEventListener('mousemove',(e)=>{
 
 let mouseup=(e)=>{
     if (isclicking && !issmallclick){
-        player.embed.seekTo(sliderValue)
+        playerV.engine.seekTo(sliderValue)
         isclicking=false
 
-        player.once('statechange',()=>{
+        playerV.addEventListener('playing',()=>{
             isSliding=false
-        })
+        },{once : true})
     }else{
         if (isclickingMp){
             isclickingMp=false
@@ -1118,9 +1118,9 @@ document.getElementById('nav').addEventListener('load',()=>{
 
 document.addEventListener('touchmove',(e)=>{
     if (isclicking){
-        sliderValue=(e.changedTouches[0].clientX-document.getElementById('mp-slider').getBoundingClientRect().x)/document.getElementById('mp-slider').clientWidth * player.duration
-        sliderValue=Math.max(Math.min(sliderValue,player.duration),0)
-        document.getElementById('mp-slider-bar').style.transform = 'scaleX('+(sliderValue / player.duration) * 100+'%)'
+        sliderValue=(e.changedTouches[0].clientX-document.getElementById('mp-slider').getBoundingClientRect().x)/document.getElementById('mp-slider').clientWidth * playerV.duration
+        sliderValue=Math.max(Math.min(sliderValue,playerV.duration),0)
+        document.getElementById('mp-slider-bar').style.transform = 'scaleX('+(sliderValue / playerV.duration) * 100+'%)'
         document.getElementById('mp-text-ctime').innerText = formatTime(sliderValue)
     }else{
         if (isclickingMp){
@@ -1167,16 +1167,16 @@ document.addEventListener('touchmove',(e)=>{
 
 document.addEventListener('touchend',(e)=>{
     if (isclicking){
-        player.embed.seekTo(sliderValue)
+        playerV.engine.seekTo(sliderValue)
         isclicking=false
 
         document.getElementById('mp-text-time').style.color = ''
         document.getElementById('mp-text-ctime').style.color = ''
         document.getElementById('mp-slider').style.height = ''
 
-        player.once('statechange',()=>{
+        playerV.addEventListener(['play', 'playing', 'pause', 'waiting', 'ended', 'error'],()=>{
             isSliding=false
-        })
+        },{once: true})
     }else{
         if (isclickingMp){
             isclickingMp=false
@@ -1663,12 +1663,12 @@ function randomIconUpdate(v){
     if (randomize){
         document.getElementById('mp-btn-random').innerHTML=`<svg xmlns="http://www.w3.org/2000/svg" color="white" width="25px" height="25px"${svgs['ic-random2'][iconIndex]}</svg>`
         currentPlaylist=[playlistIds[indexMusic]].concat(shuffle(playlistIds.filter(item => item !== playlistIds[indexMusic]),new Math.seedrandom(CryptoJS.SHA3(String(Date.now())).toString().slice(0,15))))
-        indexMusic=currentPlaylist.indexOf(player.embed.getVideoData()['video_id'])
+        indexMusic=currentPlaylist.indexOf(playerV.engine.getVideoData()['video_id'])
         UpdateIndexUrl()
     }else{
         document.getElementById('mp-btn-random').innerHTML=`<svg xmlns="http://www.w3.org/2000/svg" color="white" width="25px" height="25px"${svgs['ic-random'][iconIndex]}</svg>`
         currentPlaylist=playlistIds
-        indexMusic=currentPlaylist.indexOf(player.embed.getVideoData()['video_id'])
+        indexMusic=currentPlaylist.indexOf(playerV.engine.getVideoData()['video_id'])
         UpdateIndexUrl()
     }
 

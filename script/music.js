@@ -28,17 +28,12 @@ function SubIndexMusic(){
 }
 
 function Load(id){
-    player.source = {
-        type: 'video',
-        sources: [{
-            src: id,
-            provider: 'youtube'
-        }]
-    };
+    playerV.src=`https://youtube.com/watch?v=${id}`
 
-    player.once('ready',()=>{
-        player.embed.setVolume(100) 
-        document.getElementsByClassName('plyr__control')[0].click()
+    playerV.addEventListener('loadedmetadata',()=>{
+        playerV.engine.setVolume(100) 
+    
+        document.getElementsByTagName('video-skin')[0].shadowRoot.querySelector('media-play-button').click() 
 
         document.getElementById('mp').show()
         if (document.getElementById('lrc').style.display==="flex") document.getElementById('lrc').show()
@@ -46,9 +41,9 @@ function Load(id){
         setTimeout(()=>{
             justchange=false
         },100)
-    })
+    },{ once: true })
 
-    player.once('ended',()=>{
+    playerV.addEventListener('ended',()=>{
         console.log('end')
         if (id===currentPlaylist[indexMusic]){
             if (!loop){
@@ -57,13 +52,14 @@ function Load(id){
                 Load(currentPlaylist[indexMusic])
             }else{
                 justchange=true
+                playerV.engine.seekTo(0)
                 Load(id)
             }
         }else{
             console.log('end catch')
         }
         
-    })
+    },{ once: true })
 }
 
 let indexMusic
@@ -74,35 +70,23 @@ let indexMusic
 
 // Create player
 let ytid='KGM_2z4GW-8'
-let adspassed=false
 
-document.getElementById('player').setAttribute('data-plyr-embed-id',ytid)
-let player = new Plyr('#player',{
-    muted:false,
-    autoplay:false,
-    youtube: {
-            modestbranding: 1,  // Removes YouTube branding from the player
-            rel: 0,              // Prevents showing related videos at the end
-            controls:0,
-            showinfo: 0,
-            hl:'fr',
-            persist_hl:1
-    },
-    fullscreen: { 
-        enabled: false, 
+let playerV=document.querySelector('youtube-video')
+window.playerV=playerV
+
+playerV.muted = false
+playerV.autoplay = false
+playerV.controls = false
+playerV.source = {
+    src: ytid,
+    engine: {
+        youtube: {
+        rel: 0,
+        hl: 'fr',
+        fs: 0
+        }
     }
-});
-
-window.player = player
-
-player.on('statechange',(e)=>{
-    if (e.detail.code===1 && !adspassed){
-        //Video is loaded
-        console.log('Video loaded')
-        
-        adspassed=true
-    }   
-}) 
+};
 
 function formatTime(t){
     t=Math.round(t)
@@ -164,7 +148,7 @@ class LyricsRow extends HTMLElement{
 
         this.addEventListener('click',()=>{
             autoScroll = true
-            player.embed.seekTo(currentLyrics[this.getAttribute('index')].time)
+            playerV.engine.seekTo(currentLyrics[this.getAttribute('index')].time)
         })
     }
 }
@@ -222,7 +206,7 @@ class LyricsPanel extends HTMLElement{
                     `
                 }
             }
-            fetch(`https://lrclib.net/api/get?artist_name=${channel.replace(' - Topic','')}&track_name=${title}&album_name=${description.match(/[^\n]+/g)[2]}&duration=${player.duration}`).then(res => res.json()).then((res)=>{
+            fetch(`https://lrclib.net/api/get?artist_name=${channel.replace(' - Topic','')}&track_name=${title}&album_name=${description.match(/[^\n]+/g)[2]}&duration=${playerV.duration}`).then(res => res.json()).then((res)=>{
                 if (res.syncedLyrics){
                     after(res)
                 }else{
@@ -326,13 +310,13 @@ class LyricsPanel extends HTMLElement{
 
 window.customElements.define('lrc-',LyricsPanel)
 
-player.on('timeupdate', () => {
+playerV.addEventListener('timeupdate', () => {
     if (!isSliding){
-        document.getElementById('mp-slider-bar').style.transform = 'scaleX('+(player.currentTime / player.duration) * 100+'%)'
-        document.getElementById('mp-text-ctime').innerText = formatTime(player.currentTime)
+        document.getElementById('mp-slider-bar').style.transform = 'scaleX('+(playerV.currentTime / playerV.duration) * 100+'%)'
+        document.getElementById('mp-text-ctime').innerText = formatTime(playerV.currentTime)
     }
 
-    document.getElementById('lrc').updateLrc(getLastNewRowLyrics(currentLyrics,player.currentTime))
+    document.getElementById('lrc').updateLrc(getLastNewRowLyrics(currentLyrics,playerV.currentTime))
 })
 
 
@@ -447,9 +431,8 @@ if ('mediaSession' in navigator) {
 }
 
 
-player.on('ready', () => {
+playerV.addEventListener('loadedmetadata', () => {
     document.body.style.overflow =  bodyOverflow
-
 })
 
 
