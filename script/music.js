@@ -28,7 +28,7 @@ function SubIndexMusic(){
 }
 
 function Load(id){
-    playerV.src=`https://youtube.com/watch?v=${id}`
+    playerV.src=`https://youtube-nocookie.com/watch?v=${id}`
 
     playerV.addEventListener('loadedmetadata',()=>{
         playerV.engine.setVolume(100) 
