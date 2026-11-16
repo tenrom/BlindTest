@@ -117,7 +117,15 @@
     </div>
 
     <script src="https://jsdelivr.net"></script>
-    <script>eruda.init();</script>
+<script>
+  if (typeof eruda !== 'undefined') {
+    eruda.init();
+    alert("Success: Eruda is loaded and running!");
+  } else {
+    alert("Error: JavaScript works, but Eruda failed to download.");
+  }
+</script>
+
 </body>
 </html>
 
